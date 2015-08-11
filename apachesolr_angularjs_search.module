@@ -136,6 +136,18 @@ function apachesolr_angularjs_search_block_view($delta) {
 }
 
 /**
+ * Implements hook_theme().
+ */
+function apachesolr_angularjs_search_theme() {
+  return array(
+    'apachesolr_angularjs_advanced_search' => array(
+      'template' => 'apachesolr-angularjs-advanced-search',
+      'path' => drupal_get_path('module', 'apachesolr_angularjs_search') . '/templates/',
+    ),
+  );
+}
+
+/**
  * Returns fields element for block configure form.
  */
 function apachesolr_angularjs_search_get_fields_element($form, $form_state) {
