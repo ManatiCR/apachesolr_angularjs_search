@@ -1,0 +1,6 @@
+name = Apachesolr AngularJS Search
+description = Provides blocks for angularjs searches using apachesolr as a backend.
+dependencies[] = apachesolr
+stylesheets[] = css/styles.css
+
+core = 7.x
