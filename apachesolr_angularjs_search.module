@@ -107,11 +107,24 @@ function apachesolr_angularjs_search_block_save($delta, $edit) {
     variable_set('apachesolr_angularjs_search_basic_environment', $edit['apachesolr_angularjs_search_basic_environment']);
   }
   elseif ($delta == 'aas_advanced') {
-    variable_set('apachesolr_angularjs_search_advanced_environment', $edit['apachesolr_angularjs_search_advanced_environment']);
+    $environment = $edit['apachesolr_angularjs_search_advanced_environment'];
+    variable_set('apachesolr_angularjs_search_advanced_environment', $environment);
+    $environment_fields = apachesolr_angularjs_search_get_environment_fields($environment);
     $fields = array();
     foreach ($edit['apachesolr_angularjs_search_advanced_fields'] as $field_name => $value) {
       if (!empty($value)) {
-        $fields[$field_name] = $value;
+        $type = $environment_fields[$field_name]->type;
+        if (strpos($type, 'text') === 0) {
+          $type = 'string';
+        }
+        elseif ($type == 'long' || $type == 'numeric') {
+          $type = 'numeric';
+        }
+
+        $fields[$field_name] = array(
+          'label' => $value,
+          'type' => $type,
+        );
       }
     }
     variable_set('apachesolr_angularjs_search_advanced_fields', $fields);
@@ -163,18 +176,31 @@ function apachesolr_angularjs_search_get_fields_options($env_id = '') {
   if (!$env_id) {
     $env_id = variable_get('apachesolr_angularjs_search_advanced_environment', apachesolr_default_environment());
   }
-  $environment = apachesolr_environment_load($env_id);
-  module_load_include('inc', 'apachesolr_search', 'apachesolr_search.admin');
-  $fields = apachesolr_search_get_fields($environment);
+  $fields = apachesolr_angularjs_search_get_environment_fields($env_id);
   $options = array();
 
-  foreach (get_object_vars($fields) as $field_name => $field) {
+  foreach ($fields as $field_name => $field) {
     $options[$field_name] = apachesolr_field_name_map($field_name);
   }
   // @TODO: Check
   // http://www.drupalcontrib.org/api/drupal/contributions!apachesolr!apachesolr.api.php/function/hook_apachesolr_field_name_map_alter/7
 
   return $options;
+}
+
+/**
+ * Returns fields array for a given environment. This function uses static
+ * cache.
+ */
+function apachesolr_angularjs_search_get_environment_fields($env_id) {
+  $fields = &drupal_static(__FUNCTION__ . '_' . $env_id);
+  if (!$fields) {
+    $environment = apachesolr_environment_load($env_id);
+    module_load_include('inc', 'apachesolr_search', 'apachesolr_search.admin');
+    $fields = apachesolr_search_get_fields($environment);
+    $fields = get_object_vars($fields);
+  }
+  return $fields;
 }
 
 /**
@@ -189,12 +215,45 @@ function apachesolr_angularjs_search_get_basic_search_block() {
  */
 function apachesolr_angularjs_search_get_advanced_search_block() {
   $fields = variable_get('apachesolr_angularjs_search_advanced_fields', array());
-  $fields['__fulltext_search'] = t('All Fields');
+  $fields['__fulltext_search'] = array(
+    'label' => t('All Fields'),
+    'type' => 'fulltext',
+  );
   $settings = array(
     'fields' => $fields,
   );
-  drupal_add_js(array('apachesolrAngularjs' => $settings), 'setting');
-  return t('ADVANCED SEARCH BLOCK');
+  $path = drupal_get_path('module', 'apachesolr_angularjs_search');
+
+  $build = array(
+    '#markup' => theme('apachesolr_angularjs_advanced_search'),
+    '#attached' => array(
+      'js' => array(
+        array(
+          'data' => array('apachesolrAngularjs' => $settings),
+          'type' => 'setting',
+        ),
+        $path . '/js/components/angular/angular.js' => array(
+          'type' => 'file',
+        ),
+        $path . '/js/components/angular-cookies/angular-cookies.js' => array(
+          'type' => 'file',
+        ),
+        $path . '/js/components/angular-resource/angular-resource.js' => array(
+          'type' => 'file',
+        ),
+        $path . '/js/components/angular-sanitize/angular-sanitize.js' => array(
+          'type' => 'file',
+        ),
+        $path . '/js/components/angular-touch/angular-touch.js' => array(
+          'type' => 'file',
+        ),
+        $path . '/js/app.js' => array(
+          'type' => 'file',
+        ),
+      ),
+    ),
+  );
+  return $build;
 }
 
 /**
