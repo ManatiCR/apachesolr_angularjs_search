@@ -232,22 +232,23 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
           'data' => array('apachesolrAngularjs' => $settings),
           'type' => 'setting',
         ),
-        $path . '/js/components/angular/angular.js' => array(
+        // @TODO: change by minified files.
+        $path . '/src-js/bower_components/angular/angular.js' => array(
           'type' => 'file',
         ),
-        $path . '/js/components/angular-cookies/angular-cookies.js' => array(
+        $path . '/src-js/bower_components/angular-cookies/angular-cookies.js' => array(
           'type' => 'file',
         ),
-        $path . '/js/components/angular-resource/angular-resource.js' => array(
+        $path . '/src-js/bower_components/angular-resource/angular-resource.js' => array(
           'type' => 'file',
         ),
-        $path . '/js/components/angular-sanitize/angular-sanitize.js' => array(
+        $path . '/src-js/bower_components/angular-sanitize/angular-sanitize.js' => array(
           'type' => 'file',
         ),
-        $path . '/js/components/angular-touch/angular-touch.js' => array(
+        $path . '/src-js/bower_components/angular-touch/angular-touch.js' => array(
           'type' => 'file',
         ),
-        $path . '/js/app.js' => array(
+        $path . '/src-js/app.js' => array(
           'type' => 'file',
         ),
       ),
