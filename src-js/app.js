@@ -26,12 +26,12 @@
             fields[field]['type'] = 'number';
           }
         }
-        console.log(fields, 'fields');
-        var app = angular.module('jsApp', ['ngCookies', 'ngResource', 'ngSanitize', 'ngTouch']);
+        var app = angular.module('search', ['ngCookies', 'ngResource', 'ngSanitize', 'ngTouch']);
 
-        var jsAppController = function ($scope, $location) {
+        function mainController($scope) {
           $scope.fields = fields;
         }
+        app.controller('mainController', mainController);
       });
     }
   }
