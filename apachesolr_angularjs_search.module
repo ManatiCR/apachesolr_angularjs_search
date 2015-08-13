@@ -219,6 +219,7 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
     'label' => t('All Fields'),
     'type' => 'fulltext',
   );
+  drupal_alter('apachesolr_angularjs_search_fields', $fields);
   $settings = array(
     'fields' => $fields,
   );
