@@ -282,18 +282,44 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
 /**
  * Process search query string.
  */
-function apachesolr_angularjs_search_process_query($string = '') {
-  if (empty($string)) {
-    $query = check_plain($_POST['query']);
-    $page_id = check_plain($_POST['pageId']);
-  }
-  // @TODO: Save temporary search.
+function apachesolr_angularjs_search_process_query($id = '') {
+  global $user;
+  $query = '';
+  if (empty($id)) {
+    $query = !empty($_POST['query']) ? check_plain($_POST['query']) : '';
+    $page_id = !empty($_POST['pageId']) ? check_plain($_POST['pageId']) : '';
+    if ($user->uid) {
+      // @TODO: Save temporary search.
+    }
 
-  $page = apachesolr_search_page_load($page_id);
-  if ($page) {
-    $path = $page['search_path'];
-    $path .= '/' . $query;
-    // TODO: Handle url length.
-    drupal_goto($path);
   }
+  elseif (apachesolr_angularjs_search_valid_id_and_user($id, $user)) {
+    // Recover with ID.
+  }
+  else {
+    // Not valid ID. Search with given string.
+    $query = $id;
+  }
+
+  $conditions = array(
+    'fq' => array(),
+    'apachesolr_search_sort' => '',
+  );
+  $page = apachesolr_search_page_load($page_id);;
+  $build = array();
+  $results = apachesolr_search_search_results($query, $conditions, $page);
+  $build = apachesolr_search_search_page_custom($results, $page, $build);
+  if (isset($build['suggestions'])) {
+    // Remove suggestions.
+    unset($build['suggestions']);
+  }
+  return $build;
+}
+
+/**
+ * Returns whether the given ID is a valid id for the given user.
+ */
+function apachesolr_angularjs_search_valid_id_and_user($search_id, $user) {
+  // @TODO: Implement.
+  return FALSE;
 }
