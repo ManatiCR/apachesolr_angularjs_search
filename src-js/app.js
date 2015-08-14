@@ -30,6 +30,42 @@
 
         function mainController($scope) {
           $scope.fields = fields;
+
+          $scope.clearForm = function() {
+            for (field in $scope.fields) {
+              $scope.fields[field]['value'] = '';
+            }
+          }
+
+          $scope.processForm = function() {
+            var string = '';
+            var filter = '';
+            for (field in $scope.fields) {
+              if ($scope.fields[field]['value']) {
+                if ($scope.fields[field]['type'] == 'checkbox') {
+                  filter += field;
+                  filter += ':true';
+                  filter += ' OR ';
+                }
+                else {
+                  if (field != '__fulltext_search') {
+                    string += field;
+                    string += ':';
+                  }
+                  string += $scope.fields[field]['value'];
+                  string += ' AND ';
+                }
+              }
+            }
+            var query = string;
+            if (filter) {
+              query += '(' + filter;
+              query = query.substr(0, query.length - 4) + ')';
+            }
+            else {
+              query = query.substr(0, query.length - 5);
+            }
+          }
         }
         app.controller('mainController', mainController);
       });
