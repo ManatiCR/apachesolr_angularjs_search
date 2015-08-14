@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * @file
+ * Install file for apachesolr_angularjs_search module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function apachesolr_angularjs_search_schema() {
+  $schema['apachesolr_angularjs_search_saved'] = array(
+    'description' => 'Saved searches',
+    'fields' => array(
+      'sid' => array(
+        'description' => 'Primary identifier for a search',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'uri' => array(
+        'description' => 'Uri used for accessing this search',
+        'type' => 'varchar',
+        'length' => '64',
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'name' => array(
+        'description' => 'Name used for identifying this search',
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => 'Automatically saved search',
+      ),
+      'created' => array(),
+      'uid' => array(),
+      'page_id' => array(),
+      'query' => array(),
+    ),
+    'primary key' => array(),
+    'foreign keys' => array(),
+  );
+}
