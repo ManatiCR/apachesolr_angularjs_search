@@ -14,6 +14,8 @@
     attach: function(context) {
       jQuery('#advancedSearch').once('advancedSearch', function() {
         var fields = Drupal.settings.apachesolrAngularjs.fields;
+        var pageId = Drupal.settings.apachesolrAngularjs.page_id;
+
         var field;
         for (field in fields) {
           if (fields[field]['type'] === 'boolean') {
@@ -65,6 +67,9 @@
             else {
               query = query.substr(0, query.length - 5);
             }
+            document.getElementById('input-query').setAttribute('value', query);
+            document.getElementById('input-pageid').setAttribute('value', pageId);
+            document.advancedSearchForm.submit();
           }
         }
         app.controller('mainController', mainController);

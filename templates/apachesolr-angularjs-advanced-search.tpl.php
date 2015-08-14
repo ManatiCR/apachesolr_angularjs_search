@@ -14,15 +14,17 @@
   <div class="container" data-ng-controller="mainController">
 
 <pre>{{fields}}</pre>
-  <form class="advanced-search-form">
+  <form class="advanced-search-form" name="advancedSearchForm" action="apachesolr-angularjs-search" method="POST">
     <div class="form-input" data-ng-repeat="(field_name, field) in fields">
       <label for="field_name">{{ field.label }}</label>
       <input type="{{ field.type }}" id="{{field_name}}" data-ng-if="field.type != 'fulltext' && !field.autocomplete_path" data-ng-model="field.value" />
       <textarea type="{{ field.type }}" id="{{field_name}}" data-ng-if="field.type == 'fulltext'" data-ng-model="field.value"></textarea>
     </div>
+    <input type="hidden" name="query" id="input-query"/>
+    <input type="hidden" name="pageId" id="input-pageid"/>
     <div class="actions">
-      <button class="btn btn-reset" data-ng-click="clearForm()">Reset</button>
-      <button class="btn btn-submit" data-ng-click="processForm()">Search</button>
+      <button class="btn btn-reset" data-ng-click="clearForm()" type="button">Reset</button>
+      <button class="btn btn-submit" data-ng-click="processForm(); $event.preventDefault();" type="submit">Search</button>
     </div>
   </form>
 

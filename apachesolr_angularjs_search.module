@@ -20,10 +20,9 @@ function apachesolr_angularjs_search_help($path, $arg) {
  */
 function apachesolr_angularjs_search_menu() {
   return array(
-    variable_get('apachesolr_angularjs_search_search_path', 'search/search') . '/%' => array(
+    'apachesolr-angularjs-search' => array(
       'title' => 'Search',
       'page callback' => 'apachesolr_angularjs_search_process_query',
-      'page arguments' => array(2),
       'access callback' => TRUE,
     ),
   );
@@ -51,20 +50,23 @@ function apachesolr_angularjs_search_block_info() {
 function apachesolr_angularjs_search_block_configure($delta) {
   $environment_options = array();
 
-  $environments = apachesolr_load_all_environments();
-  foreach ($environments as $env_id => $environment) {
-    $environment_options[$env_id] = $environment['name'];
+  $pages = apachesolr_search_load_all_search_pages();
+
+  foreach ($pages as $page_id => $page) {
+    if ($page['env_id']) {
+      $page_options[$page_id] = $page['label'];
+    }
   }
 
-  $default_environment = apachesolr_default_environment();
+  $default_page = apachesolr_search_default_search_page();
   $entity_type = 'node';
 
   if ($delta == 'aas_basic') {
-    $form['apachesolr_angularjs_search_basic_environment'] = array(
-      '#title' => t('Environment'),
+    $form['apachesolr_angularjs_search_basic_page'] = array(
+      '#title' => t('Page'),
       '#type' => 'select',
-      '#options' => $environment_options,
-      '#default_value' => variable_get('apachesolr_angularjs_search_basic_environment', $default_environment),
+      '#options' => $page_options,
+      '#default_value' => variable_get('apachesolr_angularjs_search_basic_page', $default_page),
       '#required' => TRUE,
     );
     return $form;
@@ -72,18 +74,18 @@ function apachesolr_angularjs_search_block_configure($delta) {
   elseif ($delta == 'aas_advanced') {
     // @TODO Remove and fix ajax.
     $form['notice'] = array(
-      '#markup' => t('If you change environment; please save and go here again for selecting fields.'),
+      '#markup' => t('If you change page; please save and go here again for selecting fields.'),
     );
-    $form['apachesolr_angularjs_search_advanced_environment'] = array(
-      '#title' => t('Environment'),
+    $form['apachesolr_angularjs_search_advanced_page'] = array(
+      '#title' => t('Page'),
       '#type' => 'select',
-      '#options' => $environment_options,
+      '#options' => $page_options,
       '#ajax' => array(
         'callback' => 'apachesolr_angularjs_search_get_fields_element',
         'method' => 'replace',
         'wrapper' => 'aas-advanced-fields',
       ),
-      '#default_value' => variable_get('apachesolr_angularjs_search_advanced_environment', $default_environment),
+      '#default_value' => variable_get('apachesolr_angularjs_search_advanced_page', $default_page),
       '#required' => TRUE,
     );
 
@@ -104,11 +106,13 @@ function apachesolr_angularjs_search_block_configure($delta) {
  */
 function apachesolr_angularjs_search_block_save($delta, $edit) {
   if ($delta == 'aas_basic') {
-    variable_set('apachesolr_angularjs_search_basic_environment', $edit['apachesolr_angularjs_search_basic_environment']);
+    variable_set('apachesolr_angularjs_search_basic_page', $edit['apachesolr_angularjs_search_basic_page']);
   }
   elseif ($delta == 'aas_advanced') {
-    $environment = $edit['apachesolr_angularjs_search_advanced_environment'];
-    variable_set('apachesolr_angularjs_search_advanced_environment', $environment);
+    $page_id = $edit['apachesolr_angularjs_search_advanced_page'];
+    variable_set('apachesolr_angularjs_search_advanced_page', $page_id);
+    $page = apachesolr_search_page_load($page_id);
+    $environment = $page['env_id'];
     $environment_fields = apachesolr_angularjs_search_get_environment_fields($environment);
     $fields = array();
     foreach ($edit['apachesolr_angularjs_search_advanced_fields'] as $field_name => $value) {
@@ -175,7 +179,9 @@ function apachesolr_angular_js_search_fields_default_value($fields) {
  * Returns fields element for block configure form.
  */
 function apachesolr_angularjs_search_get_fields_element($form, $form_state) {
-  $environment = $form_state['values']['apachesolr_angularjs_search_advanced_environment'];
+  $page_id = $form_state['values']['apachesolr_angularjs_search_advanced_page'];
+  $page = apachesolr_search_page_load($page_id);
+  $environment = $page['env_id'];
   $form['settings']['apachesolr_angularjs_search_advanced_fields']['#options'] = apachesolr_angularjs_search_get_fields_options($environment);
   return drupal_render($form['settings']['apachesolr_angularjs_search_advanced_fields']);
 }
@@ -183,9 +189,11 @@ function apachesolr_angularjs_search_get_fields_element($form, $form_state) {
 /**
  * Returns fields options based on actual solr environment.
  */
-function apachesolr_angularjs_search_get_fields_options($env_id = '') {
-  if (!$env_id) {
-    $env_id = variable_get('apachesolr_angularjs_search_advanced_environment', apachesolr_default_environment());
+function apachesolr_angularjs_search_get_fields_options($page_id = '') {
+  if (!$page_id) {
+    $page_id = variable_get('apachesolr_angularjs_search_advanced_page', apachesolr_search_default_search_page());
+    $page = apachesolr_search_page_load($page_id);
+    $env_id = $page['env_id'];
   }
   $fields = apachesolr_angularjs_search_get_environment_fields($env_id);
   $options = array();
@@ -193,15 +201,15 @@ function apachesolr_angularjs_search_get_fields_options($env_id = '') {
   foreach ($fields as $field_name => $field) {
     $options[$field_name] = apachesolr_field_name_map($field_name);
   }
-  // @TODO: Check
-  // http://www.drupalcontrib.org/api/drupal/contributions!apachesolr!apachesolr.api.php/function/hook_apachesolr_field_name_map_alter/7
+  // @TODO: Check hook_apachesolr_field_name_map_alter
 
   return $options;
 }
 
 /**
- * Returns fields array for a given environment. This function uses static
- * cache.
+ * Returns fields array for a given environment.
+ *
+ * This function uses static cache.
  */
 function apachesolr_angularjs_search_get_environment_fields($env_id) {
   $fields = &drupal_static(__FUNCTION__ . '_' . $env_id);
@@ -226,6 +234,7 @@ function apachesolr_angularjs_search_get_basic_search_block() {
  */
 function apachesolr_angularjs_search_get_advanced_search_block() {
   $fields = variable_get('apachesolr_angularjs_search_advanced_fields', array());
+  $page_id = variable_get('apachesolr_angularjs_search_advanced_page', apachesolr_search_default_search_page());
   $fields['__fulltext_search'] = array(
     'label' => t('All Fields'),
     'type' => 'fulltext',
@@ -233,6 +242,7 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
   drupal_alter('apachesolr_angularjs_search_fields', $fields);
   $settings = array(
     'fields' => $fields,
+    'page_id' => $page_id,
   );
   $path = drupal_get_path('module', 'apachesolr_angularjs_search');
 
@@ -240,7 +250,7 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
     '#markup' => theme('apachesolr_angularjs_advanced_search'),
     '#attached' => array(
       'js' => array(
-        array(
+        0 => array(
           'data' => array('apachesolrAngularjs' => $settings),
           'type' => 'setting',
         ),
@@ -272,10 +282,18 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
 /**
  * Process search query string.
  */
-function apachesolr_angularjs_search_process_query($string) {
+function apachesolr_angularjs_search_process_query($string = '') {
   if (empty($string)) {
-    $string = check_plain($_POST['query']);
+    $query = check_plain($_POST['query']);
+    $page_id = check_plain($_POST['pageId']);
   }
-  dpm($string, 'STRING');
-  return drupal_json_output();
+  // @TODO: Save temporary search.
+
+  $page = apachesolr_search_page_load($page_id);
+  if ($page) {
+    $path = $page['search_path'];
+    $path .= '/' . $query;
+    // TODO: Handle url length.
+    drupal_goto($path);
+  }
 }
