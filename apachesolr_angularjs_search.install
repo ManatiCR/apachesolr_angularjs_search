@@ -89,3 +89,12 @@ function apachesolr_angularjs_search_schema() {
 
   return $schema;
 }
+
+/**
+ * Implements hook_uninstall().
+ */
+function apachesolr_angularjs_search_uninstall() {
+  variable_del('apachesolr_angularjs_search_basic_page');
+  variable_del('apachesolr_angularjs_search_advanced_page');
+  variable_del('apachesolr_angularjs_search_advanced_fields');
+}
