@@ -5,6 +5,10 @@
  * Main code file for apachesolr_angularjs_search module.
  */
 
+define('APACHESOLR_ANGULARJS_SEARCH_PERMANENT', 1);
+define('APACHESOLR_ANGULARJS_SEARCH_TEMPORARY', 0);
+define('APACHESOLR_ANGULARJS_SEARCH_BASE_PATH', 'apachesolr-angularjs-search');
+
 /**
  * Implements hook_help().
  */
@@ -20,7 +24,7 @@ function apachesolr_angularjs_search_help($path, $arg) {
  */
 function apachesolr_angularjs_search_menu() {
   return array(
-    'apachesolr-angularjs-search' => array(
+    APACHESOLR_ANGULARJS_SEARCH_BASE_PATH => array(
       'title' => 'Search',
       'page callback' => 'apachesolr_angularjs_search_process_query',
       'access callback' => TRUE,
@@ -285,6 +289,7 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
 function apachesolr_angularjs_search_process_query($uri = '') {
   global $user;
   $query = '';
+  $save_option = FALSE;
   if (empty($uri)) {
     $query = !empty($_POST['query']) ? check_plain($_POST['query']) : '';
     $page_id = !empty($_POST['pageId']) ? check_plain($_POST['pageId']) : '';
@@ -293,6 +298,7 @@ function apachesolr_angularjs_search_process_query($uri = '') {
       $search->page_id = $page_id;
       $search->query = $query;
       apachesolr_angularjs_search_save_temporary_search($search);
+      $save_option = TRUE;
     }
   }
   elseif ($search = apachesolr_angularjs_search_valid_uri_and_user($uri, $user)) {
@@ -320,7 +326,70 @@ function apachesolr_angularjs_search_process_query($uri = '') {
     // Remove suggestions.
     unset($build['suggestions']);
   }
+
+  if ($save_option) {
+    $build['save_form'] = drupal_get_form('apachesolr_angularjs_search_save_form', $search);
+    $build['save_form']['#weight'] = 0;
+  }
+
   return $build;
+}
+
+/**
+ * Returns save form for a given search.
+ */
+function apachesolr_angularjs_search_save_form($form, $form_state, $search) {
+  $form['search'] = array(
+    '#type' => 'value',
+    '#value' => $search,
+  );
+
+  $form['help'] = array(
+    '#type' => 'markup',
+    '#markup' => t('Set a name and click save if you want to save this view.'),
+    '#weight' => 0,
+  );
+
+  $form['name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Name'),
+    '#weight' => 1,
+  );
+
+  $form['save'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+    '#weight' => 2,
+    '#ajax' => array(
+      'callback' => 'apachesolr_angularjs_search_save_search',
+      'method' => 'replace',
+      'effect' => 'fade',
+      'wrapper' => 'apachesolr-angularjs-search-save-form',
+    ),
+  );
+
+  return $form;
+}
+
+/**
+ * Save Search and return success text.
+ */
+function apachesolr_angularjs_search_save_search($form, $form_state) {
+  $values = $form_state['values'];
+  $name = $values['name'];
+  $search = $values['search'];
+  $search->name = $name;
+  $search->status = APACHESOLR_ANGULARJS_SEARCH_PERMANENT;
+  $result = drupal_write_record('apachesolr_angularjs_search_saved', $search, 'sid');
+  if ($result === SAVED_UPDATED) {
+    global $base_url;
+    return t('Your search has been saved. You could go to !link for using it.',
+      array(
+        '!link' => l($base_url . '/' . APACHESOLR_ANGULARJS_SEARCH_BASE_PATH . '/' . $search->uri, APACHESOLR_ANGULARJS_SEARCH_BASE_PATH . '/' . $search->uri)));
+  }
+  else {
+    return t('There was an error saving your search.');
+  }
 }
 
 /**
