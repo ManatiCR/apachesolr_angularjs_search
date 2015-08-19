@@ -38,6 +38,12 @@ function apachesolr_angularjs_search_schema() {
         'unsigned' => TRUE,
         'description' => 'Created timestamp for this search',
       ),
+      'last_run' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'description' => 'Last time this search was run.',
+      ),
       'uid' => array(
         'type' => 'int',
         'not null' => TRUE,

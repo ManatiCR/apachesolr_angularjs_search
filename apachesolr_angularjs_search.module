@@ -345,6 +345,10 @@ function apachesolr_angularjs_search_process_query($uri = '') {
   elseif ($search = apachesolr_angularjs_search_valid_uri_and_user($uri, $user)) {
     $query = $search->query;
     $page_id = $search->page_id;
+
+    // Update last_run field.
+    $search->last_run = REQUEST_TIME;
+    drupal_write_record('apachesolr_angularjs_search_saved', $search, 'sid');
   }
   else {
     // Not valid uri. Search with given string.
@@ -441,7 +445,7 @@ function apachesolr_angularjs_search_valid_uri_and_user($uri, $account = 0) {
     global $user;
     $account = $user;
   }
-  $query = db_query('SELECT sid, uri, name, created, uid, page_id, status, query FROM {apachesolr_angularjs_search_saved} WHERE uid = :uid AND uri = :uri', array(':uid' => $account->uid, ':uri' => $uri));
+  $query = db_query('SELECT sid, uri, name, created, last_run, uid, page_id, status, query FROM {apachesolr_angularjs_search_saved} WHERE uid = :uid AND uri = :uri', array(':uid' => $account->uid, ':uri' => $uri));
   $search = $query->fetchObject();
   if ($search) {
     return $search;
@@ -460,6 +464,9 @@ function apachesolr_angularjs_search_save_temporary_search(&$search) {
   }
   if (empty($search->created)) {
     $search->created = REQUEST_TIME;
+  }
+  if (empty($search->last_run)) {
+    $search->last_run = REQUEST_TIME;
   }
   if (empty($search->uri)) {
     $search->uri = apachesolr_angularjs_search_get_search_uri($search);
