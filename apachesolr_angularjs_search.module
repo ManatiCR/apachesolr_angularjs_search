@@ -15,7 +15,10 @@ define('APACHESOLR_ANGULARJS_SEARCH_BASE_PATH', 'apachesolr-angularjs-search');
 function apachesolr_angularjs_search_help($path, $arg) {
   switch ($path) {
     case 'admin/help/#apachesolr_angularjs_search':
-      return 'Provides 2 blocks (one for simple and another for advanced) for searches using angularjs in frontend and apachesolr as search backend.';
+      return t('Provides 2 blocks (one for simple and another for advanced) for searches using angularjs in frontend and apachesolr as search backend.');
+
+    case 'admin/config/search/apachesolr-angularjs-search':
+      return t('Set variables according to your preferences for apachesolr angularjs search module.');
   }
 }
 
@@ -28,6 +31,24 @@ function apachesolr_angularjs_search_menu() {
       'title' => 'Search',
       'page callback' => 'apachesolr_angularjs_search_process_query',
       'access callback' => TRUE,
+    ),
+    'admin/config/search/apachesolr-angularjs-search' => array(
+      'title' => 'Administer settings for apachesolr angularjs search',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('apachesolr_angularjs_search_admin_form'),
+      'access arguments' => array('administer settings for apachesolr angularjs search'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_permission().
+ */
+function apachesolr_angularjs_search_permission() {
+  return array(
+    'administer settings for apachesolr angularjs search' => array(
+      'title' => t('Administer settings for apachesolr angularjs search'),
+      'description' => t('Set some variables for this module'),
     ),
   );
 }
@@ -182,8 +203,8 @@ function apachesolr_angularjs_search_views_api() {
  * Implements hook_cron().
  */
 function apachesolr_angularjs_search_cron() {
-  // Get Delete time. Default to 1 week. 604800
-  $delete_time = variable_get('apachesolr_angularjs_search_delete_time', 1000);
+  // Get Delete time. Default to 1 week: 604800
+  $delete_time = variable_get('apachesolr_angularjs_search_delete_time', 604800);
   $search_ids = apachesolr_angularjs_search_get_expired_searches($delete_time);
   if (!empty($search_ids)) {
     db_delete('apachesolr_angularjs_search_saved')
@@ -529,4 +550,19 @@ function apachesolr_angularjs_search_delete_form_submit($form, $form_state) {
   db_delete('apachesolr_angularjs_search_saved')
     ->condition('sid', $sid)
     ->execute();
+}
+
+/**
+ * Form builder for apachesolr_angularjs_search_admin_form.
+ */
+function apachesolr_angularjs_search_admin_form($form, $form_state) {
+  $form['apachesolr_angularjs_search_delete_time'] = array(
+    '#title' => t('Delete time'),
+    '#type' => 'textfield',
+    '#description' => t('Allowed time to live for a temporary search (in seconds).'),
+    '#default_value' => variable_get('apachesolr_angularjs_search_delete_time', 604800),
+    '#required' => TRUE,
+  );
+
+  return system_settings_form($form);
 }
