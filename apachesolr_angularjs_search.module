@@ -179,6 +179,35 @@ function apachesolr_angularjs_search_views_api() {
 }
 
 /**
+ * Implements hook_cron().
+ */
+function apachesolr_angularjs_search_cron() {
+  // Get Delete time. Default to 1 week. 604800
+  $delete_time = variable_get('apachesolr_angularjs_search_delete_time', 1000);
+  $search_ids = apachesolr_angularjs_search_get_expired_searches($delete_time);
+  if (!empty($search_ids)) {
+    watchdog('Apachesolr Angularjs Search', 'Deleting searches with ids: @ids', array('@ids' => print_r($search_ids)));
+    db_delete('apachesolr_angularjs_search_saved')
+      ->condition('sid', $search_ids, 'IN')
+      ->execute();
+  }
+}
+
+/**
+ * Return sid for expired searches.
+ *
+ * A search is considered expired if created + $delete_time > REQUEST_TIME.
+ *
+ * @param int $delete_time
+ *  The time in seconds that a temporary search should live.
+ */
+function apachesolr_angularjs_search_get_expired_searches($delete_time) {
+  $created = REQUEST_TIME - $delete_time;
+  $search_ids = db_query('SELECT sid FROM {apachesolr_angularjs_search_saved} WHERE status = :status AND created < :created', array(':status' => APACHESOLR_ANGULARJS_SEARCH_TEMPORARY, ':created' => $created))->fetchCol();
+  return $search_ids;
+}
+
+/**
  * Returns default value for fields field.
  */
 function apachesolr_angular_js_search_fields_default_value($fields) {
