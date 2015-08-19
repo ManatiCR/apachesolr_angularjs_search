@@ -288,7 +288,7 @@ function apachesolr_angularjs_search_process_query($uri = '') {
   if (empty($uri)) {
     $query = !empty($_POST['query']) ? check_plain($_POST['query']) : '';
     $page_id = !empty($_POST['pageId']) ? check_plain($_POST['pageId']) : '';
-    if ($user->uid) {
+    if ($user->uid && $query && $page_id) {
       $search = new stdClass();
       $search->page_id = $page_id;
       $search->query = $query;
@@ -365,7 +365,8 @@ function apachesolr_angularjs_search_get_search_uri($search, $count = 0) {
   $string = $search->uid . '|' . $search->created . '|' . $search->query . '|' . $count;
   $uri = drupal_hmac_base64($string, $drupal_hash_salt);
   // Remove -- because of unexpected results.
-  $uri = str_replace($uri, '--', '');
+  $uri = str_replace('--', '', $uri);
+
   $uri = substr($uri, 0, 20);
   if (apachesolr_angular_js_search_uri_exists($uri)) {
     return apachesolr_angularjs_search_get_search_uri($search, $count + 1);
