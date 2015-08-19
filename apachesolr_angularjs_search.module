@@ -441,7 +441,7 @@ function apachesolr_angularjs_search_valid_uri_and_user($uri, $account = 0) {
     global $user;
     $account = $user;
   }
-  $query = db_query('SELECT sid, uri, name, created, uid, page_id, status, query FROM apachesolr_angularjs_search_saved WHERE uid = :uid AND uri = :uri', array(':uid' => $account->uid, ':uri' => $uri));
+  $query = db_query('SELECT sid, uri, name, created, uid, page_id, status, query FROM {apachesolr_angularjs_search_saved} WHERE uid = :uid AND uri = :uri', array(':uid' => $account->uid, ':uri' => $uri));
   $search = $query->fetchObject();
   if ($search) {
     return $search;
@@ -490,7 +490,7 @@ function apachesolr_angularjs_search_get_search_uri($search, $count = 0) {
  * Returns whether a given uri already exists or not in saved searches table.
  */
 function apachesolr_angular_js_search_uri_exists($uri) {
-  $query = db_query('SELECT count(sid) FROM apachesolr_angularjs_search_saved WHERE uri = :uri', array(':uri' => $uri));
+  $query = db_query('SELECT count(sid) FROM {apachesolr_angularjs_search_saved} WHERE uri = :uri', array(':uri' => $uri));
   $count = $query->fetchField();
   if ($count) {
     return TRUE;

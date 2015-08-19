@@ -17,7 +17,7 @@ class apachesolr_angularjs_search_handler_field_user extends views_handler_field
       $value = $values->{$alias};
     }
     if ($value) {
-      $name = db_query('SELECT name FROM users WHERE uid = :uid', array(':uid' => $value))->fetchField();
+      $name = db_query('SELECT name FROM {users} WHERE uid = :uid', array(':uid' => $value))->fetchField();
       if ($name) {
         $value = $name;
       }
