@@ -282,23 +282,30 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
 /**
  * Process search query string.
  */
-function apachesolr_angularjs_search_process_query($id = '') {
+function apachesolr_angularjs_search_process_query($uri = '') {
   global $user;
   $query = '';
-  if (empty($id)) {
+  if (empty($uri)) {
     $query = !empty($_POST['query']) ? check_plain($_POST['query']) : '';
     $page_id = !empty($_POST['pageId']) ? check_plain($_POST['pageId']) : '';
     if ($user->uid) {
-      // @TODO: Save temporary search.
+      $search = new stdClass();
+      $search->page_id = $page_id;
+      $search->query = $query;
+      apachesolr_angularjs_search_save_temporary_search($search);
     }
-
   }
-  elseif (apachesolr_angularjs_search_valid_id_and_user($id, $user)) {
-    // Recover with ID.
+  elseif ($search = apachesolr_angularjs_search_valid_uri_and_user($uri, $user)) {
+    $query = $search->query;
+    $page_id = $search->page_id;
   }
   else {
-    // Not valid ID. Search with given string.
-    $query = $id;
+    // Not valid uri. Search with given string.
+    $query = $uri;
+  }
+
+  if (empty($page_id)) {
+    $page_id = variable_get('apachesolr_angularjs_search_advanced_page', apachesolr_search_default_search_page());
   }
 
   $conditions = array(
@@ -317,9 +324,65 @@ function apachesolr_angularjs_search_process_query($id = '') {
 }
 
 /**
- * Returns whether the given ID is a valid id for the given user.
+ * Returns a search for a given uri and account or FALSE if doesn't exist.
  */
-function apachesolr_angularjs_search_valid_id_and_user($search_id, $user) {
-  // @TODO: Implement.
+function apachesolr_angularjs_search_valid_uri_and_user($uri, $account = 0) {
+  if (!$account) {
+    global $user;
+    $account = $user;
+  }
+  $query = db_query('SELECT sid, uri, name, created, uid, page_id, status, query FROM apachesolr_angularjs_search_saved WHERE uid = :uid AND uri = :uri', array(':uid' => $account->uid, ':uri' => $uri));
+  $search = $query->fetchObject();
+  if ($search) {
+    return $search;
+  }
+
+  return FALSE;
+}
+
+/**
+ * Save temporary search.
+ */
+function apachesolr_angularjs_search_save_temporary_search(&$search) {
+  if (empty($search->uid)) {
+    global $user;
+    $search->uid = $user->uid;
+  }
+  if (empty($search->created)) {
+    $search->created = REQUEST_TIME;
+  }
+  if (empty($search->uri)) {
+    $search->uri = apachesolr_angularjs_search_get_search_uri($search);
+  }
+  return drupal_write_record('apachesolr_angularjs_search_saved', $search);
+}
+
+/**
+ * Return search uri for a given search.
+ */
+function apachesolr_angularjs_search_get_search_uri($search, $count = 0) {
+  global $drupal_hash_salt;
+  $string = $search->uid . '|' . $search->created . '|' . $search->query . '|' . $count;
+  $uri = drupal_hmac_base64($string, $drupal_hash_salt);
+  // Remove -- because of unexpected results.
+  $uri = str_replace($uri, '--', '');
+  $uri = substr($uri, 0, 20);
+  if (apachesolr_angular_js_search_uri_exists($uri)) {
+    return apachesolr_angularjs_search_get_search_uri($search, $count + 1);
+  }
+  else {
+    return $uri;
+  }
+}
+
+/**
+ * Returns whether a given uri already exists or not in saved searches table.
+ */
+function apachesolr_angular_js_search_uri_exists($uri) {
+  $query = db_query('SELECT count(sid) FROM apachesolr_angularjs_search_saved WHERE uri = :uri', array(':uri' => $uri));
+  $count = $query->fetchField();
+  if ($count) {
+    return TRUE;
+  }
   return FALSE;
 }
