@@ -170,6 +170,15 @@ function apachesolr_angularjs_search_theme() {
 }
 
 /**
+ * Implements hook_views_api().
+ */
+function apachesolr_angularjs_search_views_api() {
+  return array(
+    'api' => 3,
+  );
+}
+
+/**
  * Returns default value for fields field.
  */
 function apachesolr_angular_js_search_fields_default_value($fields) {
