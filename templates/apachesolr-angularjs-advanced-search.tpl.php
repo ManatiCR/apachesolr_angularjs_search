@@ -14,7 +14,7 @@
   <div class="container" data-ng-controller="mainController">
 
 <pre>{{fields}}</pre>
-  <form class="advanced-search-form" name="advancedSearchForm" action="apachesolr-angularjs-search" method="POST">
+  <form class="advanced-search-form" name="advancedSearchForm" action="/apachesolr-angularjs-search" method="POST">
     <div class="form-input" data-ng-repeat="(field_name, field) in fields">
       <label for="field_name">{{ field.label }}</label>
       <input type="{{ field.type }}" id="{{field_name}}" data-ng-if="field.type != 'fulltext' && !field.autocomplete_path" data-ng-model="field.value" />
