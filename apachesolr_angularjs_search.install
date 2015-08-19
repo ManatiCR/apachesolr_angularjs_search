@@ -13,30 +13,79 @@ function apachesolr_angularjs_search_schema() {
     'description' => 'Saved searches',
     'fields' => array(
       'sid' => array(
-        'description' => 'Primary identifier for a search',
         'type' => 'serial',
-        'unsigned' => TRUE,
         'not null' => TRUE,
+        'unsigned' => TRUE,
+        'description' => 'Primary identifier for a search',
       ),
       'uri' => array(
-        'description' => 'Uri used for accessing this search',
         'type' => 'varchar',
         'length' => '64',
         'not null' => TRUE,
         'default' => '',
+        'description' => 'Uri used for accessing this search',
       ),
       'name' => array(
-        'description' => 'Name used for identifying this search',
         'type' => 'varchar',
         'length' => '255',
+        'not null' => FALSE,
         'default' => 'Automatically saved search',
+        'description' => 'Name used for identifying this search',
       ),
-      'created' => array(),
-      'uid' => array(),
-      'page_id' => array(),
-      'query' => array(),
+      'created' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'description' => 'Created timestamp for this search',
+      ),
+      'uid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'description' => 'Owner of this search',
+      ),
+      'page_id' => array(
+        'type' => 'varchar',
+        'length' => '60',
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Page ID for this search',
+      ),
+      'status' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'size' => 'tiny',
+        'description' => 'Whether this search is permanent(1) or temporary (0)',
+      ),
+      'query' => array(
+        'type' => 'blob',
+        'not null' => FALSE,
+        'size' => 'big',
+        'description' => 'The query for this search',
+      ),
     ),
-    'primary key' => array(),
-    'foreign keys' => array(),
+    'indexes' => array(
+      'created' => array('created'),
+      'uid' => array('uid'),
+      'page_id' => array('page_id'),
+      'status' => array('status'),
+    ),
+    'unique keys' => array(
+      'uri' => array('uri'),
+    ),
+    'primary key' => array('sid'),
+    'foreign keys' => array(
+      'uid' => array(
+        'table' => 'users',
+        'columns' => array('uid' => 'uid'),
+      ),
+      'page_id' => array(
+        'table' => 'apachesolr_search_page',
+        'columns' => array('page_id' => 'page_id'),
+      ),
+    ),
   );
+
+  return $schema;
 }
