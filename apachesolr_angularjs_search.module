@@ -186,7 +186,6 @@ function apachesolr_angularjs_search_cron() {
   $delete_time = variable_get('apachesolr_angularjs_search_delete_time', 1000);
   $search_ids = apachesolr_angularjs_search_get_expired_searches($delete_time);
   if (!empty($search_ids)) {
-    watchdog('Apachesolr Angularjs Search', 'Deleting searches with ids: @ids', array('@ids' => print_r($search_ids)));
     db_delete('apachesolr_angularjs_search_saved')
       ->condition('sid', $search_ids, 'IN')
       ->execute();
