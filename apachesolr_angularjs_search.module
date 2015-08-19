@@ -468,3 +468,30 @@ function apachesolr_angular_js_search_uri_exists($uri) {
   }
   return FALSE;
 }
+
+/**
+ * Return delete form for a given sid.
+ */
+function apachesolr_angularjs_search_delete_form($form, $form_state, $sid, $delete_text) {
+  $form['sid'] = array(
+    '#type' => 'value',
+    '#value' => $sid,
+  );
+
+  $form['delete'] = array(
+    '#type' => 'submit',
+    '#value' => check_plain($delete_text),
+  );
+
+  return $form;
+}
+
+/**
+ * Submit handler for apachesolr_angularjs_search_delete_form.
+ */
+function apachesolr_angularjs_search_delete_form_submit($form, $form_state) {
+  $sid = $form_state['values']['sid'];
+  db_delete('apachesolr_angularjs_search_saved')
+    ->condition('sid', $sid)
+    ->execute();
+}

@@ -3,4 +3,8 @@ description = Provides blocks for angularjs searches using apachesolr as a backe
 dependencies[] = apachesolr
 ;stylesheets[] = css/styles.css
 
+files[] = views/apachesolr_angularjs_search_handler_field_view_link.inc
+files[] = views/apachesolr_angularjs_search_handler_field_delete_link.inc
+files[] = views/apachesolr_angularjs_search_handler_field_user.inc
+
 core = 7.x
