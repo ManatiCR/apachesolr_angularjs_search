@@ -299,6 +299,9 @@ function apachesolr_angularjs_search_process_query($uri = '') {
       $search->query = $query;
       apachesolr_angularjs_search_save_temporary_search($search);
       $save_option = TRUE;
+
+      // Need to set this for making the pager works.
+      $_GET['q'] = APACHESOLR_ANGULARJS_SEARCH_BASE_PATH . '/' . $search->uri;
     }
   }
   elseif ($search = apachesolr_angularjs_search_valid_uri_and_user($uri, $user)) {
