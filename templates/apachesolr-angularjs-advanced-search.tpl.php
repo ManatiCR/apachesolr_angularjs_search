@@ -11,7 +11,7 @@
     <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
   <![endif]-->
 
-  <div class="container" data-ng-controller="mainController">
+  <div class="container" id="mainController" data-ng-controller="mainController">
 
 <pre>{{fields}}</pre>
   <form class="advanced-search-form" name="advancedSearchForm" action="/apachesolr-angularjs-search" method="POST">
