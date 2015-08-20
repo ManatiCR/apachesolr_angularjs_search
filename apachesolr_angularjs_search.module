@@ -332,7 +332,7 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
         $path . '/bower_components/angular-touch/angular-touch.js' => array(
           'type' => 'file',
         ),
-        $path . '/src-js/app.js' => array(
+        $path . '/src-js/app.module.js' => array(
           'type' => 'file',
         ),
         $path . '/src-js/main/main.controller.js' => array(
