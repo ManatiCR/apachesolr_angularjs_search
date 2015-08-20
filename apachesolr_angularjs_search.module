@@ -338,7 +338,7 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
         $path . '/src-js/main/main.controller.js' => array(
           'type' => 'file',
         ),
-        $path . '/src-js/components/drupalDataFactory/drupalDataFactory.js' => array(
+        $path . '/src-js/components/drupalData/drupalData.service.js' => array(
           'type' => 'file',
         ),
       ),

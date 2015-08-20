@@ -7,7 +7,7 @@
 
   angular.module('apachesolrAngularjsSearch').controller('mainController', mainController);
 
-  function mainController($rootScope, drupalDataFactory) {
+  function mainController($rootScope, drupalDataService) {
     var main = this;
 
     $rootScope.$on('drupalDataReady', function() {
@@ -20,7 +20,7 @@
       var mainDiv = angular.element(document.getElementById('mainController'));
       angular.element(mainDiv).unbind('drupalDataReady');
 
-      var data = drupalDataFactory.getDrupalData();
+      var data = drupalDataService.getDrupalData();
       var fields = data.fields;
       var pageId = data.pageId;
 

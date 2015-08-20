@@ -1,5 +1,5 @@
 /**
- * apachesolrAngularjsSearch drupalDataFactory factory.
+ * apachesolrAngularjsSearch drupalDataService factory.
  *
  * This factory is used for managing data that comes from Drupal settings.
  */
@@ -7,9 +7,9 @@
 (function () {
   'use strict';
 
-  angular.module('apachesolrAngularjsSearch').factory('drupalDataFactory', drupalDataFactory);
+  angular.module('apachesolrAngularjsSearch').factory('drupalDataService', drupalDataService);
 
-  function drupalDataFactory($rootScope) {
+  function drupalDataService($rootScope) {
     var data = {};
 
     function setDrupalData(newData) {

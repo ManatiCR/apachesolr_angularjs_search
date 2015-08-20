@@ -26,8 +26,8 @@
         angular.element(document).ready(setDrupalData);
         function setDrupalData() {
           var mainControllerElement = angular.element(document.getElementById('mainController'));
-          var drupalDataFactory = mainControllerElement.injector().get('drupalDataFactory');
-          drupalDataFactory.setDrupalData(data);
+          var drupalDataService = mainControllerElement.injector().get('drupalDataService');
+          drupalDataService.setDrupalData(data);
           mainControllerElement.scope().$apply();
         }
       };
