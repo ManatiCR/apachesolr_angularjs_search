@@ -1,25 +1,27 @@
-'use strict';
-
 /**
  * apachesolrAngularjsSearch drupalDataFactory factory.
  *
  * This factory is used for managing data that comes from Drupal settings.
  */
 
-angular.module('apachesolrAngularjsSearch').factory('drupalDataFactory', function($rootScope) {
-  var data = {};
+(function () {
+  'use strict';
 
-  function setDrupalData(newData) {
-    data = newData;
-    $rootScope.$emit('drupalDataReady');
-  }
+  angular.module('apachesolrAngularjsSearch').factory('drupalDataFactory', function($rootScope) {
+    var data = {};
 
-  function getDrupalData() {
-    return data;
-  }
+    function setDrupalData(newData) {
+      data = newData;
+      $rootScope.$emit('drupalDataReady');
+    }
 
-  return {
-    setDrupalData: setDrupalData,
+    function getDrupalData() {
+      return data;
+    }
+
+    return {
+      setDrupalData: setDrupalData,
     getDrupalData: getDrupalData
-  };
-});
+    };
+  });
+})();
