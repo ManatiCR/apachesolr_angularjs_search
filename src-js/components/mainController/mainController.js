@@ -5,7 +5,9 @@
 (function () {
   'use strict';
 
-  angular.module('apachesolrAngularjsSearch').controller('mainController', function($scope, $rootScope, drupalDataFactory) {
+  angular.module('apachesolrAngularjsSearch').controller('mainController', mainController);
+
+  function mainController($scope, $rootScope, drupalDataFactory) {
     $rootScope.$on('drupalDataReady', function() {
       // Unbind the event.
       var mainDiv = angular.element(document.getElementById('mainController'));
@@ -68,5 +70,5 @@
         document.advancedSearchForm.submit();
       }
     });
-  });
+  }
 })();

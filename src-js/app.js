@@ -13,7 +13,8 @@
   angular.module('apachesolrAngularjsSearch', ['ngCookies', 'ngResource', 'ngSanitize', 'ngTouch']);
   Drupal.behaviors.apachesolrAngularjs = {
     attach: function(context) {
-      jQuery('#advancedSearch', context).once('advancedSearch', function() {
+      jQuery('#advancedSearch', context).once('advancedSearch', advancedSearchFunction);
+      function advancedSearchFunction() {
         var fields = Drupal.settings.apachesolrAngularjs.fields;
         var pageId = Drupal.settings.apachesolrAngularjs.page_id;
         var data = {
@@ -22,13 +23,14 @@
         }
 
         // We need to ensure dom is ready before getting this element.
-        angular.element(document).ready(function() {
+        angular.element(document).ready(setDrupalData);
+        function setDrupalData() {
           var mainControllerElement = angular.element(document.getElementById('mainController'));
           var drupalDataFactory = mainControllerElement.injector().get('drupalDataFactory');
           drupalDataFactory.setDrupalData(data);
           mainControllerElement.scope().$apply();
-        });
-      });
+        }
+      };
     }
   }
 })();

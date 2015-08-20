@@ -7,7 +7,9 @@
 (function () {
   'use strict';
 
-  angular.module('apachesolrAngularjsSearch').factory('drupalDataFactory', function($rootScope) {
+  angular.module('apachesolrAngularjsSearch').factory('drupalDataFactory', drupalDataFactory);
+
+  function drupalDataFactory($rootScope) {
     var data = {};
 
     function setDrupalData(newData) {
@@ -21,7 +23,7 @@
 
     return {
       setDrupalData: setDrupalData,
-    getDrupalData: getDrupalData
+      getDrupalData: getDrupalData
     };
-  });
+  }
 })();
