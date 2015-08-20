@@ -20,7 +20,7 @@
         var data = {
           fields: fields,
           pageId: pageId
-        }
+        };
 
         // We need to ensure dom is ready before getting this element.
         angular.element(document).ready(setDrupalData);
@@ -30,7 +30,7 @@
           drupalDataService.setDrupalData(data);
           mainControllerElement.scope().$apply();
         }
-      };
+      }
     }
-  }
+  };
 })();
