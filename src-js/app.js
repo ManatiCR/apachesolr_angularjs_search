@@ -2,20 +2,19 @@
 
 /**
  * @ngdoc overview
- * @name jsApp
+ * @name apachesolrAngularjsSearch
  * @description
- * # jsApp
+ * # apachesolrAngularjsSearch
  *
  * Main module of the application.
  */
 
-var app = angular.module('search', ['ngCookies', 'ngResource', 'ngSanitize', 'ngTouch']);
+angular.module('apachesolrAngularjsSearch', ['ngCookies', 'ngResource', 'ngSanitize', 'ngTouch']);
 
-(function ($) {
-  // code here
+(function () {
   Drupal.behaviors.apachesolrAngularjs = {
     attach: function(context) {
-      jQuery('#advancedSearch').once('advancedSearch', function() {
+      jQuery('#advancedSearch', context).once('advancedSearch', function() {
         var fields = Drupal.settings.apachesolrAngularjs.fields;
         var pageId = Drupal.settings.apachesolrAngularjs.page_id;
         var data = {
@@ -23,19 +22,19 @@ var app = angular.module('search', ['ngCookies', 'ngResource', 'ngSanitize', 'ng
           pageId: pageId
         }
 
+        // We need to ensure dom is ready before getting this element.
         angular.element(document).ready(function() {
-          var mainDiv = angular.element(document.getElementById('mainController'));
-          var injector = mainDiv.injector();
-          var service = mainDiv.injector().get('dataFactory');
-          service.setDrupalData(data);
-          mainDiv.scope().$apply();
+          var mainControllerElement = angular.element(document.getElementById('mainController'));
+          var drupalDataFactory = mainControllerElement.injector().get('drupalDataFactory');
+          drupalDataFactory.setDrupalData(data);
+          mainControllerElement.scope().$apply();
         });
       });
     }
   }
-})(jQuery);
+})();
 
-app.factory('dataFactory', function($rootScope) {
+angular.module('apachesolrAngularjsSearch').factory('drupalDataFactory', function($rootScope) {
   var data = {};
 
   function setDrupalData(newData) {
@@ -53,13 +52,13 @@ app.factory('dataFactory', function($rootScope) {
   };
 });
 
-app.controller('mainController', function($scope, $rootScope, dataFactory) {
+angular.module('apachesolrAngularjsSearch').controller('mainController', function($scope, $rootScope, drupalDataFactory) {
   $rootScope.$on('drupalDataReady', function() {
     // Unbind the event.
     var mainDiv = angular.element(document.getElementById('mainController'));
     angular.element(mainDiv).unbind('drupalDataReady');
 
-    var data = dataFactory.getDrupalData();
+    var data = drupalDataFactory.getDrupalData();
     var fields = data.fields;
     var pageId = data.pageId;
 
