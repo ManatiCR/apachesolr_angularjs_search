@@ -7,7 +7,8 @@
 
   angular.module('apachesolrAngularjsSearch').controller('mainController', mainController);
 
-  function mainController($scope, $rootScope, drupalDataFactory) {
+  function mainController($rootScope, drupalDataFactory) {
+    var main = this;
     $rootScope.$on('drupalDataReady', function() {
       // Unbind the event.
       var mainDiv = angular.element(document.getElementById('mainController'));
@@ -29,20 +30,20 @@
           fields[field]['type'] = 'number';
         }
       }
-      $scope.fields = fields;
+      main.fields = fields;
 
-      $scope.clearForm = function() {
-        for (field in $scope.fields) {
-          $scope.fields[field]['value'] = '';
+      main.clearForm = function() {
+        for (field in main.fields) {
+          main.fields[field]['value'] = '';
         }
       }
 
-      $scope.processForm = function() {
+      main.processForm = function() {
         var string = '';
         var filter = '';
-        for (field in $scope.fields) {
-          if ($scope.fields[field]['value']) {
-            if ($scope.fields[field]['type'] == 'checkbox') {
+        for (field in main.fields) {
+          if (main.fields[field]['value']) {
+            if (main.fields[field]['type'] == 'checkbox') {
               filter += field;
               filter += ':true';
               filter += ' OR ';
@@ -52,7 +53,7 @@
                 string += field;
                 string += ':';
               }
-              string += $scope.fields[field]['value'];
+              string += main.fields[field]['value'];
               string += ' AND ';
             }
           }
