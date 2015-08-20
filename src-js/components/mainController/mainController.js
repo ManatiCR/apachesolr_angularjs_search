@@ -9,7 +9,13 @@
 
   function mainController($rootScope, drupalDataFactory) {
     var main = this;
+
     $rootScope.$on('drupalDataReady', function() {
+
+      main.clearForm = clearForm;
+      main.processForm = processForm;
+      main.fields = {};
+
       // Unbind the event.
       var mainDiv = angular.element(document.getElementById('mainController'));
       angular.element(mainDiv).unbind('drupalDataReady');
@@ -32,13 +38,13 @@
       }
       main.fields = fields;
 
-      main.clearForm = function() {
+      function clearForm() {
         for (field in main.fields) {
           main.fields[field]['value'] = '';
         }
       }
 
-      main.processForm = function() {
+      function processForm() {
         var string = '';
         var filter = '';
         for (field in main.fields) {
