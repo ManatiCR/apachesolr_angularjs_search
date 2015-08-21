@@ -391,7 +391,7 @@ module.exports = function (grunt) {
           endtag: '<!-- endinjector -->'
         },
         files: {
-          '<%= apachesolrAngularjsSearch.yeoman.client %>/index.html': [
+          '<%= apachesolrAngularjsSearch.client %>/index.html': [
               ['{.tmp,<%= apachesolrAngularjsSearch.client %>}/{app,components}/**/*.js',
                '!{.tmp,<%= apachesolrAngularjsSearch.client %>}/app/app.module.js',
                '!{.tmp,<%= apachesolrAngularjsSearch.client %>}/{app,components}/**/*.spec.js',
