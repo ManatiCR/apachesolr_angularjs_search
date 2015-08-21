@@ -304,7 +304,7 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
   drupal_alter('apachesolr_angularjs_search_fields', $fields);
   $settings = array(
     'fields' => $fields,
-    'page_id' => $page_id,
+    'pageId' => $page_id,
   );
   $path = drupal_get_path('module', 'apachesolr_angularjs_search');
 

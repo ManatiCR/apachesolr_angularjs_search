@@ -16,7 +16,7 @@
       jQuery('#advancedSearch', context).once('advancedSearch', advancedSearchFunction);
       function advancedSearchFunction() {
         var fields = Drupal.settings.apachesolrAngularjs.fields;
-        var pageId = Drupal.settings.apachesolrAngularjs.page_id;
+        var pageId = Drupal.settings.apachesolrAngularjs.pageId;
         var data = {
           fields: fields,
           pageId: pageId
