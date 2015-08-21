@@ -480,7 +480,7 @@ module.exports = function (grunt) {
     'injector:sass',
     'concurrent:dist',
     'injector',
-    'wiredep',
+    //'wiredep',
     'useminPrepare',
     'autoprefixer',
     'ngtemplates',
@@ -488,7 +488,7 @@ module.exports = function (grunt) {
     'ngAnnotate',
     'copy:dist',
     'cssmin',
-    'uglify',
+    //'uglify',
     'rev',
     'usemin'
   ]);
