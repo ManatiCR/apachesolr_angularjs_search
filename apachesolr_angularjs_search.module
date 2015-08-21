@@ -304,7 +304,7 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
   drupal_alter('apachesolr_angularjs_search_fields', $fields);
   $settings = array(
     'fields' => $fields,
-    'page_id' => $page_id,
+    'pageId' => $page_id,
   );
   $path = drupal_get_path('module', 'apachesolr_angularjs_search');
 
@@ -332,10 +332,10 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
         $path . '/bower_components/angular-touch/angular-touch.js' => array(
           'type' => 'file',
         ),
-        $path . '/src-js/app.module.js' => array(
+        $path . '/src-js/app/app.module.js' => array(
           'type' => 'file',
         ),
-        $path . '/src-js/main/main.controller.js' => array(
+        $path . '/src-js/app/main/main.controller.js' => array(
           'type' => 'file',
         ),
         $path . '/src-js/components/drupalData/drupalData.service.js' => array(
