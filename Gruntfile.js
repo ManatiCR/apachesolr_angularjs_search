@@ -113,7 +113,7 @@ module.exports = function (grunt) {
     },
 
     // Automatically inject Bower components into the app
-    wiredep: {
+    /*wiredep: {
       target: {
         directory: 'bower_components',
         bowerJson: require('./bower.json'),
@@ -121,7 +121,7 @@ module.exports = function (grunt) {
         ignorePath: '<%= apachesolrAngularjsSearch.client %>/',
         exclude: [/bootstrap-sass-official/, /bootstrap.js/, '/json3/', '/es5-shim/', /bootstrap.css/, /font-awesome.css/ ]
       }
-    },
+    },*/
 
     // Renames files for browser caching purposes
     rev: {
@@ -254,7 +254,7 @@ module.exports = function (grunt) {
           src: [
             '*.{ico,png,txt}',
             '.htaccess',
-            '../bower_components/**/*',
+            //'../bower_components/**/*',
             'assets/images/{,*/}*.{webp}',
             'assets/fonts/**/*'
           ]
