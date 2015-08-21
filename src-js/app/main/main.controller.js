@@ -8,6 +8,7 @@
   angular.module('apachesolrAngularjsSearch').controller('mainController', mainController);
 
   function mainController($rootScope, drupalDataService) {
+    /* jshint validthis: true */
     var main = this;
 
     $rootScope.$on('drupalDataReady', function() {
