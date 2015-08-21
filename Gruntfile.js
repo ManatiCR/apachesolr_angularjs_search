@@ -30,8 +30,7 @@ module.exports = function (grunt) {
         files: [
           '<%= apachesolrAngularjsSearch.client %>/{app,components}/**/*.js',
           '!<%= apachesolrAngularjsSearch.client %>/{app,components}/**/*.spec.js',
-          '!<%= apachesolrAngularjsSearch.client %>/{app,components}/**/*.mock.js',
-          '!<%= apachesolrAngularjsSearch.client %>/app/app.module.js'],
+          '!<%= apachesolrAngularjsSearch.client %>/{app,components}/**/*.mock.js'],
         tasks: ['injector:scripts']
       },
       injectCss: {
@@ -120,6 +119,8 @@ module.exports = function (grunt) {
     // @TODO: Take a look to index.html.
     wiredep: {
       target: {
+        directory: 'bower_components',
+        bowerJson: require('./bower.json'),
         src: '<%= apachesolrAngularjsSearch.client %>/index.html',
         ignorePath: '<%= apachesolrAngularjsSearch.client %>/',
         exclude: [/bootstrap-sass-official/, /bootstrap.js/, '/json3/', '/es5-shim/', /bootstrap.css/, /font-awesome.css/ ]
@@ -245,7 +246,7 @@ module.exports = function (grunt) {
           src: [
             '*.{ico,png,txt}',
             '.htaccess',
-            'bower_components/**/*',
+            '../bower_components/**/*',
             'assets/images/{,*/}*.{webp}',
             'assets/fonts/**/*',
             'index.html'
@@ -309,7 +310,7 @@ module.exports = function (grunt) {
       server: {
         options: {
           loadPath: [
-            '<%= apachesolrAngularjsSearch.client %>/bower_components',
+            '<%= apachesolrAngularjsSearch.client %>/../bower_components',
             '<%= apachesolrAngularjsSearch.client %>/app',
             '<%= apachesolrAngularjsSearch.client %>/components'
           ],
@@ -339,7 +340,6 @@ module.exports = function (grunt) {
         files: {
           '<%= apachesolrAngularjsSearch.client %>/index.html': [
               ['{.tmp,<%= apachesolrAngularjsSearch.client %>}/{app,components}/**/*.js',
-               '!{.tmp,<%= apachesolrAngularjsSearch.client %>}/app/app.module.js',
                '!{.tmp,<%= apachesolrAngularjsSearch.client %>}/{app,components}/**/*.spec.js',
                '!{.tmp,<%= apachesolrAngularjsSearch.client %>}/{app,components}/**/*.mock.js']
             ]
@@ -350,8 +350,8 @@ module.exports = function (grunt) {
       sass: {
         options: {
           transform: function(filePath) {
-            filePath = filePath.replace('/client/app/', '');
-            filePath = filePath.replace('/client/components/', '');
+            filePath = filePath.replace('/src-js/app/', '');
+            filePath = filePath.replace('/src-js/components/', '');
             return '@import \'' + filePath + '\';';
           },
           starttag: '// injector',
