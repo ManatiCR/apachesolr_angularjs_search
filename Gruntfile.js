@@ -9,7 +9,6 @@ module.exports = function (grunt) {
   require('jit-grunt')(grunt, {
     useminPrepare: 'grunt-usemin',
     ngtemplates: 'grunt-angular-templates',
-    protractor: 'grunt-protractor-runner',
     injector: 'grunt-asset-injector',
   });
 
@@ -42,18 +41,6 @@ module.exports = function (grunt) {
         tasks: ['injector:css']
       },
 
-       mochaTest: {
-         files: [],
-         tasks: ['env:test', 'mochaTest']
-       },
-
-      jsTest: {
-        files: [
-          '<%= apachesolrAngularjsSearch.client %>/{app,components}/**/*.spec.js',
-          '<%= apachesolrAngularjsSearch.client %>/{app,components}/**/*.mock.js'
-        ],
-        tasks: ['newer:jshint:all', 'karma']
-      },
       injectSass: {
         files: [
           '<%= apachesolrAngularjsSearch.client %>/{app,components}/**/*.{scss,sass}'],
@@ -66,19 +53,6 @@ module.exports = function (grunt) {
       },
       gruntfile: {
         files: ['Gruntfile.js']
-      },
-      livereload: {
-        files: [
-          '{.tmp,<%= apachesolrAngularjsSearch.client %>}/{app,components}/**/*.css',
-          '{.tmp,<%= apachesolrAngularjsSearch.client %>}/{app,components}/**/*.html',
-          '{.tmp,<%= apachesolrAngularjsSearch.client %>}/{app,components}/**/*.js',
-          '!{.tmp,<%= apachesolrAngularjsSearch.client %>}{app,components}/**/*.spec.js',
-          '!{.tmp,<%= apachesolrAngularjsSearch.client %>}/{app,components}/**/*.mock.js',
-          '<%= apachesolrAngularjsSearch.client %>/assets/images/{,*//*}*.{png,jpg,jpeg,gif,webp,svg}'
-        ],
-        options: {
-          livereload: true
-        }
       },
     },
 
@@ -320,34 +294,6 @@ module.exports = function (grunt) {
       ]
     },
 
-    // Test settings
-    karma: {
-      unit: {
-        configFile: 'karma.conf.js',
-        singleRun: true
-      }
-    },
-
-    mochaTest: {
-      options: {
-        reporter: 'spec'
-      },
-      src: ['server/**/*.spec.js']
-    },
-
-    protractor: {
-      options: {
-        configFile: 'protractor.conf.js'
-      },
-      chrome: {
-        options: {
-          args: {
-            browser: 'chrome'
-          }
-        }
-      }
-    },
-
     env: {
       test: {
         NODE_ENV: 'test'
@@ -493,7 +439,6 @@ module.exports = function (grunt) {
       return grunt.task.run([
         'env:all',
         'env:test',
-        'mochaTest'
       ]);
     }
 
@@ -519,14 +464,8 @@ module.exports = function (grunt) {
         'injector',
         'wiredep',
         'autoprefixer',
-        'protractor'
       ]);
     }
-
-    else grunt.task.run([
-      'test:server',
-      'test:client'
-    ]);
   });
 
   grunt.registerTask('build', [
@@ -549,7 +488,6 @@ module.exports = function (grunt) {
 
   grunt.registerTask('default', [
     'newer:jshint',
-    'test',
     'build'
   ]);
 };
