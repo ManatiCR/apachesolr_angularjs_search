@@ -39,7 +39,6 @@ module.exports = function (grunt) {
         ],
         tasks: ['injector:css']
       },
-
       injectSass: {
         files: [
           '<%= apachesolrAngularjsSearch.client %>/{app,components}/**/*.{scss,sass}'],
@@ -317,7 +316,7 @@ module.exports = function (grunt) {
           compass: false
         },
         files: {
-          '.tmp/app/app.css' : '<%= apachesolrAngularjsSearch.client %>/app/app.scss'
+          '<%= apachesolrAngularjsSearch.client %>/app/app.css' : '<%= apachesolrAngularjsSearch.client %>/app/app.scss'
         }
       }
     },
@@ -330,7 +329,7 @@ module.exports = function (grunt) {
       scripts: {
         options: {
           transform: function(filePath) {
-            filePath = filePath.replace('/client/', '');
+            filePath = filePath.replace('/src-js/', '');
             filePath = filePath.replace('/.tmp/', '');
             return '<script src="' + filePath + '"></script>';
           },
@@ -369,7 +368,7 @@ module.exports = function (grunt) {
       css: {
         options: {
           transform: function(filePath) {
-            filePath = filePath.replace('/client/', '');
+            filePath = filePath.replace('/src-js/', '');
             filePath = filePath.replace('/.tmp/', '');
             return '<link rel="stylesheet" href="' + filePath + '">';
           },
@@ -446,7 +445,7 @@ module.exports = function (grunt) {
       return grunt.task.run([
         'clean:server',
         'env:all',
-        'injector:sass', 
+        'injector:sass',
         'concurrent:test',
         'injector',
         'autoprefixer',
@@ -480,8 +479,8 @@ module.exports = function (grunt) {
     'concat',
     'ngAnnotate',
     'copy:dist',
-    'cssmin',
-    'uglify',
+//    'cssmin',
+//    'uglify',
     'rev',
     'usemin'
   ]);
