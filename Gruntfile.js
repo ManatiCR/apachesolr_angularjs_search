@@ -23,7 +23,7 @@ module.exports = function (grunt) {
     apachesolrAngularjsSearch: {
       // configurable paths
       client: 'src-js',
-      dist: 'dist'
+      dist: '.'
     },
     watch: {
       injectJS: {
@@ -80,10 +80,8 @@ module.exports = function (grunt) {
           dot: true,
           src: [
             '.tmp',
-            '<%= apachesolrAngularjsSearch.dist %>/*',
-            '!<%= apachesolrAngularjsSearch.dist %>/.git*',
-            '!<%= apachesolrAngularjsSearch.dist %>/.openshift',
-            '!<%= apachesolrAngularjsSearch.dist %>/Procfile'
+            '<%= apachesolrAngularjsSearch.dist %>/public',
+            '<%= apachesolrAngularjsSearch.dist %>/public/*',
           ]
         }]
       },
@@ -115,7 +113,6 @@ module.exports = function (grunt) {
     },
 
     // Automatically inject Bower components into the app
-    // @TODO: Take a look to index.html.
     wiredep: {
       target: {
         directory: 'bower_components',
@@ -131,10 +128,10 @@ module.exports = function (grunt) {
       dist: {
         files: {
           src: [
-//            '<%= apachesolrAngularjsSearch.dist %>/public/{,*/}*.js',
-//            '<%= apachesolrAngularjsSearch.dist %>/public/{,*/}*.css',
-            '<%= apachesolrAngularjsSearch.dist %>/public/assets/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
-            '<%= apachesolrAngularjsSearch.dist %>/public/assets/fonts/*'
+//            '<%= apachesolrAngularjsSearch.dist %>/{,*/}*.js',
+//            '<%= apachesolrAngularjsSearch.dist %>/{,*/}*.css',
+            '<%= apachesolrAngularjsSearch.dist %>/assets/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
+            '<%= apachesolrAngularjsSearch.dist %>/assets/fonts/*'
           ]
         }
       }
@@ -146,32 +143,32 @@ module.exports = function (grunt) {
     useminPrepare: {
       html: ['<%= apachesolrAngularjsSearch.client %>/index.html'],
       options: {
-        dest: '<%= apachesolrAngularjsSearch.dist %>/public'
+        dest: '<%= apachesolrAngularjsSearch.dist %>/'
       }
     },
 
     cssmin: {
       minify: {
         src: '<%= apachesolrAngularjsSearch.client %>/app/app.css',
-        dest: '<%= apachesolrAngularjsSearch.dist %>/public/css/app.css',
+        dest: '<%= apachesolrAngularjsSearch.dist %>/css/app.css',
       },
     },
 
     uglify: {
       uglify: {
         src: '<%= apachesolrAngularjsSearch.client %>/**/*.js',
-        dest: '<%= apachesolrAngularjsSearch.dist %>/public/js/app.min.js',
+        dest: '<%= apachesolrAngularjsSearch.dist %>/js/app.min.js',
       },
     },
     // Performs rewrites based on rev and the useminPrepare configuration
     usemin: {
-      html: ['<%= apachesolrAngularjsSearch.dist %>/public/{,*/}*.html'],
-      css: ['<%= apachesolrAngularjsSearch.dist %>/public/{,*/}*.css'],
-      js: ['<%= apachesolrAngularjsSearch.dist %>/public/{,*/}*.js'],
+      html: ['<%= apachesolrAngularjsSearch.dist %>/{,*/}*.html'],
+      css: ['<%= apachesolrAngularjsSearch.dist %>/{,*/}*.css'],
+      js: ['<%= apachesolrAngularjsSearch.dist %>/{,*/}*.js'],
       options: {
         assetsDirs: [
-          '<%= apachesolrAngularjsSearch.dist %>/public',
-          '<%= apachesolrAngularjsSearch.dist %>/public/assets/images'
+          '<%= apachesolrAngularjsSearch.dist %>/',
+          '<%= apachesolrAngularjsSearch.dist %>/assets/images'
         ],
         // This is so we update image references in our ng-templates
         patterns: {
@@ -189,7 +186,7 @@ module.exports = function (grunt) {
           expand: true,
           cwd: '<%= apachesolrAngularjsSearch.client %>/assets/images',
           src: '{,*/}*.{png,jpg,jpeg,gif}',
-          dest: '<%= apachesolrAngularjsSearch.dist %>/public/assets/images'
+          dest: '<%= apachesolrAngularjsSearch.dist %>/assets/images'
         }]
       }
     },
@@ -200,7 +197,7 @@ module.exports = function (grunt) {
           expand: true,
           cwd: '<%= apachesolrAngularjsSearch.client %>/assets/images',
           src: '{,*/}*.svg',
-          dest: '<%= apachesolrAngularjsSearch.dist %>/public/assets/images'
+          dest: '<%= apachesolrAngularjsSearch.dist %>/assets/images'
         }]
       }
     },
@@ -253,19 +250,18 @@ module.exports = function (grunt) {
           expand: true,
           dot: true,
           cwd: '<%= apachesolrAngularjsSearch.client %>',
-          dest: '<%= apachesolrAngularjsSearch.dist %>/public',
+          dest: '<%= apachesolrAngularjsSearch.dist %>/',
           src: [
             '*.{ico,png,txt}',
             '.htaccess',
             '../bower_components/**/*',
             'assets/images/{,*/}*.{webp}',
-            'assets/fonts/**/*',
-            'index.html'
+            'assets/fonts/**/*'
           ]
         }, {
           expand: true,
           cwd: '.tmp/images',
-          dest: '<%= apachesolrAngularjsSearch.dist %>/public/assets/images',
+          dest: '<%= apachesolrAngularjsSearch.dist %>/assets/images',
           src: ['generated/*']
         }, {
           expand: true,
