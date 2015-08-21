@@ -131,8 +131,8 @@ module.exports = function (grunt) {
       dist: {
         files: {
           src: [
-            '<%= apachesolrAngularjsSearch.dist %>/public/{,*/}*.js',
-            '<%= apachesolrAngularjsSearch.dist %>/public/{,*/}*.css',
+//            '<%= apachesolrAngularjsSearch.dist %>/public/{,*/}*.js',
+//            '<%= apachesolrAngularjsSearch.dist %>/public/{,*/}*.css',
             '<%= apachesolrAngularjsSearch.dist %>/public/assets/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
             '<%= apachesolrAngularjsSearch.dist %>/public/assets/fonts/*'
           ]
@@ -143,7 +143,6 @@ module.exports = function (grunt) {
     // Reads HTML for usemin blocks to enable smart builds that automatically
     // concat, minify and revision files. Creates configurations in memory so
     // additional tasks can operate on them
-    // @TODO: Take a look to index.html.
     useminPrepare: {
       html: ['<%= apachesolrAngularjsSearch.client %>/index.html'],
       options: {
@@ -151,6 +150,19 @@ module.exports = function (grunt) {
       }
     },
 
+    cssmin: {
+      minify: {
+        src: '<%= apachesolrAngularjsSearch.client %>/app/app.css',
+        dest: '<%= apachesolrAngularjsSearch.dist %>/public/css/app.css',
+      },
+    },
+
+    uglify: {
+      uglify: {
+        src: '<%= apachesolrAngularjsSearch.client %>/**/*.js',
+        dest: '<%= apachesolrAngularjsSearch.dist %>/public/js/app.min.js',
+      },
+    },
     // Performs rewrites based on rev and the useminPrepare configuration
     usemin: {
       html: ['<%= apachesolrAngularjsSearch.dist %>/public/{,*/}*.html'],
@@ -479,8 +491,8 @@ module.exports = function (grunt) {
     'concat',
     'ngAnnotate',
     'copy:dist',
-//    'cssmin',
-//    'uglify',
+    'cssmin',
+    'uglify',
     'rev',
     'usemin'
   ]);
