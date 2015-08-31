@@ -116,7 +116,11 @@ function apachesolr_angularjs_search_block_configure($delta) {
 
     $form['apachesolr_angularjs_search_advanced_fields'] = array(
       '#title' => t('Allowed Fields'),
-      '#type' => 'checkboxes',
+      '#type' => 'sortable_lists',
+      '#columns' => array(
+        'choices' => t('Choices'),
+        'selected' => t('Selected'),
+      ),
       '#options' => apachesolr_angularjs_search_get_fields_options(),
       '#default_value' => apachesolr_angular_js_search_fields_default_value(variable_get('apachesolr_angularjs_search_advanced_fields', array())),
       '#prefix' => '<div id="aas-advanced-fields">',
@@ -139,24 +143,27 @@ function apachesolr_angularjs_search_block_save($delta, $edit) {
     $page = apachesolr_search_page_load($page_id);
     $environment = $page['env_id'];
     $environment_fields = apachesolr_angularjs_search_get_environment_fields($environment);
-    $fields = array();
-    foreach ($edit['apachesolr_angularjs_search_advanced_fields'] as $field_name => $value) {
-      if (!empty($value)) {
-        $type = $environment_fields[$field_name]->type;
-        if (strpos($type, 'text') === 0) {
-          $type = 'string';
-        }
-        elseif ($type == 'long' || $type == 'numeric') {
-          $type = 'numeric';
-        }
+    foreach ($edit['apachesolr_angularjs_search_advanced_fields']['sortable_lists'] as $column => &$fields) {
+      if ($column === 'selected') {
+        foreach ($fields as $field_name => &$value) {
+          if (!empty($value)) {
+            $type = $environment_fields[$field_name]->type;
+            if (strpos($type, 'text') === 0) {
+              $type = 'string';
+            }
+            elseif ($type == 'long' || $type == 'numeric') {
+              $type = 'numeric';
+            }
 
-        $fields[$field_name] = array(
-          'label' => apachesolr_field_name_map($field_name),
-          'type' => $type,
-        );
+            $value = array(
+              'label' => apachesolr_field_name_map($field_name),
+              'type' => $type,
+            );
+          }
+        }
       }
     }
-    variable_set('apachesolr_angularjs_search_advanced_fields', $fields);
+    variable_set('apachesolr_angularjs_search_advanced_fields', $edit['apachesolr_angularjs_search_advanced_fields']);
   }
 }
 
@@ -231,7 +238,7 @@ function apachesolr_angularjs_search_get_expired_searches($delete_time) {
  * Returns default value for fields field.
  */
 function apachesolr_angular_js_search_fields_default_value($fields) {
-  foreach ($fields as $field_name => $field) {
+  foreach ($fields['sortable_lists']['selected'] as $field_name => $field) {
     $fields[$field_name] = $field_name;
   }
   return $fields;
