@@ -156,6 +156,7 @@ function apachesolr_angularjs_search_block_save($delta, $edit) {
             }
 
             $value = array(
+              'id' => $field_name,
               'label' => apachesolr_field_name_map($field_name),
               'type' => $type,
             );
@@ -302,12 +303,17 @@ function apachesolr_angularjs_search_get_basic_search_block() {
  * Return a rendereable array for advanced search block.
  */
 function apachesolr_angularjs_search_get_advanced_search_block() {
-  $fields = variable_get('apachesolr_angularjs_search_advanced_fields', array());
-  $page_id = variable_get('apachesolr_angularjs_search_advanced_page', apachesolr_search_default_search_page());
-  $fields['__fulltext_search'] = array(
-    'label' => t('All Fields'),
-    'type' => 'fulltext',
+  $advanced_fields = variable_get('apachesolr_angularjs_search_advanced_fields', array());
+  $fulltext_field = array(
+    '__fulltext_search' => array(
+      'id' => '__fulltext_search',
+      'label' => t('All Fields'),
+      'type' => 'fulltext',
+    ),
   );
+  $fields['selected'] = !empty($advanced_fields['sortable_lists']['selected']) ? $fulltext_field + $advanced_fields['sortable_lists']['selected'] : $fulltext_field;
+  $page_id = variable_get('apachesolr_angularjs_search_advanced_page', apachesolr_search_default_search_page());
+  $fields['always'] = $fulltext_field;
   drupal_alter('apachesolr_angularjs_search_fields', $fields);
   $settings = array(
     'fields' => $fields,
