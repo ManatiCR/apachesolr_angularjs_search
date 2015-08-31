@@ -16,6 +16,7 @@
       main.clearForm = clearForm;
       main.processForm = processForm;
       main.fieldChanged = fieldChanged;
+      main.addField = addField;
       main.fields = {};
 
       // Unbind the event.
@@ -42,11 +43,17 @@
         }
       }
       main.fields = fields;
-      main.fields.active = main.fields.always;
-      main.selectedField = main.fields.active[Object.keys(main.fields.active)[0]].id;
+      main.fields.active = {};
+      main.selectedFields = {};
+      main.activeCount = 0;
+      for (field in main.fields.always) {
+        main.fields.active['field' + main.activeCount] = main.fields.always[field];
+        main.activeCount++;
+      }
+      main.selectedFields[0] = main.fields.active.field0.id;
 
       function fieldChanged(index) {
-        var selectedField = main.selectedField;
+        var selectedField = main.selectedFields[index];
         var actualIndex = 0;
         var field;
         for (field in main.fields.active) {
@@ -70,9 +77,17 @@
         return false;
       }
 
+      function addField() {
+        main.fields.active['field' + main.activeCount] = getField('__fulltext_search');
+        main.selectedFields[main.activeCount] = '__fulltext_search';
+        main.activeCount++;
+      }
+
       function clearForm() {
-        for (field in main.fields.active) {
-          main.fields.active[field].value = '';
+        main.fields.active = {};
+        for (field in main.fields.always) {
+          main.fields.active['field' + main.activeCount] = main.fields.always[field];
+          main.activeCount++;
         }
       }
 
@@ -87,7 +102,7 @@
               filter += ' OR ';
             }
             else {
-              if (field !== '__fulltext_search') {
+              if (main.fields.active[field].id !== '__fulltext_search') {
                 string += main.fields.active[field].id;
                 string += ':';
               }

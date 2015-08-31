@@ -16,7 +16,7 @@
 <pre>{{main}}</pre>
   <form class="advanced-search-form" name="advancedSearchForm" action="/apachesolr-angularjs-search" method="POST">
     <div class="form-input" data-ng-repeat="(field_name, field) in main.fields.active">
-      <select class="field-name" data-ng-change="main.fieldChanged($index)" data-ng-model="main.selectedField" id="field_type_{{ $index }}" name="field_type_{{ $index }}">
+      <select class="field-name" data-ng-change="main.fieldChanged($index)" data-ng-model="main.selectedFields[$index]" id="field_type_{{ $index }}" name="field_type_{{ $index }}">
         <option data-ng-repeat="option in main.fields.selected" value="{{ option.id }}">{{ option.label }}</option>
       </select>
       <input class="field-value" type="{{ field.type }}" id="field_value_{{ $index }}" name="field_value_{{ $index }}" data-ng-if="field.type != 'fulltext' && !field.autocomplete_path" data-ng-model="field.value" />
@@ -24,6 +24,9 @@
     </div>
     <input type="hidden" name="query" id="input-query"/>
     <input type="hidden" name="pageId" id="input-pageid"/>
+    <div class="add-another">
+      <a href="#" class="btn btn-add-another" data-ng-click="main.addField(); $event.preventDefault();">Add Field</a>
+    </div>
     <div class="actions">
       <button class="btn btn-reset" data-ng-click="main.clearForm()" type="button">Reset</button>
       <button class="btn btn-submit" data-ng-click="main.processForm(); $event.preventDefault();" type="submit">Search</button>
