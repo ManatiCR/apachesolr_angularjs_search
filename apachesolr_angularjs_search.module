@@ -311,9 +311,9 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
       'type' => 'fulltext',
     ),
   );
-  $fields['selected'] = !empty($advanced_fields['sortable_lists']['selected']) ? $fulltext_field + $advanced_fields['sortable_lists']['selected'] : $fulltext_field;
+  $fields['selected'] = !empty($advanced_fields['sortable_lists']['selected']) ? array_values($fulltext_field + $advanced_fields['sortable_lists']['selected']) : array_values($fulltext_field);
   $page_id = variable_get('apachesolr_angularjs_search_advanced_page', apachesolr_search_default_search_page());
-  $fields['always'] = $fulltext_field;
+  $fields['always'] = array_values($fulltext_field);
   drupal_alter('apachesolr_angularjs_search_fields', $fields);
   $settings = array(
     'fields' => $fields,

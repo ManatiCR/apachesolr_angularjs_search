@@ -18,6 +18,7 @@
       main.fieldChanged = fieldChanged;
       main.addFieldConfirm = addFieldConfirm;
       main.deleteField = deleteField;
+      main.addSameField = addSameField;
       main.fields = {};
 
       // Unbind the event.
@@ -30,104 +31,114 @@
 
       var field;
       var status;
+      var i;
       for (status in fields) {
-        for (field in fields[status]) {
-          if (fields[status][field].type === 'boolean') {
-            fields[status][field].type = 'checkbox';
+        for (i = 0; i < fields[status].length; i++) {
+          if (fields[status][i].type === 'boolean') {
+            fields[status][i].type = 'checkbox';
           }
-          else if (fields[status][field].type === 'string') {
-            fields[status][field].type = 'text';
+          else if (fields[status][i].type === 'string') {
+            fields[status][i].type = 'text';
           }
-          else if (fields[status][field].type === 'numeric') {
-            fields[status][field].type = 'number';
+          else if (fields[status][i].type === 'numeric') {
+            fields[status][i].type = 'number';
           }
         }
       }
       main.fields = fields;
-      main.fields.active = {};
-      main.selectedFields = {};
-      main.closeButtonVisible = {};
-      main.selectedField = getField('__fulltext_search');
+      main.fields.active = [];
+      main.selectedFields = [];
+      main.closeButtonVisible = [];
       main.activeCount = 0;
-      for (field in main.fields.always) {
-        main.fields.active['field' + main.activeCount] = main.fields.always[field];
+      for (i = 0; i < main.fields.always.length; i++) {
+        main.fields.active[i] = main.fields.always[i];
         main.activeCount++;
       }
-      main.selectedFields[0] = main.fields.active.field0;
+      main.selectedFields[0] = main.fields.active[0];
+      main.selectedField = getField('__fulltext_search');
 
       function fieldChanged(index) {
         var selectedField = angular.copy(main.selectedFields[index]);
-        var actualIndex = 0;
-        var field;
-        for (field in main.fields.active) {
-          if (actualIndex === index) {
-            if (field) {
-              main.fields.active[field] = selectedField;
-              if (main.selectedFields[index - 1] !== undefined) {
-                if (main.selectedFields[index].id === main.selectedFields[index - 1].id) {
-                  main.selectedFields[index].hide = true;
-                }
-                else {
-                  main.selectedFields[index].hide = false;
-                }
-              }
-              if (main.selectedFields[index + 1] !== undefined) {
-                if (main.selectedFields[index + 1].id === main.selectedFields[index].id) {
-                  main.selectedFields[index + 1].hide = true;
-                }
-                else {
-                  main.selectedFields[index + 1].hide = false;
-                }
-              }
-              break;
-            }
+        if (selectedField) {
+          main.fields.active[index] = selectedField;
+          hidePreviousAndNext(index);
+        }
+      }
+
+      function hidePreviousAndNext(index) {
+        if (main.selectedFields[index - 1] !== undefined) {
+          if (main.selectedFields[index].id === main.selectedFields[index - 1].id) {
+            main.selectedFields[index].hide = true;
           }
-          actualIndex++;
+          else {
+            main.selectedFields[index].hide = false;
+          }
+        }
+        if (main.selectedFields[index + 1] !== undefined) {
+          if (main.selectedFields[index + 1].id === main.selectedFields[index].id) {
+            main.selectedFields[index + 1].hide = true;
+          }
+          else {
+            main.selectedFields[index + 1].hide = false;
+          }
         }
       }
 
       function getField(fieldId) {
+        var i;
         if (fieldId) {
-          for (field in main.fields.selected) {
-            if (main.fields.selected[field].id === fieldId) {
-              return angular.copy(main.fields.selected[field]);
+          for (i = 0; i < main.fields.selected.length; i++) {
+            if (main.fields.selected[i].id === fieldId) {
+              return angular.copy(main.fields.selected[i]);
             }
           }
         }
         else {
-          var count = 0;
-          for (field in main.fields.selected) {
-            if (count === 1) {
-              return angular.copy(main.fields.selected[field]);
-            }
-            count++;
-          }
+          return angular.copy(main.fields.selected[1]);
         }
         return false;
       }
 
       function addFieldConfirm() {
         var field = angular.copy(main.selectedField);
-        main.selectedFields[main.activeCount] = field;
-        if (main.selectedFields[main.activeCount - 1] !== undefined && field.id === main.selectedFields[main.activeCount - 1].id) {
-          main.selectedFields[main.activeCount].hide = true;
+        addField(field);
+      }
+
+      function addField(field, index) {
+        var wasUndefined = false;
+        if (index === undefined) {
+          index = main.activeCount;
+          main.activeCount++;
+          wasUndefined = true;
         }
-        main.fields.active['field' + main.activeCount] = field;
-        main.activeCount++;
-        main.activeAddField = false;
+        main.selectedFields[index] = field;
+        hidePreviousAndNext(index);
+        main.fields.active[index] = field;
+        if (wasUndefined) {
+          main.activeAddField = false;
+        }
       }
 
       function deleteField(index) {
-        main.fields.active['field' + index] = {};
+        main.fields.active[index] = {};
         main.selectedFields[index] = {};
+      }
+
+      function addSameField(index) {
+        var field = angular.copy(main.fields.active[index]);
+        addField(field, index);
       }
 
       function clearForm() {
         main.fields.active = {};
-        for (field in main.fields.always) {
-          main.fields.active['field' + main.activeCount] = main.fields.always[field];
+        main.activeCount = 0;
+        main.activeAddField = false;
+        for (var i = 0; i < main.fields.always.length; i++) {
+          main.fields.active[main.activeCount] = main.fields.always[i];
           main.activeCount++;
         }
+        main.selectedFields[0] = main.fields.active[0];
+        main.selectedField = getField('__fulltext_search');
       }
 
       function processForm() {
