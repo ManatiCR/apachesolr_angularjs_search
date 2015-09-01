@@ -50,7 +50,7 @@
         main.fields.active['field' + main.activeCount] = main.fields.always[field];
         main.activeCount++;
       }
-      main.selectedFields[0] = main.fields.active.field0.id;
+      main.selectedFields[0] = main.fields.active.field0;
 
       function fieldChanged(index) {
         var selectedField = main.selectedFields[index];
@@ -58,9 +58,8 @@
         var field;
         for (field in main.fields.active) {
           if (actualIndex === index) {
-            var thisField = getField(selectedField);
             if (field) {
-              main.fields.active[field] = thisField;
+              main.fields.active[field] = selectedField;
               break;
             }
           }
@@ -68,18 +67,30 @@
         }
       }
 
-      function getField(fieldId) {
-        for (field in main.fields.selected) {
-          if (main.fields.selected[field].id === fieldId) {
-            return main.fields.selected[field];
+      function getField(fieldId = '') {
+        if (fieldId) {
+          for (field in main.fields.selected) {
+            if (main.fields.selected[field].id === fieldId) {
+              return main.fields.selected[field];
+            }
+          }
+        }
+        else {
+          var count = 0;
+          for (field in main.fields.selected) {
+            if (count === 1) {
+              return main.fields.selected[field];
+            }
+            count++;
           }
         }
         return false;
       }
 
       function addField() {
-        main.fields.active['field' + main.activeCount] = getField('__fulltext_search');
-        main.selectedFields[main.activeCount] = '__fulltext_search';
+        var field = getField();
+        main.selectedFields[main.activeCount] = field;
+        main.fields.active['field' + main.activeCount] = field;
         main.activeCount++;
       }
 
