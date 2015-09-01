@@ -355,6 +355,11 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
           'type' => 'file',
         ),
       ),
+      'css' => array(
+        $path . '/src-js/app/app.css' => array(
+          'type' => 'file',
+        ),
+      ),
     ),
   );
   return $build;
