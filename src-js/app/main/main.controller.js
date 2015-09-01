@@ -111,9 +111,9 @@
           main.activeCount++;
           wasUndefined = true;
         }
-        main.selectedFields[index] = field;
+        main.selectedFields.splice(index + 1, 0, field);
         hidePreviousAndNext(index);
-        main.fields.active[index] = field;
+        main.fields.active.splice(index + 1, 0, field);
         if (wasUndefined) {
           main.activeAddField = false;
         }

@@ -21,6 +21,7 @@
       <input class="field-value" type="{{ field.type }}" id="field_value_{{ $index }}" name="field_value_{{ $index }}" data-ng-if="field.type != 'fulltext' && !field.autocomplete_path" data-ng-model="field.value" />
       <textarea class="field-value" id="field_value_{{ $index }}" data-ng-if="field.type == 'fulltext'" data-ng-model="field.value"></textarea>
       <span class="field-close" data-ng-show="$index > 0 && main.closeButtonVisible[$index]"><a href="#" data-ng-click="main.deleteField($index); $event.preventDefault();">X</a></span>
+      <span class="add-same-field" data-ng-show="main.closeButtonVisible[$index]"><a href="#" data-ng-click="main.addSameField($index); $event.preventDefault();">+</a></span>
     </div>
     <input type="hidden" name="query" id="input-query"/>
     <input type="hidden" name="pageId" id="input-pageid"/>
