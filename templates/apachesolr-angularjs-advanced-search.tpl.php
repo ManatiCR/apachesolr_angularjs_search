@@ -24,8 +24,12 @@
     </div>
     <input type="hidden" name="query" id="input-query"/>
     <input type="hidden" name="pageId" id="input-pageid"/>
-    <div class="add-another">
-      <a href="#" class="btn btn-add-another" data-ng-click="main.addField(); $event.preventDefault();">Add Field</a>
+    <div class="add-another" data-ng-if="!main.activeAddField">
+      <a href="#" class="btn btn-add-another" data-ng-click="main.activeAddField = true; $event.preventDefault();">Add Field</a>
+    </div>
+    <div class="add-another-fieldset" data-ng-if="main.activeAddField">
+      <select class="field-name" data-ng-model="main.selectedField" ng-options="option.label for option in main.fields.selected track by option.id"></select>
+      <a href="#" class="btn btn-add-field-confirm" data-ng-click="main.addFieldConfirm(); $event.preventDefault();">Add</a>
     </div>
     <div class="actions">
       <button class="btn btn-reset" data-ng-click="main.clearForm()" type="button">Reset</button>

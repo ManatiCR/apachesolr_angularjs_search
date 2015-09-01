@@ -16,7 +16,7 @@
       main.clearForm = clearForm;
       main.processForm = processForm;
       main.fieldChanged = fieldChanged;
-      main.addField = addField;
+      main.addFieldConfirm = addFieldConfirm;
       main.deleteField = deleteField;
       main.fields = {};
 
@@ -46,6 +46,7 @@
       main.fields = fields;
       main.fields.active = {};
       main.selectedFields = {};
+      main.selectedField = getField('__fulltext_search');
       main.activeCount = 0;
       for (field in main.fields.always) {
         main.fields.active['field' + main.activeCount] = main.fields.always[field];
@@ -61,11 +62,13 @@
           if (actualIndex === index) {
             if (field) {
               main.fields.active[field] = selectedField;
-              if (main.selectedFields[index].id === main.selectedFields[index - 1].id) {
-                main.selectedFields[index].hide = true;
-              }
-              else {
-                main.selectedFields[index].hide = false;
+              if (main.selectedFields[index - 1] !== undefined) {
+                if (main.selectedFields[index].id === main.selectedFields[index - 1].id) {
+                  main.selectedFields[index].hide = true;
+                }
+                else {
+                  main.selectedFields[index].hide = false;
+                }
               }
               if (main.selectedFields[index + 1] !== undefined) {
                 if (main.selectedFields[index + 1].id === main.selectedFields[index].id) {
@@ -102,14 +105,15 @@
         return false;
       }
 
-      function addField() {
-        var field = getField();
+      function addFieldConfirm() {
+        var field = angular.copy(main.selectedField);
         main.selectedFields[main.activeCount] = field;
-        if (field.id === main.selectedFields[main.activeCount - 1].id) {
+        if (main.selectedFields[main.activeCount - 1] !== undefined && field.id === main.selectedFields[main.activeCount - 1].id) {
           main.selectedFields[main.activeCount].hide = true;
         }
         main.fields.active['field' + main.activeCount] = field;
         main.activeCount++;
+        main.activeAddField = false;
       }
 
       function deleteField(index) {
