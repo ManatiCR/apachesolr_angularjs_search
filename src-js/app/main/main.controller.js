@@ -46,6 +46,7 @@
       main.fields = fields;
       main.fields.active = {};
       main.selectedFields = {};
+      main.closeButtonVisible = {};
       main.selectedField = getField('__fulltext_search');
       main.activeCount = 0;
       for (field in main.fields.always) {
