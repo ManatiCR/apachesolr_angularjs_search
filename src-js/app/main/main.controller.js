@@ -17,6 +17,7 @@
       main.processForm = processForm;
       main.fieldChanged = fieldChanged;
       main.addField = addField;
+      main.deleteField = deleteField;
       main.fields = {};
 
       // Unbind the event.
@@ -109,6 +110,11 @@
         }
         main.fields.active['field' + main.activeCount] = field;
         main.activeCount++;
+      }
+
+      function deleteField(index) {
+        main.fields.active['field' + index] = {};
+        main.selectedFields[index] = {};
       }
 
       function clearForm() {
