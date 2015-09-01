@@ -66,7 +66,7 @@
       }
 
       function hidePreviousAndNext(index) {
-        if (main.selectedFields[index - 1] !== undefined) {
+        if (main.selectedFields[index - 1] !== undefined && main.selectedFields[index] !== undefined) {
           if (main.selectedFields[index].id === main.selectedFields[index - 1].id) {
             main.selectedFields[index].hide = true;
           }
@@ -74,7 +74,7 @@
             main.selectedFields[index].hide = false;
           }
         }
-        if (main.selectedFields[index + 1] !== undefined) {
+        if (main.selectedFields[index + 1] !== undefined && main.selectedFields[index] !== undefined) {
           if (main.selectedFields[index + 1].id === main.selectedFields[index].id) {
             main.selectedFields[index + 1].hide = true;
           }
@@ -108,7 +108,6 @@
         var wasUndefined = false;
         if (index === undefined) {
           index = main.activeCount;
-          main.activeCount++;
           wasUndefined = true;
         }
         main.selectedFields.splice(index + 1, 0, field);
@@ -117,11 +116,13 @@
         if (wasUndefined) {
           main.activeAddField = false;
         }
+        main.activeCount++;
       }
 
       function deleteField(index) {
-        main.fields.active[index] = {};
-        main.selectedFields[index] = {};
+        main.fields.active.splice(index, 1);
+        main.selectedFields.splice(index, 1);
+        hidePreviousAndNext(index - 1);
       }
 
       function addSameField(index) {
