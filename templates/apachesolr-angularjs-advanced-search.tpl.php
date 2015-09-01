@@ -16,7 +16,7 @@
 <pre>{{main}}</pre>
   <form class="advanced-search-form" name="advancedSearchForm" action="/apachesolr-angularjs-search" method="POST">
     <div class="form-input" data-ng-repeat="(field_name, field) in main.fields.active">
-      <select class="field-name" data-ng-change="main.fieldChanged($index)" data-ng-model="main.selectedFields[$index]" id="field_type_{{ $index }}" name="field_type_{{ $index }}" ng-options="option.label for option in main.fields.selected track by option.id"></select>
+      <select class="field-name" data-ng-if="!main.selectedFields[$index].hide" data-ng-change="main.fieldChanged($index)" data-ng-model="main.selectedFields[$index]" id="field_type_{{ $index }}" name="field_type_{{ $index }}" ng-options="option.label for option in main.fields.selected track by option.id"></select>
       <input class="field-value" type="{{ field.type }}" id="field_value_{{ $index }}" name="field_value_{{ $index }}" data-ng-if="field.type != 'fulltext' && !field.autocomplete_path" data-ng-model="field.value" />
       <textarea class="field-value" id="field_value_{{ $index }}" data-ng-if="field.type == 'fulltext'" data-ng-model="field.value"></textarea>
     </div>

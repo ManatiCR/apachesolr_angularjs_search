@@ -53,13 +53,27 @@
       main.selectedFields[0] = main.fields.active.field0;
 
       function fieldChanged(index) {
-        var selectedField = main.selectedFields[index];
+        var selectedField = angular.copy(main.selectedFields[index]);
         var actualIndex = 0;
         var field;
         for (field in main.fields.active) {
           if (actualIndex === index) {
             if (field) {
               main.fields.active[field] = selectedField;
+              if (main.selectedFields[index].id === main.selectedFields[index - 1].id) {
+                main.selectedFields[index].hide = true;
+              }
+              else {
+                main.selectedFields[index].hide = false;
+              }
+              if (main.selectedFields[index + 1] !== undefined) {
+                if (main.selectedFields[index + 1].id === main.selectedFields[index].id) {
+                  main.selectedFields[index + 1].hide = true;
+                }
+                else {
+                  main.selectedFields[index + 1].hide = false;
+                }
+              }
               break;
             }
           }
@@ -67,11 +81,11 @@
         }
       }
 
-      function getField(fieldId = '') {
+      function getField(fieldId) {
         if (fieldId) {
           for (field in main.fields.selected) {
             if (main.fields.selected[field].id === fieldId) {
-              return main.fields.selected[field];
+              return angular.copy(main.fields.selected[field]);
             }
           }
         }
@@ -79,7 +93,7 @@
           var count = 0;
           for (field in main.fields.selected) {
             if (count === 1) {
-              return main.fields.selected[field];
+              return angular.copy(main.fields.selected[field]);
             }
             count++;
           }
@@ -90,6 +104,9 @@
       function addField() {
         var field = getField();
         main.selectedFields[main.activeCount] = field;
+        if (field.id === main.selectedFields[main.activeCount - 1].id) {
+          main.selectedFields[main.activeCount].hide = true;
+        }
         main.fields.active['field' + main.activeCount] = field;
         main.activeCount++;
       }
