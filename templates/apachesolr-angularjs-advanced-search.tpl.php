@@ -13,8 +13,7 @@
 
   <div class="container" id="mainController" data-ng-controller="mainController as main">
 
-<pre>{{main.groups}}</pre>
-  <form class="advanced-search-form" name="advancedSearchForm" action="/apachesolr-angularjs-search" method="POST">
+  <form class="advanced-search-form">
     <div class="search-group" data-ng-if="group.id" data-ng-repeat="group in main.groups" data-ng-init="groupIndex = $index">
       <div class="group-actions">
         <div class="group-actions-left">
@@ -28,10 +27,10 @@
         <select class="group-operator-select" data-ng-options="option | uppercase for option in main.operators" data-ng-model="group.internalConnector"></select>
       </div>
       <div class="form-input" data-ng-if="field.id" data-ng-repeat="field in group.fields" data-ng-mouseenter="group.closeButtonVisible[$index] = true" data-ng-mouseleave="group.closeButtonVisible[$index] = false">
-        <select class="field-name" data-ng-if="!group.selectedFields[$index].hide" data-ng-change="main.fieldChanged(groupIndex, $index)" data-ng-model="group.selectedFields[$index]" id="field_type_{{ groupIndex }}_{{ $index }}" name="field_type_{{ groupIndex }}_{{ $index }}" data-ng-options="option.label for option in main.fields.selected track by option.id"></select>
+        <select class="field-name" data-ng-if="!group.selectedFields[$index].hide" data-ng-change="main.fieldChanged(groupIndex, $index)" data-ng-model="group.selectedFields[$index]" data-ng-options="option.label for option in main.fields.selected track by option.id"></select>
         <span class="field-link" data-ng-if="group.selectedFields[$index].hide">LINK</span>
-        <input class="field-value" type="{{ field.type }}" id="field_value_{{ groupIndex }}_{{ $index }}" name="field_value_{{ groupIndex }}_{{ $index }}" data-ng-if="field.type != 'fulltext' && !field.autocomplete_path" data-ng-model="field.value" />
-        <textarea class="field-value" id="field_value_{{ groupIndex }}_{{ $index }}" data-ng-if="field.type == 'fulltext'" data-ng-model="field.value"></textarea>
+        <input class="field-value" type="{{ field.type }}" data-ng-if="field.type != 'fulltext' && !field.autocomplete_path" data-ng-model="field.value" />
+        <textarea class="field-value" data-ng-if="field.type == 'fulltext'" data-ng-model="field.value"></textarea>
         <span class="field-close" data-ng-show="(groupIndex === 0 && $index > 0) && group.closeButtonVisible[$index]"><a href="#" data-ng-click="main.deleteField(groupIndex, $index); $event.preventDefault();">X</a></span>
         <span class="add-same-field" data-ng-show="group.closeButtonVisible[$index]"><a href="#" data-ng-click="main.addSameField(groupIndex, $index); $event.preventDefault();">+</a></span>
       </div>
