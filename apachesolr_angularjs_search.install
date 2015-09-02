@@ -64,6 +64,13 @@ function apachesolr_angularjs_search_schema() {
         'size' => 'tiny',
         'description' => 'Whether this search is permanent(1) or temporary (0)',
       ),
+      'groups' => array(
+        'type' => 'blob',
+        'not null' => FALSE,
+        'serialize' => TRUE,
+        'size' => 'big',
+        'description' => 'The groups status for this search',
+      ),
       'query' => array(
         'type' => 'blob',
         'not null' => FALSE,
