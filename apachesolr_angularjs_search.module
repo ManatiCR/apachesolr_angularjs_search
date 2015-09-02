@@ -440,6 +440,38 @@ function apachesolr_angularjs_search_process_query($uri = '') {
 }
 
 /**
+ * Builds a query string based on search groups.
+ */
+function apachesolr_angularjs_search_build_query($groups) {
+  $query = '';
+  foreach ($groups as $group_index => $group) {
+    $internal_connector = $group['internalConnector'];
+    $next_connector = $group['nextConnector'];
+    $query .= '( ';
+    foreach ($group['fields'] as $field_index => $field) {
+      if ($field['id'] !== '__fulltext_search') {
+        $query .= $field['id'] . ':';
+      }
+      $query .= $field['value'];
+
+      if (isset($group['fields'][$field_index + 1])) {
+        $query .= " $internal_connector";
+      }
+      $query .= ' ';
+    }
+
+    $query .= " )";
+
+    if (isset($groups[$group_index + 1])) {
+      $query .= " $next_connector";
+      $query .= ' ';
+    }
+  }
+
+  return $query;
+}
+
+/**
  * Returns save form for a given search.
  */
 function apachesolr_angularjs_search_save_form($form, $form_state, $search) {
