@@ -428,6 +428,8 @@ function apachesolr_angularjs_search_process_query($uri = '') {
   $page = apachesolr_search_page_load($page_id);;
   $build = array();
   $results = apachesolr_search_search_results($query, $conditions, $page);
+  $page_results_count = &drupal_static('apachesolr_angularjs_search_page_results_count', 0);
+  $page_results_count = count($results);
   $build = apachesolr_search_search_page_custom($results, $page, $build);
   if (isset($build['suggestions'])) {
     // Remove suggestions.
@@ -439,6 +441,8 @@ function apachesolr_angularjs_search_process_query($uri = '') {
     $build['save_form'] = $save_form;
     $build['save_form']['#weight'] = 0;
   }
+
+  drupal_alter('apachesolr_angularjs_search_build_result', $build);
 
   return $build;
 }

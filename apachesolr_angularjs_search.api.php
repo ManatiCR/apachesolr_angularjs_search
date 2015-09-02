@@ -15,3 +15,12 @@ function hook_apachesolr_angularjs_search_fields_alter(&$fields) {
     'autocomplete_path' => '',
   );
 }
+
+/**
+ * Implements hook_apachesolr_angularjs_search_build_result_alter().
+ */
+function hook_apachesolr_angularjs_search_build_result_alter(&$build) {
+  if (isset($build['save_form'])) {
+    unset($build['save_form']);
+  }
+}
