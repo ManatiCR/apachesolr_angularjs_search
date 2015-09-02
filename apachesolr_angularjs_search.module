@@ -450,10 +450,12 @@ function apachesolr_angularjs_search_build_query($groups) {
     $next_connector = $group['nextConnector'];
     $query .= '( ';
     foreach ($group['fields'] as $field_index => $field) {
-      if ($field['id'] !== '__fulltext_search') {
+      if ($field['id'] !== '__fulltext_search' && !empty($field['value'])) {
         $query .= $field['id'] . ':';
       }
-      $query .= $field['value'];
+      if (!empty($field['value'])) {
+        $query .= $field['value'];
+      }
 
       if (isset($group['fields'][$field_index + 1])) {
         $query .= " $internal_connector";
