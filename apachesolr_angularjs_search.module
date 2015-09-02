@@ -227,7 +227,7 @@ function apachesolr_angularjs_search_cron() {
  * A search is considered expired if created + $delete_time > REQUEST_TIME.
  *
  * @param int $delete_time
- *  The time in seconds that a temporary search should live.
+ *   The time in seconds that a temporary search should live.
  */
 function apachesolr_angularjs_search_get_expired_searches($delete_time) {
   $created = REQUEST_TIME - $delete_time;
@@ -239,8 +239,10 @@ function apachesolr_angularjs_search_get_expired_searches($delete_time) {
  * Returns default value for fields field.
  */
 function apachesolr_angular_js_search_fields_default_value($fields) {
-  foreach ($fields['sortable_lists']['selected'] as $field_name => $field) {
-    $fields[$field_name] = $field_name;
+  if (!empty($fields)) {
+    foreach ($fields['sortable_lists']['selected'] as $field_name => $field) {
+      $fields[$field_name] = $field_name;
+    }
   }
   return $fields;
 }
