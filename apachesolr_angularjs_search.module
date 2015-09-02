@@ -376,7 +376,7 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
 function apachesolr_angularjs_search_process_query($uri = '') {
   global $user;
   $query = '';
-  $save_option = FALSE;
+  $save_option = &drupal_static('apachesolr_angularjs_search_process_query_save_option', FALSE);
   if (empty($uri)) {
     $data = file_get_contents('php://input');
     $data = drupal_json_decode($data);
@@ -432,7 +432,8 @@ function apachesolr_angularjs_search_process_query($uri = '') {
   }
 
   if ($save_option) {
-    $build['save_form'] = drupal_get_form('apachesolr_angularjs_search_save_form', $search);
+    $save_form = &drupal_static('apachesolr_angularjs_search_save_form', drupal_get_form('apachesolr_angularjs_search_save_form', $search));
+    $build['save_form'] = $save_form;
     $build['save_form']['#weight'] = 0;
   }
 
