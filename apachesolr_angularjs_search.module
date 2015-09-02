@@ -401,8 +401,11 @@ function apachesolr_angularjs_search_process_query($uri = '') {
   elseif ($search = apachesolr_angularjs_search_valid_uri_and_user($uri, $user)) {
     $query = $search->query;
     $page_id = $search->page_id;
-    if ($search->created === $search->last_run) {
+    if ($search->created == $search->last_run && $search->created == REQUEST_TIME) {
       $save_option = TRUE;
+    }
+    else {
+      $save_option = FALSE;
     }
 
     // Update last_run field.
