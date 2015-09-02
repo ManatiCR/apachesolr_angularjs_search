@@ -7,7 +7,7 @@
 
   angular.module('apachesolrAngularjsSearch').controller('mainController', mainController);
 
-  function mainController($rootScope, drupalDataService) {
+  function mainController($rootScope, $location, drupalDataService, searchPostService) {
     /* jshint validthis: true */
     var main = this;
 
@@ -171,36 +171,10 @@
       }
 
       function processForm() {
-        var string = '';
-        var filter = '';
-        for (field in main.fields.active) {
-          if (main.fields.active[field].value) {
-            if (main.fields.active[field].type === 'checkbox') {
-              filter += main.fields.active[field].id;
-              filter += ':true';
-              filter += ' OR ';
-            }
-            else {
-              if (main.fields.active[field].id !== '__fulltext_search') {
-                string += main.fields.active[field].id;
-                string += ':';
-              }
-              string += main.fields.active[field].value;
-              string += ' AND ';
-            }
-          }
-        }
-        var query = string;
-        if (filter) {
-          query += '(' + filter;
-          query = query.substr(0, query.length - 4) + ')';
-        }
-        else {
-          query = query.substr(0, query.length - 5);
-        }
-        document.getElementById('input-query').setAttribute('value', query);
-        document.getElementById('input-pageid').setAttribute('value', pageId);
-        document.advancedSearchForm.submit();
+        searchPostService.sendSearch(main.groups, pageId).then(function(data) {
+          var uri = data.uri;
+          window.location.href = uri;
+        });
       }
     });
   }

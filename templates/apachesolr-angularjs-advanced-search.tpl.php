@@ -35,8 +35,6 @@
         <span class="field-close" data-ng-show="(groupIndex === 0 && $index > 0) && group.closeButtonVisible[$index]"><a href="#" data-ng-click="main.deleteField(groupIndex, $index); $event.preventDefault();">X</a></span>
         <span class="add-same-field" data-ng-show="group.closeButtonVisible[$index]"><a href="#" data-ng-click="main.addSameField(groupIndex, $index); $event.preventDefault();">+</a></span>
       </div>
-      <input type="hidden" name="query" id="input-query"/>
-      <input type="hidden" name="pageId" id="input-pageid"/>
       <div class="add-another" data-ng-if="!group.activeAddField">
         <a href="#" class="btn btn-add-another" data-ng-click="group.activeAddField = true; $event.preventDefault();">Add Field</a>
       </div>

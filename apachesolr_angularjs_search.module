@@ -356,6 +356,9 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
         $path . '/src-js/components/drupalData/drupalData.service.js' => array(
           'type' => 'file',
         ),
+        $path . '/src-js/components/searchPost/searchPost.service.js' => array(
+          'type' => 'file',
+        ),
       ),
       'css' => array(
         $path . '/src-js/app/app.css' => array(
@@ -375,22 +378,32 @@ function apachesolr_angularjs_search_process_query($uri = '') {
   $query = '';
   $save_option = FALSE;
   if (empty($uri)) {
-    $query = !empty($_POST['query']) ? check_plain($_POST['query']) : '';
-    $page_id = !empty($_POST['pageId']) ? check_plain($_POST['pageId']) : '';
-    if ($user->uid && $query && $page_id) {
+    $data = file_get_contents('php://input');
+    $data = drupal_json_decode($data);
+    $groups = !empty($data['groups']) ? $data['groups'] : array();
+    $page_id = !empty($data['pageId']) ? check_plain($data['pageId']) : '';
+    if ($user->uid && $groups && $page_id) {
       $search = new stdClass();
       $search->page_id = $page_id;
+      $query = apachesolr_angularjs_search_build_query($groups);
+      $search->groups = $groups;
       $search->query = $query;
       apachesolr_angularjs_search_save_temporary_search($search);
-      $save_option = TRUE;
 
       // Need to set this for making the pager works.
       $_GET['q'] = APACHESOLR_ANGULARJS_SEARCH_BASE_PATH . '/' . $search->uri;
+
+      $response = new stdClass();
+      $response->uri = '/' . APACHESOLR_ANGULARJS_SEARCH_BASE_PATH . '/' . $search->uri;
+      return drupal_json_output($response);
     }
   }
   elseif ($search = apachesolr_angularjs_search_valid_uri_and_user($uri, $user)) {
     $query = $search->query;
     $page_id = $search->page_id;
+    if ($search->created === $search->last_run) {
+      $save_option = TRUE;
+    }
 
     // Update last_run field.
     $search->last_run = REQUEST_TIME;
