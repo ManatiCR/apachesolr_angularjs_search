@@ -20,6 +20,8 @@
       main.deleteField = deleteField;
       main.addSameField = addSameField;
       main.fields = {};
+      main.groups = []
+      main.operators = [];
 
       // Unbind the event.
       var mainDiv = angular.element(document.getElementById('mainController'));
@@ -46,40 +48,54 @@
         }
       }
       main.fields = fields;
-      main.fields.active = [];
-      main.selectedFields = [];
-      main.closeButtonVisible = [];
-      main.activeCount = 0;
+      main.groups[0] = getDefaultGroup('default', 0);
       for (i = 0; i < main.fields.always.length; i++) {
-        main.fields.active[i] = main.fields.always[i];
-        main.activeCount++;
+        main.groups[0].fields[i] = main.fields.always[i];
+        main.groups[0].activeCount++;
       }
-      main.selectedFields[0] = main.fields.active[0];
+      main.groups[0].selectedFields[0] = main.groups[0].fields[0];
       main.selectedField = getField('__fulltext_search');
 
-      function fieldChanged(index) {
-        var selectedField = angular.copy(main.selectedFields[index]);
+      main.operators = ['and', 'or', 'not'];
+
+      function getDefaultGroup(id, position) {
+        return {
+          id : id,
+          name : id,
+          position : position,
+          internalConnector : 'and',
+          nextConnector : 'and',
+          fields : [],
+          selectedFields : [],
+          closeButtonVisible : [],
+          activeCount : 0,
+          activeAddField : false
+        };
+      }
+
+      function fieldChanged(groupIndex, index) {
+        var selectedField = angular.copy(main.groups[groupIndex].selectedFields[index]);
         if (selectedField) {
-          main.fields.active[index] = selectedField;
-          hidePreviousAndNext(index);
+          main.groups[groupIndex].fields[index] = selectedField;
+          hidePreviousAndNext(groupIndex, index);
         }
       }
 
-      function hidePreviousAndNext(index) {
-        if (main.selectedFields[index - 1] !== undefined && main.selectedFields[index] !== undefined) {
-          if (main.selectedFields[index].id === main.selectedFields[index - 1].id) {
-            main.selectedFields[index].hide = true;
+      function hidePreviousAndNext(groupIndex, index) {
+        if (main.groups[groupIndex].selectedFields[index - 1] !== undefined && main.groups[groupIndex].selectedFields[index] !== undefined) {
+          if (main.groups[groupIndex].selectedFields[index].id === main.groups[groupIndex].selectedFields[index - 1].id) {
+            main.groups[groupIndex].selectedFields[index].hide = true;
           }
           else {
-            main.selectedFields[index].hide = false;
+            main.groups[groupIndex].selectedFields[index].hide = false;
           }
         }
-        if (main.selectedFields[index + 1] !== undefined && main.selectedFields[index] !== undefined) {
-          if (main.selectedFields[index + 1].id === main.selectedFields[index].id) {
-            main.selectedFields[index + 1].hide = true;
+        if (main.groups[groupIndex].selectedFields[index + 1] !== undefined && main.groups[groupIndex].selectedFields[index] !== undefined) {
+          if (main.groups[groupIndex].selectedFields[index + 1].id === main.groups[groupIndex].selectedFields[index].id) {
+            main.groups[groupIndex].selectedFields[index + 1].hide = true;
           }
           else {
-            main.selectedFields[index + 1].hide = false;
+            main.groups[groupIndex].selectedFields[index + 1].hide = false;
           }
         }
       }
@@ -99,46 +115,46 @@
         return false;
       }
 
-      function addFieldConfirm() {
+      function addFieldConfirm(groupIndex) {
         var field = angular.copy(main.selectedField);
-        addField(field);
+        addField(groupIndex, field);
       }
 
-      function addField(field, index) {
+      function addField(groupIndex, field, index) {
         var wasUndefined = false;
         if (index === undefined) {
-          index = main.activeCount;
+          index = main.groups[groupIndex].activeCount;
           wasUndefined = true;
         }
-        main.selectedFields.splice(index + 1, 0, field);
-        hidePreviousAndNext(index);
-        main.fields.active.splice(index + 1, 0, field);
+        main.groups[groupIndex].selectedFields.splice(index + 1, 0, field);
+        hidePreviousAndNext(groupIndex, index);
+        main.groups[groupIndex].fields.splice(index + 1, 0, field);
         if (wasUndefined) {
-          main.activeAddField = false;
+          main.groups[groupIndex].activeAddField = false;
         }
-        main.activeCount++;
+        main.groups[groupIndex].activeCount++;
       }
 
-      function deleteField(index) {
-        main.fields.active.splice(index, 1);
-        main.selectedFields.splice(index, 1);
-        hidePreviousAndNext(index - 1);
+      function deleteField(groupIndex, index) {
+        main.groups[groupIndex].fields.splice(index, 1);
+        main.groups[groupIndex].selectedFields.splice(index, 1);
+        main.groups[groupIndex].activeCount--;
+        hidePreviousAndNext(groupIndex, index - 1);
       }
 
-      function addSameField(index) {
-        var field = angular.copy(main.fields.active[index]);
-        addField(field, index);
+      function addSameField(groupIndex, index) {
+        var field = angular.copy(main.groups[groupIndex].fields[index]);
+        addField(groupIndex, field, index);
       }
 
       function clearForm() {
-        main.fields.active = {};
-        main.activeCount = 0;
-        main.activeAddField = false;
-        for (var i = 0; i < main.fields.always.length; i++) {
-          main.fields.active[main.activeCount] = main.fields.always[i];
-          main.activeCount++;
+        main.groups = [];
+        main.groups[0] = getDefaultGroup('default', 0);
+        for (i = 0; i < main.fields.always.length; i++) {
+          main.groups[0].fields[i] = main.fields.always[i];
+          main.groups[0].activeCount++;
         }
-        main.selectedFields[0] = main.fields.active[0];
+        main.groups[0].selectedFields[0] = main.groups[0].fields[0];
         main.selectedField = getField('__fulltext_search');
       }
 
