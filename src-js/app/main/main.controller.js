@@ -19,6 +19,8 @@
       main.addFieldConfirm = addFieldConfirm;
       main.deleteField = deleteField;
       main.addSameField = addSameField;
+      main.addSearchGroup = addSearchGroup;
+      main.deleteGroup = deleteGroup;
       main.fields = {};
       main.groups = []
       main.operators = [];
@@ -145,6 +147,16 @@
       function addSameField(groupIndex, index) {
         var field = angular.copy(main.groups[groupIndex].fields[index]);
         addField(groupIndex, field, index);
+      }
+
+      function addSearchGroup() {
+        var position = main.groups.length;
+        var group = getDefaultGroup('group_' + position, position);
+        main.groups.push(group);
+      }
+
+      function deleteGroup(groupIndex) {
+        main.groups.splice(groupIndex, 1);
       }
 
       function clearForm() {

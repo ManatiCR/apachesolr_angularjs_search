@@ -16,7 +16,14 @@
 <pre>{{main.groups}}</pre>
   <form class="advanced-search-form" name="advancedSearchForm" action="/apachesolr-angularjs-search" method="POST">
     <div class="search-group" data-ng-if="group.id" data-ng-repeat="group in main.groups" data-ng-init="groupIndex = $index">
-<pre>{{groupIndex}}</pre>
+      <div class="group-actions">
+        <div class="group-actions-left">
+          <a href="#" class="group-save">Save this Search Group for next searches</a>
+        </div>
+        <div class="group-actions-right" data-ng-if="main.groups.length > 1">
+          <a href="#" class="group-delete" data-ng-click="main.deleteGroup(groupIndex); $event.preventDefault();">Delete Group</a>
+        </div>
+      </div>
       <div class="group-operator">
         <select class="group-operator-select" data-ng-options="option | uppercase for option in main.operators" data-ng-model="group.internalConnector"></select>
       </div>
@@ -37,6 +44,12 @@
         <select class="field-name" data-ng-model="main.selectedField" ng-options="option.label for option in main.fields.selected track by option.id"></select>
         <a href="#" class="btn btn-add-field-confirm" data-ng-click="main.addFieldConfirm(groupIndex); $event.preventDefault();">Add</a>
       </div>
+      <div class="group-connector" data-ng-if="main.groups[groupIndex + 1]">
+        <select class="group-operator-select" data-ng-options="option | uppercase for option in main.operators" data-ng-model="group.nextConnector"></select>
+      </div>
+    </div>
+    <div class="add-search-group">
+      <a href="#" class="btn btn-add-search-group" data-ng-click="main.addSearchGroup(); $event.preventDefault();">Add Search Group</a>
     </div>
     <div class="actions">
       <button class="btn btn-reset" data-ng-click="main.clearForm()" type="button">Reset</button>
