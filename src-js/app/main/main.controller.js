@@ -22,7 +22,7 @@
       main.addSearchGroup = addSearchGroup;
       main.deleteGroup = deleteGroup;
       main.fields = {};
-      main.groups = []
+      main.groups = [];
       main.operators = [];
 
       // Unbind the event.
@@ -33,7 +33,6 @@
       var fields = data.fields;
       var pageId = data.pageId;
 
-      var field;
       var status;
       var i;
       for (status in fields) {
