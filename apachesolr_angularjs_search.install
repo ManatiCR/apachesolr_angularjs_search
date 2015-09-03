@@ -100,6 +100,61 @@ function apachesolr_angularjs_search_schema() {
     ),
   );
 
+  $schema['apachesolr_angularjs_search_saved_groups'] = array(
+    'description' => 'Saved groups',
+    'fields' => array(
+      'sgid' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'description' => 'Primary identifier for a search group',
+      ),
+      'name' => array(
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => FALSE,
+        'default' => '',
+        'description' => 'Name used for identifying this search group',
+      ),
+      'created' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'description' => 'Created timestamp for this search group',
+      ),
+      'last_used' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'description' => 'Last time this search group was used.',
+      ),
+      'uid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'description' => 'Owner of this search group',
+      ),
+      'data' => array(
+        'type' => 'blob',
+        'not null' => FALSE,
+        'serialize' => TRUE,
+        'size' => 'big',
+        'description' => 'The group structure itself for this search group',
+      ),
+    ),
+    'indexes' => array(
+      'created' => array('created'),
+      'uid' => array('uid'),
+    ),
+    'primary key' => array('sgid'),
+    'foreign keys' => array(
+      'uid' => array(
+        'table' => 'users',
+        'columns' => array('uid' => 'uid'),
+      ),
+    ),
+  );
+
   return $schema;
 }
 

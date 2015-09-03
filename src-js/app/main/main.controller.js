@@ -7,7 +7,7 @@
 
   angular.module('apachesolrAngularjsSearch').controller('mainController', mainController);
 
-  function mainController($rootScope, $location, drupalDataService, searchPostService) {
+  function mainController($rootScope, $location, drupalDataService, searchPostService, searchGroupService) {
     /* jshint validthis: true */
     var main = this;
 
@@ -21,6 +21,7 @@
       main.addSameField = addSameField;
       main.addSearchGroup = addSearchGroup;
       main.deleteGroup = deleteGroup;
+      main.saveGroup = saveGroup;
       main.fields = {};
       main.groups = [];
       main.operators = [];
@@ -173,6 +174,12 @@
         searchPostService.sendSearch(main.groups, pageId).then(function(data) {
           var uri = data.uri;
           window.location.href = uri;
+        });
+      }
+
+      function saveGroup(groupIndex) {
+        searchGroupService.saveGroup(main.groups[groupIndex]).then(function(data) {
+          console.log(data);
         });
       }
     });

@@ -32,6 +32,11 @@ function apachesolr_angularjs_search_menu() {
       'page callback' => 'apachesolr_angularjs_search_process_query',
       'access callback' => TRUE,
     ),
+    APACHESOLR_ANGULARJS_SEARCH_BASE_PATH . '/search-group' => array(
+      'title' => 'Save Search Group',
+      'page callback' => 'apachesolr_angularjs_search_save_group',
+      'access callback' => TRUE,
+    ),
     'admin/config/search/apachesolr-angularjs-search' => array(
       'title' => 'Administer settings for apachesolr angularjs search',
       'page callback' => 'drupal_get_form',
@@ -359,6 +364,9 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
         $path . '/src-js/components/searchPost/searchPost.service.js' => array(
           'type' => 'file',
         ),
+        $path . '/src-js/components/searchGroup/searchGroup.service.js' => array(
+          'type' => 'file',
+        ),
       ),
       'css' => array(
         $path . '/src-js/app/app.css' => array(
@@ -368,6 +376,56 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
     ),
   );
   return $build;
+}
+
+/**
+ * Save search group callback.
+ */
+function apachesolr_angularjs_search_save_group() {
+  $data = file_get_contents('php://input');
+  $data = drupal_json_decode($data);
+  $group = new stdClass();
+  $group->data = (object) $data['group'];
+
+  if (empty($group->uid)) {
+    global $user;
+    $group->uid = $user->uid;
+  }
+  if (empty($group->created)) {
+    $group->created = REQUEST_TIME;
+  }
+  if (empty($group->last_used)) {
+    $group->last_used = REQUEST_TIME;
+  }
+  if (empty($group->name)) {
+    $group->name = apachesolr_angularjs_search_get_group_name($group->group);
+  }
+  $save_result = drupal_write_record('apachesolr_angularjs_search_saved_groups', $group);
+  $result = new stdClass();
+  if ($save_result === SAVED_NEW) {
+    $result->status = 200;
+    $result->message = t('Success');
+  }
+  else {
+    $result->status = 500;
+    $result->message = t('There was an error');
+  }
+  return drupal_json_output($result);
+}
+
+/**
+ * Create and return a name for a given search group.
+ */
+function apachesolr_angularjs_search_get_group_name($group) {
+  $name = '';
+  foreach ($group->fields as $field) {
+    if (!empty($field['id']) && !empty($field['value'])) {
+      $name .= $field['label'] . ', ';
+    }
+  }
+  $name = substr($name, 0, -2);
+  $name = truncate_utf8($name, 30, FALSE, TRUE);
+  return $name;
 }
 
 /**

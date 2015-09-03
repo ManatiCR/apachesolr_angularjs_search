@@ -17,7 +17,7 @@
     <div class="search-group" data-ng-if="group.id" data-ng-repeat="group in main.groups" data-ng-init="groupIndex = $index">
       <div class="group-actions">
         <div class="group-actions-left">
-          <a href="#" class="group-save">Save this Search Group for next searches</a>
+          <a href="#" class="group-save" data-ng-click=main.saveGroup(groupIndex)>Save this Search Group for next searches</a>
         </div>
         <div class="group-actions-right" data-ng-if="main.groups.length > 1">
           <a href="#" class="group-delete" data-ng-click="main.deleteGroup(groupIndex); $event.preventDefault();">Delete Group</a>
