@@ -7,6 +7,8 @@ dependencies[] = sortable_lists
 files[] = views/apachesolr_angularjs_search_handler_field_view_link.inc
 files[] = views/apachesolr_angularjs_search_handler_field_delete_link.inc
 files[] = views/apachesolr_angularjs_search_handler_field_user.inc
+files[] = views/apachesolr_angularjs_search_group_handler_field_delete_link.inc
+files[] = views/apachesolr_angularjs_search_group_handler_field_user.inc
 
 configure = admin/config/search/apachesolr-angularjs-search
 core = 7.x

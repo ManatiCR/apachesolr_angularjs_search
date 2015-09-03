@@ -398,7 +398,7 @@ function apachesolr_angularjs_search_save_group() {
     $group->last_used = REQUEST_TIME;
   }
   if (empty($group->name)) {
-    $group->name = apachesolr_angularjs_search_get_group_name($group->group);
+    $group->name = apachesolr_angularjs_search_get_group_name($group->data);
   }
   $save_result = drupal_write_record('apachesolr_angularjs_search_saved_groups', $group);
   $result = new stdClass();
@@ -682,12 +682,39 @@ function apachesolr_angularjs_search_delete_form($form, $form_state, $sid, $dele
 }
 
 /**
+ * Return delete form for a given sgid.
+ */
+function apachesolr_angularjs_search_group_delete_form($form, $form_state, $sgid, $delete_text) {
+  $form['sgid'] = array(
+    '#type' => 'value',
+    '#value' => $sgid,
+  );
+
+  $form['delete'] = array(
+    '#type' => 'submit',
+    '#value' => check_plain($delete_text),
+  );
+
+  return $form;
+}
+
+/**
  * Submit handler for apachesolr_angularjs_search_delete_form.
  */
 function apachesolr_angularjs_search_delete_form_submit($form, $form_state) {
   $sid = $form_state['values']['sid'];
   db_delete('apachesolr_angularjs_search_saved')
     ->condition('sid', $sid)
+    ->execute();
+}
+
+/**
+ * Submit handler for apachesolr_angularjs_search_group_delete_form.
+ */
+function apachesolr_angularjs_search_group_delete_form_submit($form, $form_state) {
+  $sgid = $form_state['values']['sgid'];
+  db_delete('apachesolr_angularjs_search_saved_groups')
+    ->condition('sgid', $sgid)
     ->execute();
 }
 

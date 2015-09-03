@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * @file
  * Views file for apachesolr_angularjs_search module.
  */
 
@@ -96,6 +97,21 @@ function apachesolr_angularjs_search_views_data() {
     ),
   );
 
+  $data['apachesolr_angularjs_search_saved']['last_run'] = array(
+    'title' => t('Last run'),
+    'help' => t('The date the search was last run.'),
+    'field' => array(
+      'handler' => 'views_handler_field_date',
+      'click sortable' => TRUE,
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort_date',
+    ),
+    'filter' => array(
+      'handler' => 'views_handler_filter_date',
+    ),
+  );
+
   $data['apachesolr_angularjs_search_saved']['uid'] = array(
     'title' => t('Uid'),
     'help' => t('The user ID that created this search'),
@@ -167,6 +183,119 @@ function apachesolr_angularjs_search_views_data() {
   );
 
   $data['apachesolr_angularjs_search_saved']['table']['join'] = array(
+     // Directly links to users table.
+    'users' => array(
+      'left_field' => 'uid',
+      'field' => 'uid',
+      'left_table' => 'users',
+    ),
+  );
+
+  $data['apachesolr_angularjs_search_saved_groups']['table']['group'] = t('Search Group');
+
+  $data['apachesolr_angularjs_search_saved_groups']['table']['base'] = array(
+    'field' => 'sgid',
+    'title' => t('Saved Search Groups'),
+    'help' => t('Saved search groups on your site'),
+  );
+
+  $data['apachesolr_angularjs_search_saved_groups']['sgid'] = array(
+    'title' => t('Sgid'),
+    'help' => t('The Search Group ID'),
+    'field' => array(
+      'handler' => 'views_handler_field_numeric',
+      'click sortable' => TRUE,
+    ),
+    'filter' => array(
+      'handler' => 'views_handler_filter_numeric',
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+  );
+
+  $data['apachesolr_angularjs_search_saved_groups']['delete_link'] = array(
+    'title' => t('Delete Link'),
+    'help' => t('Delete Link for this search'),
+    'real field' => 'sgid',
+    'field' => array(
+      'handler' => 'apachesolr_angularjs_search_group_handler_field_delete_link',
+    ),
+  );
+
+  $data['apachesolr_angularjs_search_saved_groups']['name'] = array(
+    'title' => t('Name'),
+    'help' => t('The Search Group Name'),
+    'field' => array(
+      'handler' => 'views_handler_field',
+      'click sortable' => TRUE,
+    ),
+    'filter' => array(
+      'handler' => 'views_handler_filter',
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+  );
+
+  $data['apachesolr_angularjs_search_saved_groups']['created'] = array(
+    'title' => t('Created'),
+    'help' => t('The date the search group was created.'),
+    'field' => array(
+      'handler' => 'views_handler_field_date',
+      'click sortable' => TRUE,
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort_date',
+    ),
+    'filter' => array(
+      'handler' => 'views_handler_filter_date',
+    ),
+  );
+
+  $data['apachesolr_angularjs_search_saved_groups']['last_used'] = array(
+    'title' => t('Last Used'),
+    'help' => t('The date the search group was last used.'),
+    'field' => array(
+      'handler' => 'views_handler_field_date',
+      'click sortable' => TRUE,
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort_date',
+    ),
+    'filter' => array(
+      'handler' => 'views_handler_filter_date',
+    ),
+  );
+
+  $data['apachesolr_angularjs_search_saved_groups']['uid'] = array(
+    'title' => t('Uid'),
+    'help' => t('The user ID that created this search group'),
+    'field' => array(
+      'title' => t('User'),
+      'handler' => 'apachesolr_angularjs_search_group_handler_field_user',
+      'click sortable' => TRUE,
+    ),
+    'argument' => array(
+      'handler' => 'views_handler_argument_user_uid',
+      'name field' => 'name',
+    ),
+    'filter' => array(
+      'title' => t('User'),
+      'handler' => 'views_handler_filter_user_name',
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+    'relationship' => array(
+      'base' => 'users',
+      'base field' => 'uid',
+      'handler' => 'views_handler_relationship',
+      'label' => t('User Relationship'),
+    ),
+  );
+
+  $data['apachesolr_angularjs_search_saved_groups']['table']['join'] = array(
      // Directly links to users table.
     'users' => array(
       'left_field' => 'uid',
