@@ -9,7 +9,7 @@
  * Implements hook_schema().
  */
 function apachesolr_angularjs_search_schema() {
-  $schema['apachesolr_angularjs_search_saved'] = array(
+  $schema['aas_search_saved'] = array(
     'description' => 'Saved searches',
     'fields' => array(
       'sid' => array(
@@ -100,7 +100,7 @@ function apachesolr_angularjs_search_schema() {
     ),
   );
 
-  $schema['apachesolr_angularjs_search_saved_groups'] = array(
+  $schema['aas_search_saved_groups'] = array(
     'description' => 'Saved groups',
     'fields' => array(
       'sgid' => array(

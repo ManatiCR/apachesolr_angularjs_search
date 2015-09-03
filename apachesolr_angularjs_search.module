@@ -23,6 +23,70 @@ function apachesolr_angularjs_search_help($path, $arg) {
 }
 
 /**
+ * Implements hook_entity_info().
+ */
+function apachesolr_angularjs_search_entity_info() {
+  return array(
+    'aas_search_saved' => array(
+      'label' => t('Saved Search'),
+      'base table' => 'aas_search_saved',
+      'entity keys' => array(
+        'id' => 'sid',
+      ),
+    ),
+    'aas_search_saved_groups' => array(
+      'label' => t('Saved Search Group'),
+      'base table' => 'aas_search_saved_groups',
+      'entity keys' => array(
+        'id' => 'sgid',
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_action_info().
+ */
+function apachesolr_angularjs_search_action_info() {
+  return array(
+    'apachesolr_angularjs_search_delete_search' => array(
+      'type' => 'aas_search_saved',
+      'label' => t('Clear History'),
+      'configurable' => FALSE,
+      'behavior' => array(
+        'deletes_property',
+      ),
+    ),
+    'apachesolr_angularjs_search_delete_search_group' => array(
+      'type' => 'aas_search_saved_groups',
+      'label' => t('Clear History'),
+      'configurable' => FALSE,
+      'behavior' => array(
+        'deletes_property',
+      ),
+    ),
+  );
+}
+
+/**
+ * Delete a given search.
+ */
+function apachesolr_angularjs_search_delete_search($entity, $context = array()) {
+  db_delete('aas_search_saved')
+    ->condition('sid', $entity->sid)
+    ->execute();
+}
+
+/**
+ * Delete a given search group.
+ */
+function apachesolr_angularjs_search_delete_search_group($entity, $context = array()) {
+  db_delete('aas_search_saved_groups')
+    ->condition('sgid', $entity->sgid)
+    ->execute();
+}
+
+/**
  * Implements hook_menu().
  */
 function apachesolr_angularjs_search_menu() {
@@ -220,7 +284,7 @@ function apachesolr_angularjs_search_cron() {
   $delete_time = variable_get('apachesolr_angularjs_search_delete_time', 604800);
   $search_ids = apachesolr_angularjs_search_get_expired_searches($delete_time);
   if (!empty($search_ids)) {
-    db_delete('apachesolr_angularjs_search_saved')
+    db_delete('aas_search_saved')
       ->condition('sid', $search_ids, 'IN')
       ->execute();
   }
@@ -236,7 +300,7 @@ function apachesolr_angularjs_search_cron() {
  */
 function apachesolr_angularjs_search_get_expired_searches($delete_time) {
   $created = REQUEST_TIME - $delete_time;
-  $search_ids = db_query('SELECT sid FROM {apachesolr_angularjs_search_saved} WHERE status = :status AND created < :created', array(':status' => APACHESOLR_ANGULARJS_SEARCH_TEMPORARY, ':created' => $created))->fetchCol();
+  $search_ids = db_query('SELECT sid FROM {aas_search_saved} WHERE status = :status AND created < :created', array(':status' => APACHESOLR_ANGULARJS_SEARCH_TEMPORARY, ':created' => $created))->fetchCol();
   return $search_ids;
 }
 
@@ -400,7 +464,7 @@ function apachesolr_angularjs_search_save_group() {
   if (empty($group->name)) {
     $group->name = apachesolr_angularjs_search_get_group_name($group->data);
   }
-  $save_result = drupal_write_record('apachesolr_angularjs_search_saved_groups', $group);
+  $save_result = drupal_write_record('aas_search_saved_groups', $group);
   $result = new stdClass();
   if ($save_result === SAVED_NEW) {
     $result->status = 200;
@@ -414,13 +478,20 @@ function apachesolr_angularjs_search_save_group() {
 }
 
 /**
+ * Create and return a name for a given search.
+ */
+function apachesolr_angularjs_search_get_search_name($groups) {
+  return apachesolr_angularjs_search_get_group_name((object) $groups[0], 'value');
+}
+
+/**
  * Create and return a name for a given search group.
  */
-function apachesolr_angularjs_search_get_group_name($group) {
+function apachesolr_angularjs_search_get_group_name($group, $source = 'label') {
   $name = '';
   foreach ($group->fields as $field) {
     if (!empty($field['id']) && !empty($field['value'])) {
-      $name .= $field['label'] . ', ';
+      $name .= $field[$source] . ', ';
     }
   }
   $name = substr($name, 0, -2);
@@ -468,7 +539,7 @@ function apachesolr_angularjs_search_process_query($uri = '') {
 
     // Update last_run field.
     $search->last_run = REQUEST_TIME;
-    drupal_write_record('apachesolr_angularjs_search_saved', $search, 'sid');
+    drupal_write_record('aas_search_saved', $search, 'sid');
   }
   else {
     // Not valid uri. Search with given string.
@@ -584,7 +655,7 @@ function apachesolr_angularjs_search_save_search($form, $form_state) {
   $search = $values['search'];
   $search->name = $name;
   $search->status = APACHESOLR_ANGULARJS_SEARCH_PERMANENT;
-  $result = drupal_write_record('apachesolr_angularjs_search_saved', $search, 'sid');
+  $result = drupal_write_record('aas_search_saved', $search, 'sid');
   if ($result === SAVED_UPDATED) {
     global $base_url;
     return t('Your search has been saved. You could go to !link for using it.',
@@ -604,7 +675,7 @@ function apachesolr_angularjs_search_valid_uri_and_user($uri, $account = 0) {
     global $user;
     $account = $user;
   }
-  $query = db_query('SELECT sid, uri, name, created, last_run, uid, page_id, status, query FROM {apachesolr_angularjs_search_saved} WHERE uid = :uid AND uri = :uri', array(':uid' => $account->uid, ':uri' => $uri));
+  $query = db_query('SELECT sid, uri, name, created, last_run, uid, page_id, status, query FROM {aas_search_saved} WHERE uid = :uid AND uri = :uri', array(':uid' => $account->uid, ':uri' => $uri));
   $search = $query->fetchObject();
   if ($search) {
     return $search;
@@ -630,7 +701,10 @@ function apachesolr_angularjs_search_save_temporary_search(&$search) {
   if (empty($search->uri)) {
     $search->uri = apachesolr_angularjs_search_get_search_uri($search);
   }
-  return drupal_write_record('apachesolr_angularjs_search_saved', $search);
+  if (empty($search->name)) {
+    $search->name = apachesolr_angularjs_search_get_search_name($search->groups);
+  }
+  return drupal_write_record('aas_search_saved', $search);
 }
 
 /**
@@ -656,7 +730,7 @@ function apachesolr_angularjs_search_get_search_uri($search, $count = 0) {
  * Returns whether a given uri already exists or not in saved searches table.
  */
 function apachesolr_angular_js_search_uri_exists($uri) {
-  $query = db_query('SELECT count(sid) FROM {apachesolr_angularjs_search_saved} WHERE uri = :uri', array(':uri' => $uri));
+  $query = db_query('SELECT count(sid) FROM {aas_search_saved} WHERE uri = :uri', array(':uri' => $uri));
   $count = $query->fetchField();
   if ($count) {
     return TRUE;
@@ -703,7 +777,7 @@ function apachesolr_angularjs_search_group_delete_form($form, $form_state, $sgid
  */
 function apachesolr_angularjs_search_delete_form_submit($form, $form_state) {
   $sid = $form_state['values']['sid'];
-  db_delete('apachesolr_angularjs_search_saved')
+  db_delete('aas_search_saved')
     ->condition('sid', $sid)
     ->execute();
 }
@@ -713,7 +787,7 @@ function apachesolr_angularjs_search_delete_form_submit($form, $form_state) {
  */
 function apachesolr_angularjs_search_group_delete_form_submit($form, $form_state) {
   $sgid = $form_state['values']['sgid'];
-  db_delete('apachesolr_angularjs_search_saved_groups')
+  db_delete('aas_search_saved_groups')
     ->condition('sgid', $sgid)
     ->execute();
 }

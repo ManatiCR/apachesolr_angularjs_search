@@ -11,15 +11,15 @@
 function apachesolr_angularjs_search_views_data() {
   $data = array();
 
-  $data['apachesolr_angularjs_search_saved']['table']['group'] = t('Search');
+  $data['aas_search_saved']['table']['group'] = t('Search');
 
-  $data['apachesolr_angularjs_search_saved']['table']['base'] = array(
+  $data['aas_search_saved']['table']['base'] = array(
     'field' => 'sid',
     'title' => t('Saved Search'),
     'help' => t('Saved searches on your site'),
   );
 
-  $data['apachesolr_angularjs_search_saved']['sid'] = array(
+  $data['aas_search_saved']['sid'] = array(
     'title' => t('Sid'),
     'help' => t('The Search ID'),
     'field' => array(
@@ -34,7 +34,7 @@ function apachesolr_angularjs_search_views_data() {
     ),
   );
 
-  $data['apachesolr_angularjs_search_saved']['delete_link'] = array(
+  $data['aas_search_saved']['delete_link'] = array(
     'title' => t('Delete Link'),
     'help' => t('Delete Link for this search'),
     'real field' => 'sid',
@@ -43,7 +43,7 @@ function apachesolr_angularjs_search_views_data() {
     ),
   );
 
-  $data['apachesolr_angularjs_search_saved']['uri'] = array(
+  $data['aas_search_saved']['uri'] = array(
     'title' => t('Uri'),
     'help' => t('The Search Uri'),
     'field' => array(
@@ -58,7 +58,7 @@ function apachesolr_angularjs_search_views_data() {
     ),
   );
 
-  $data['apachesolr_angularjs_search_saved']['view_link'] = array(
+  $data['aas_search_saved']['view_link'] = array(
     'title' => t('View Link'),
     'help' => t('View Link for this search'),
     'real field' => 'uri',
@@ -67,7 +67,7 @@ function apachesolr_angularjs_search_views_data() {
     ),
   );
 
-  $data['apachesolr_angularjs_search_saved']['name'] = array(
+  $data['aas_search_saved']['name'] = array(
     'title' => t('Name'),
     'help' => t('The Search Name'),
     'field' => array(
@@ -82,7 +82,7 @@ function apachesolr_angularjs_search_views_data() {
     ),
   );
 
-  $data['apachesolr_angularjs_search_saved']['created'] = array(
+  $data['aas_search_saved']['created'] = array(
     'title' => t('Created'),
     'help' => t('The date the search was created.'),
     'field' => array(
@@ -97,7 +97,7 @@ function apachesolr_angularjs_search_views_data() {
     ),
   );
 
-  $data['apachesolr_angularjs_search_saved']['last_run'] = array(
+  $data['aas_search_saved']['last_run'] = array(
     'title' => t('Last run'),
     'help' => t('The date the search was last run.'),
     'field' => array(
@@ -112,7 +112,7 @@ function apachesolr_angularjs_search_views_data() {
     ),
   );
 
-  $data['apachesolr_angularjs_search_saved']['uid'] = array(
+  $data['aas_search_saved']['uid'] = array(
     'title' => t('Uid'),
     'help' => t('The user ID that created this search'),
     'field' => array(
@@ -139,7 +139,7 @@ function apachesolr_angularjs_search_views_data() {
     ),
   );
 
-  $data['apachesolr_angularjs_search_saved']['page_id'] = array(
+  $data['aas_search_saved']['page_id'] = array(
     'title' => t('Page ID'),
     'help' => t('The Page ID used by this Search'),
     'field' => array(
@@ -154,7 +154,7 @@ function apachesolr_angularjs_search_views_data() {
     ),
   );
 
-  $data['apachesolr_angularjs_search_saved']['status'] = array(
+  $data['aas_search_saved']['status'] = array(
     'title' => t('Status'),
     'help' => t('Whether a search is permanent or temporary.'),
     'field' => array(
@@ -174,7 +174,7 @@ function apachesolr_angularjs_search_views_data() {
     ),
   );
 
-  $data['apachesolr_angularjs_search_saved']['query'] = array(
+  $data['aas_search_saved']['query'] = array(
     'title' => t('Query'),
     'help' => t('Query used in this search'),
     'field' => array(
@@ -182,7 +182,7 @@ function apachesolr_angularjs_search_views_data() {
     ),
   );
 
-  $data['apachesolr_angularjs_search_saved']['table']['join'] = array(
+  $data['aas_search_saved']['table']['join'] = array(
      // Directly links to users table.
     'users' => array(
       'left_field' => 'uid',
@@ -191,15 +191,15 @@ function apachesolr_angularjs_search_views_data() {
     ),
   );
 
-  $data['apachesolr_angularjs_search_saved_groups']['table']['group'] = t('Search Group');
+  $data['aas_search_saved_groups']['table']['group'] = t('Search Group');
 
-  $data['apachesolr_angularjs_search_saved_groups']['table']['base'] = array(
+  $data['aas_search_saved_groups']['table']['base'] = array(
     'field' => 'sgid',
     'title' => t('Saved Search Groups'),
     'help' => t('Saved search groups on your site'),
   );
 
-  $data['apachesolr_angularjs_search_saved_groups']['sgid'] = array(
+  $data['aas_search_saved_groups']['sgid'] = array(
     'title' => t('Sgid'),
     'help' => t('The Search Group ID'),
     'field' => array(
@@ -214,7 +214,7 @@ function apachesolr_angularjs_search_views_data() {
     ),
   );
 
-  $data['apachesolr_angularjs_search_saved_groups']['delete_link'] = array(
+  $data['aas_search_saved_groups']['delete_link'] = array(
     'title' => t('Delete Link'),
     'help' => t('Delete Link for this search'),
     'real field' => 'sgid',
@@ -223,7 +223,7 @@ function apachesolr_angularjs_search_views_data() {
     ),
   );
 
-  $data['apachesolr_angularjs_search_saved_groups']['name'] = array(
+  $data['aas_search_saved_groups']['name'] = array(
     'title' => t('Name'),
     'help' => t('The Search Group Name'),
     'field' => array(
@@ -238,7 +238,7 @@ function apachesolr_angularjs_search_views_data() {
     ),
   );
 
-  $data['apachesolr_angularjs_search_saved_groups']['created'] = array(
+  $data['aas_search_saved_groups']['created'] = array(
     'title' => t('Created'),
     'help' => t('The date the search group was created.'),
     'field' => array(
@@ -253,7 +253,7 @@ function apachesolr_angularjs_search_views_data() {
     ),
   );
 
-  $data['apachesolr_angularjs_search_saved_groups']['last_used'] = array(
+  $data['aas_search_saved_groups']['last_used'] = array(
     'title' => t('Last Used'),
     'help' => t('The date the search group was last used.'),
     'field' => array(
@@ -268,7 +268,7 @@ function apachesolr_angularjs_search_views_data() {
     ),
   );
 
-  $data['apachesolr_angularjs_search_saved_groups']['uid'] = array(
+  $data['aas_search_saved_groups']['uid'] = array(
     'title' => t('Uid'),
     'help' => t('The user ID that created this search group'),
     'field' => array(
@@ -295,7 +295,7 @@ function apachesolr_angularjs_search_views_data() {
     ),
   );
 
-  $data['apachesolr_angularjs_search_saved_groups']['table']['join'] = array(
+  $data['aas_search_saved_groups']['table']['join'] = array(
      // Directly links to users table.
     'users' => array(
       'left_field' => 'uid',
