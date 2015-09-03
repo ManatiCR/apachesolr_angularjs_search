@@ -135,6 +135,10 @@ function apachesolr_angularjs_search_block_info() {
       'info' => t('Apachesolr AngularJS Advanced Search'),
       'cache' => DRUPAL_CACHE_GLOBAL,
     ),
+    'aas_help_tips' => array(
+      'info' => t('Apachesolr AngularJS Advanced Search Help Tips'),
+      'cache' => DRUPAL_CACHE_GLOBAL,
+    ),
   );
 }
 
@@ -251,6 +255,12 @@ function apachesolr_angularjs_search_block_view($delta) {
     case 'aas_advanced':
       $block['subject'] = t('Advanced Search');
       $block['content'] = apachesolr_angularjs_search_get_advanced_search_block();
+      break;
+
+    case 'aas_help_tips':
+      $block['subject'] = t('Help Tips');
+      $block['content'] = apachesolr_angularjs_search_get_help_tips_block();
+      break;
   }
   return $block;
 }
@@ -368,6 +378,19 @@ function apachesolr_angularjs_search_get_environment_fields($env_id) {
  */
 function apachesolr_angularjs_search_get_basic_search_block() {
   return array();
+}
+
+function apachesolr_angularjs_search_get_help_tips_block() {
+  $build = array();
+  $help_tips = variable_get('apachesolr_angularjs_search_help_tips', array());
+  if (!empty($help_tips)) {
+    $content = check_markup($help_tips['value'], $help_tips['format']);
+    $build['content'] = array(
+      '#type' => 'markup',
+      '#markup' => $content,
+    );
+  }
+  return $build;
 }
 
 /**
@@ -802,6 +825,15 @@ function apachesolr_angularjs_search_admin_form($form, $form_state) {
     '#description' => t('Allowed time to live for a temporary search (in seconds).'),
     '#default_value' => variable_get('apachesolr_angularjs_search_delete_time', 604800),
     '#required' => TRUE,
+  );
+
+  $help_tips = variable_get('apachesolr_angularjs_search_help_tips', array());
+  $form['apachesolr_angularjs_search_help_tips'] = array(
+    '#title' => t('Help Tips'),
+    '#type' => 'text_format',
+    '#description' => t('Search Help Tips'),
+    '#format' => !empty($help_tips['format']) ? $help_tips['format'] : NULL,
+    '#default_value' => !empty($help_tips['value']) ? $help_tips['value'] : '',
   );
 
   return system_settings_form($form);
