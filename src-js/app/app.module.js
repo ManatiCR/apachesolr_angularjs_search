@@ -25,7 +25,7 @@
         // We need to ensure dom is ready before getting this element.
         angular.element(document).ready(setDrupalData);
         function setDrupalData() {
-          var mainControllerElement = angular.element(document.getElementById('mainController'));
+          var mainControllerElement = angular.element(document.getElementById('advanced-search-controller'));
           var drupalDataService = mainControllerElement.injector().get('drupalDataService');
           drupalDataService.setDrupalData(data);
           mainControllerElement.scope().$apply();
