@@ -19,28 +19,30 @@
           <a href="#" class="advanced-search--group-save" data-ng-click=main.saveGroup(groupIndex)>Save this Search Group for next searches</a>
           <a href="#" class="advanced-search--group-delete" data-ng-click="main.deleteGroup(groupIndex); $event.preventDefault();">Delete Group</a>
         </div>
-        <div class="advanced-search--group-operator">
-          <a href="#" data-ng-click="$event.preventDefault();" class="advanced-search--operator-toggle">{{group.internalConnector | uppercase}}</a>
-          <select class="advanced-search--operator-select" data-ng-options="option | uppercase for option in main.operators" data-ng-model="group.internalConnector"></select>
-        </div>
-        <div class="advanced-search--field-container" data-ng-if="field.id" data-ng-repeat="field in group.fields" data-ng-mouseenter="group.closeButtonVisible[$index] = true" data-ng-mouseleave="group.closeButtonVisible[$index] = false">
-          <select class="advanced-search--field-type" data-ng-if="!group.selectedFields[$index].hide" data-ng-change="main.fieldChanged(groupIndex, $index)" data-ng-model="group.selectedFields[$index]" data-ng-options="option.label for option in main.fields.selected track by option.id"></select>
-          <div class="advanced-search--field-link" data-ng-if="group.selectedFields[$index].hide">LINK</div>
-          <label class="advanced-search--field-value-label" data-ng-if="field.format === 'fromto'">{{ field.from_label }}</label>
-          <input class="advanced-search--field-value form-{{field.type}}" type="{{ field.type }}" data-ng-if="field.type != 'fulltext' && !field.autocomplete_path" data-ng-model="field.value" />
-          <label class="advanced-search--field-value2-label" data-ng-if="field.format === 'fromto'">{{ field.to_label }}</label>
-          <input class="advanced-search--field-value2 form-{{field.type}}" type="{{ field.type }}" data-ng-if="field.type != 'fulltext' && !field.autocomplete_path && field.format === 'fromto'" data-ng-model="field.value2" />
-          <textarea class="advanced-search--field-value form-textarea" data-ng-if="field.type == 'fulltext'" data-ng-model="field.value"></textarea>
-          <div class="advanced-search--field-actions">
-            <a class="advanced-search--field-delete" data-ng-show="(groupIndex === 0 && $index > 0) && group.closeButtonVisible[$index]" href="#" data-ng-click="main.deleteField(groupIndex, $index); $event.preventDefault();">Delete</a>
-            <a class="advanced-search--field-add" data-ng-show="group.closeButtonVisible[$index]" href="#" data-ng-click="main.addSameField(groupIndex, $index); $event.preventDefault();">Add</a>
+        <div class="advanced-search--group-content">
+          <div class="advanced-search--group-operator">
+            <a href="#" data-ng-click="$event.preventDefault();" class="advanced-search--operator-toggle">{{group.internalConnector | uppercase}}</a>
+            <select class="advanced-search--operator-select" data-ng-options="option | uppercase for option in main.operators" data-ng-model="group.internalConnector"></select>
           </div>
-        </div>
-        <div class="advanced-search--add-another">
-          <a href="#" class="advanced-search--add-another-button" data-ng-if="!group.activeAddField" data-ng-click="group.activeAddField = true; $event.preventDefault();">Add Field</a>
-          <div class="advanced-search--add-type" data-ng-if="group.activeAddField">
-            <select class="advanced-search--add-type-select" data-ng-model="main.selectedField" ng-options="option.label for option in main.fields.selected track by option.id"></select>
-            <a href="#" class="advanced-search--add-type-button" data-ng-click="main.addFieldConfirm(groupIndex); $event.preventDefault();">Add</a>
+          <div class="advanced-search--field-container" data-ng-if="field.id" data-ng-repeat="field in group.fields" data-ng-mouseenter="group.closeButtonVisible[$index] = true" data-ng-mouseleave="group.closeButtonVisible[$index] = false">
+            <select class="advanced-search--field-type" data-ng-if="!group.selectedFields[$index].hide" data-ng-change="main.fieldChanged(groupIndex, $index)" data-ng-model="group.selectedFields[$index]" data-ng-options="option.label for option in main.fields.selected track by option.id"></select>
+            <label class="advanced-search--field-value-label" data-ng-if="field.format === 'fromto'">{{ field.from_label }}</label>
+            <input class="advanced-search--field-value form-{{field.type}}" type="{{ field.type }}" data-ng-if="field.type != 'fulltext' && !field.autocomplete_path" data-ng-model="field.value" />
+            <label class="advanced-search--field-value2-label" data-ng-if="field.format === 'fromto'">{{ field.to_label }}</label>
+            <input class="advanced-search--field-value2 form-{{field.type}}" type="{{ field.type }}" data-ng-if="field.type != 'fulltext' && !field.autocomplete_path && field.format === 'fromto'" data-ng-model="field.value2" />
+            <textarea class="advanced-search--field-value form-textarea" data-ng-if="field.type == 'fulltext'" data-ng-model="field.value"></textarea>
+            <div class="advanced-search--field-actions">
+              <a class="advanced-search--field-action-item advanced-search--field-delete" data-ng-show="(groupIndex === 0 && $index > 0) && group.closeButtonVisible[$index]" href="#" data-ng-click="main.deleteField(groupIndex, $index); $event.preventDefault();">Delete lorem ipsum</a>
+              <a class="advanced-search--field-action-item advanced-search--field-add" data-ng-show="group.closeButtonVisible[$index]" href="#" data-ng-click="main.addSameField(groupIndex, $index); $event.preventDefault();">Add</a>
+            </div>
+            <div class="advanced-search--field-link" data-ng-if="group.selectedFields[$index + 1].hide">LINK</div>
+          </div>
+          <div class="advanced-search--add-another">
+            <a href="#" class="advanced-search--add-another-button" data-ng-if="!group.activeAddField" data-ng-click="group.activeAddField = true; $event.preventDefault();">Add Field</a>
+            <div class="advanced-search--add-type" data-ng-if="group.activeAddField">
+              <select class="advanced-search--add-type-select" data-ng-model="main.selectedField" ng-options="option.label for option in main.fields.selected track by option.id"></select>
+              <a href="#" class="advanced-search--add-type-button" data-ng-click="main.addFieldConfirm(groupIndex); $event.preventDefault();">Add</a>
+            </div>
           </div>
         </div>
         <div class="advanced-search--group-connector" data-ng-if="main.groups[groupIndex + 1]">
