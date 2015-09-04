@@ -9,7 +9,7 @@
  * Implements hook_apachesolr_angularjs_search_fields_alter().
  */
 function hook_apachesolr_angularjs_search_fields_alter(&$fields) {
-  $fields['bs_promote'] = array(
+  $fields['selected'][0] = array(
     'label' => t('Promote'),
     'type' => 'checkbox',
     'autocomplete_path' => '',
