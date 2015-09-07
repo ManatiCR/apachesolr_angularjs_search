@@ -439,6 +439,9 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
         $path . '/bower_components/angular-touch/angular-touch.js' => array(
           'type' => 'file',
         ),
+        $path . '/bower_components/angular-ui-select/dist/select.min.js' => array(
+          'type' => 'file',
+        ),
         $path . '/src-js/app/app.module.js' => array(
           'type' => 'file',
         ),
@@ -456,6 +459,9 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
         ),
       ),
       'css' => array(
+        $path . '/bower_components/angular-ui-select/dist/select.min.css' => array(
+          'type' => 'file',
+        ),
         $path . '/src-js/app/app.css' => array(
           'type' => 'file',
         ),

@@ -10,7 +10,7 @@
 (function () {
   'use strict';
 
-  angular.module('apachesolrAngularjsSearch', ['ngCookies', 'ngResource', 'ngSanitize', 'ngTouch']);
+  angular.module('apachesolrAngularjsSearch', ['ngCookies', 'ngResource', 'ngSanitize', 'ngTouch', 'ui.select']);
   Drupal.behaviors.apachesolrAngularjs = {
     attach: function(context) {
       jQuery('#advancedSearch', context).once('advancedSearch', advancedSearchFunction);
