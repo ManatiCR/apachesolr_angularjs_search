@@ -520,6 +520,14 @@ function apachesolr_angularjs_search_get_group_name($group, $source = 'label') {
   $name = '';
   foreach ($group->fields as $field) {
     if (!empty($field['id']) && !empty($field['value'])) {
+      if ($source === 'value' && is_array($field[$source])) {
+        $output = '';
+        foreach ($field[$source] as $element) {
+          $output .= $element['name'] . ', ';
+        }
+        $output = substr($output, 0, -2);
+        $field[$source] = $output;
+      }
       $name .= $field[$source] . ', ';
     }
   }
@@ -618,8 +626,15 @@ function apachesolr_angularjs_search_build_query($groups) {
       if ($field['id'] !== '__fulltext_search' && (!empty($field['value']) || !empty($field['value2']))) {
         $query .= $field['id'] . ':';
       }
-      if (empty($field['format']) && !empty($field['value'])) {
+      if (empty($field['format']) && empty($field['autocompletePath']) && !empty($field['value'])) {
         $query .= $field['value'];
+      }
+      elseif (!empty($field['autocompletePath']) && !empty($field['value'])) {
+        foreach ($field['value'] as $value) {
+          // @TODO: Optional OR.
+          $query .= $value['id'] . ' OR ';
+        }
+        $query = substr($query, 0, -4);
       }
       elseif (!empty($field['format']) && $field['format'] === 'fromto' && (!empty($field['value']) || !empty($field['value2']))) {
         $left_limit = !empty($field['value']) ? $field['value'] : '*';

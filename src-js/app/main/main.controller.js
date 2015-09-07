@@ -7,7 +7,7 @@
 
   angular.module('apachesolrAngularjsSearch').controller('mainController', mainController);
 
-  function mainController($rootScope, $location, drupalDataService, searchPostService, searchGroupService) {
+  function mainController($rootScope, $location, $http, drupalDataService, searchPostService, searchGroupService) {
     /* jshint validthis: true */
     var main = this;
 
@@ -22,6 +22,7 @@
       main.addSearchGroup = addSearchGroup;
       main.deleteGroup = deleteGroup;
       main.saveGroup = saveGroup;
+      main.getChoices = getChoices;
       main.fields = {};
       main.groups = [];
       main.operators = [];
@@ -157,6 +158,16 @@
 
       function deleteGroup(groupIndex) {
         main.groups.splice(groupIndex, 1);
+      }
+
+      function getChoices(field, search) {
+        if (search && search.length > 2) {
+          $http.get(field.autocompletePath + '/' + search).then(function(response) {
+            if (response.status === 200) {
+              field.choices = response.data;
+            }
+          });
+        }
       }
 
       function clearForm() {
