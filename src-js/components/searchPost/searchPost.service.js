@@ -18,8 +18,8 @@
       }
     });
 
-    function sendSearch(groups, pageId) {
-      return search.send({groups: groups, pageId: pageId}).$promise;
+    function sendSearch(groups, limitBy, pageId) {
+      return search.send({groups: groups, limitBy: limitBy, pageId: pageId}).$promise;
     }
 
     return {

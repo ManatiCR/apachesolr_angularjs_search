@@ -182,7 +182,7 @@
       }
 
       function processForm() {
-        searchPostService.sendSearch(main.groups, pageId).then(function(data) {
+        searchPostService.sendSearch(main.groups, main.fields.limitby, pageId).then(function(data) {
           var uri = data.uri;
           window.location.href = uri;
         });

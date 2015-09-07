@@ -193,9 +193,10 @@ function apachesolr_angularjs_search_block_configure($delta) {
       '#columns' => array(
         'choices' => t('Choices'),
         'selected' => t('Selected'),
+        'limitby' => t('Limit By'),
       ),
       '#options' => apachesolr_angularjs_search_get_fields_options(),
-      '#default_value' => apachesolr_angular_js_search_fields_default_value(variable_get('apachesolr_angularjs_search_advanced_fields', array())),
+      '#default_value' => apachesolr_angular_js_search_fields_default_value(variable_get('apachesolr_angularjs_search_advanced_fields', array()), apachesolr_angularjs_search_get_fields_options()),
       '#prefix' => '<div id="aas-advanced-fields">',
       '#suffix' => '</div>',
     );
@@ -317,12 +318,13 @@ function apachesolr_angularjs_search_get_expired_searches($delete_time) {
 /**
  * Returns default value for fields field.
  */
-function apachesolr_angular_js_search_fields_default_value($fields) {
+function apachesolr_angular_js_search_fields_default_value($fields, $options) {
   if (!empty($fields)) {
     foreach ($fields['sortable_lists']['selected'] as $field_name => $field) {
-      $fields[$field_name] = $field_name;
+      $fields['sortable_lists']['selected'][$field_name] = $field_name;
     }
   }
+  $fields['sortable_lists']['choices'] = array_diff($options, $fields['sortable_lists']['selected']);
   return $fields;
 }
 
@@ -406,6 +408,7 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
     ),
   );
   $fields['selected'] = !empty($advanced_fields['sortable_lists']['selected']) ? array_values($fulltext_field + $advanced_fields['sortable_lists']['selected']) : array_values($fulltext_field);
+  $fields['limitby'] = !empty($advanced_fields['sortable_lists']['limitby']) ? array_values($advanced_fields['sortable_lists']['limitby']) : array();
   $page_id = variable_get('apachesolr_angularjs_search_advanced_page', apachesolr_search_default_search_page());
   $fields['always'] = array_values($fulltext_field);
   drupal_alter('apachesolr_angularjs_search_fields', $fields);
@@ -547,11 +550,12 @@ function apachesolr_angularjs_search_process_query($uri = '') {
     $data = file_get_contents('php://input');
     $data = drupal_json_decode($data);
     $groups = !empty($data['groups']) ? $data['groups'] : array();
+    $limit_by = !empty($data['limitBy']) ? $data['limitBy'] : array();
     $page_id = !empty($data['pageId']) ? check_plain($data['pageId']) : '';
     if ($user->uid && $groups && $page_id) {
       $search = new stdClass();
       $search->page_id = $page_id;
-      $query = apachesolr_angularjs_search_build_query($groups);
+      $query = apachesolr_angularjs_search_build_query($groups, $limit_by);
       $search->groups = $groups;
       $search->query = $query;
       apachesolr_angularjs_search_save_temporary_search($search);
@@ -616,7 +620,7 @@ function apachesolr_angularjs_search_process_query($uri = '') {
 /**
  * Builds a query string based on search groups.
  */
-function apachesolr_angularjs_search_build_query($groups) {
+function apachesolr_angularjs_search_build_query($groups, $limit_by) {
   $query = '';
   foreach ($groups as $group_index => $group) {
     $internal_connector = $group['internalConnector'];
@@ -654,6 +658,34 @@ function apachesolr_angularjs_search_build_query($groups) {
       $query .= " $next_connector";
       $query .= ' ';
     }
+  }
+
+  $limit = '';
+  foreach ($limit_by as $field_index => $field) {
+    if ($field['id'] !== '__fulltext_search' && (!empty($field['value']) || !empty($field['value2']))) {
+      $limit .= $field['id'] . ':';
+    }
+    if (empty($field['format']) && empty($field['autocompletePath']) && !empty($field['value'])) {
+      $limit .= $field['value'];
+    }
+    elseif (!empty($field['autocompletePath']) && !empty($field['value'])) {
+      foreach ($field['value'] as $value) {
+        // @TODO: Optional OR.
+        $limit .= $value['id'] . ' OR ';
+      }
+      $limit = substr($limit, 0, -4);
+    }
+    elseif (!empty($field['format']) && $field['format'] === 'fromto' && (!empty($field['value']) || !empty($field['value2']))) {
+      $left_limit = !empty($field['value']) ? $field['value'] : '*';
+      $right_limit = !empty($field['value2']) ? $field['value2'] : '*';
+      $limit .= '[' . $left_limit . ' TO ' . $right_limit . ']';
+    }
+
+    $limit .= ' ';
+  }
+
+  if (trim($limit)) {
+    $query .= ' AND ( ' . $limit . ' )';
   }
 
   return $query;

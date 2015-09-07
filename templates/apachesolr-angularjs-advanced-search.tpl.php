@@ -31,7 +31,7 @@
             <label class="advanced-search--field-value2-label" data-ng-if="field.format === 'fromto'">{{ field.to_label }}</label>
             <input class="advanced-search--field-value2 form-{{field.type}}" type="{{ field.type }}" data-ng-if="field.type != 'fulltext' && !field.autocompletePath && field.format === 'fromto'" data-ng-model="field.value2" />
             <textarea class="advanced-search--field-value form-textarea" data-ng-if="field.type == 'fulltext'" data-ng-model="field.value"></textarea>
-            <ui-select multiple data-ng-if="field.autocompletePath" data-ng-model="field.value" theme="bootstrap" data-ng-disabled="disabled" reset-search-input="false" style="width: 300px;">
+            <ui-select multiple data-ng-if="field.autocompletePath" data-ng-model="field.value" theme="bootstrap" data-ng-disabled="disabled" reset-search-input="true" style="width: 300px;">
               <ui-select-match placeholder="Select a {{ field.label }}"> {{ $item.name }} </ui-select-match>
               <ui-select-choices repeat="choice in field.choices track by choice.id" refresh="main.getChoices(field, $select.search)" refresh-delay="0">
                 <div data-ng-bind-html="choice.name | highlight: $select.search"></div>
@@ -58,6 +58,23 @@
       </div>
       <div class="advanced-search--add-group">
         <a href="#" class="advanced-search--add-group-button" data-ng-click="main.addSearchGroup(); $event.preventDefault();">Add Search Group</a>
+      </div>
+      <div class="advanced-search--limit-by">
+        <h3 class="advanced-search--limit-by-title">Limits:</h3>
+        <div class="advanced-search--field-container" data-ng-if="field.id" data-ng-repeat="field in main.fields.limitby">
+          <label class="advanced-search--field-value-label">{{ field.label }}</label>
+          <label class="advanced-search--field-value-label" data-ng-if="field.format === 'fromto'">{{ field.from_label }}</label>
+          <input class="advanced-search--field-value form-{{field.type}}" type="{{ field.type }}" data-ng-if="field.type != 'fulltext' && !field.autocompletePath" data-ng-model="field.value" />
+          <label class="advanced-search--field-value2-label" data-ng-if="field.format === 'fromto'">{{ field.to_label }}</label>
+          <input class="advanced-search--field-value2 form-{{field.type}}" type="{{ field.type }}" data-ng-if="field.type != 'fulltext' && !field.autocompletePath && field.format === 'fromto'" data-ng-model="field.value2" />
+          <textarea class="advanced-search--field-value form-textarea" data-ng-if="field.type == 'fulltext'" data-ng-model="field.value"></textarea>
+          <ui-select multiple data-ng-if="field.autocompletePath" data-ng-model="field.value" theme="bootstrap" data-ng-disabled="disabled" reset-search-input="true" style="width: 300px;">
+            <ui-select-match placeholder="Select a {{ field.label }}"> {{ $item.name }} </ui-select-match>
+            <ui-select-choices repeat="choice in field.choices track by choice.id" refresh="main.getChoices(field, $select.search)" refresh-delay="0">
+              <div data-ng-bind-html="choice.name | highlight: $select.search"></div>
+            </ui-select-choices>
+          </ui-select>
+        </div>
       </div>
       <div class="advanced-search--global-actions">
         <button class="advanced-search--global-reset" data-ng-click="main.clearForm()" type="button">Reset</button>
