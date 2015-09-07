@@ -17,7 +17,7 @@
       <div class="advanced-search--group" data-ng-if="group.id" data-ng-repeat="group in main.groups" data-ng-init="groupIndex = $index">
         <div class="advanced-search--group-actions">
           <a href="#" class="advanced-search--group-save" data-ng-click=main.saveGroup(groupIndex)>Save this Search Group for next searches</a>
-          <a href="#" class="advanced-search--group-delete" data-ng-click="main.deleteGroup(groupIndex); $event.preventDefault();">Delete Group</a>
+          <a href="#" class="advanced-search--group-delete" data-ng-if="main.groups.length > 1" data-ng-click="main.deleteGroup(groupIndex); $event.preventDefault();">Delete Group</a>
         </div>
         <div class="advanced-search--group-content">
           <div class="advanced-search--group-operator">
