@@ -34,7 +34,11 @@
             <ui-select multiple data-ng-if="field.autocompletePath" data-ng-model="field.value" theme="bootstrap" data-ng-disabled="disabled" reset-search-input="true">
               <ui-select-match placeholder="Select a {{ field.label }}"> {{ $item.name }} </ui-select-match>
               <ui-select-choices repeat="choice in field.choices track by choice.id" refresh="main.getChoices(field, $select.search)" refresh-delay="0">
-                <div data-ng-bind-html="choice.print || choice.name | highlight: $select.search"></div>
+                <div data-ng-if="!choice.path" data-ng-bind-html="choice.name | highlight: $select.search"></div>
+                <div class="choice" data-ng-if="choice.path" data-ng-click=$event.preventDefault();>
+                  <span>{{ choice.name }} ({{ choice.resultCount }})</span>
+                  <a title="{{ choice.name }}" href="{{ choice.path }}" class="{{ choice.classes }}">Info</a>
+                </div>
               </ui-select-choices>
             </ui-select>
             <div class="advanced-search--field-actions">
