@@ -302,6 +302,36 @@ function apachesolr_angularjs_search_cron() {
 }
 
 /**
+ * Implements hook_preprocess_apachesolr_sort_link().
+ */
+function apachesolr_angularjs_search_preprocess_apachesolr_sort_link(&$vars) {
+  _apachesolr_angularjs_search_preprocess_filter_sort_link($vars);
+}
+
+/**
+ * Implements hook_preprocess_facetapi_link_inactive().
+ */
+function apachesolr_angularjs_search_preprocess_facetapi_link_inactive(&$vars) {
+  _apachesolr_angularjs_search_preprocess_filter_sort_link($vars);
+}
+
+/**
+ * Implements hook_preprocess_facetapi_link_active().
+ */
+function apachesolr_angularjs_search_preprocess_facetapi_link_active(&$vars) {
+  _apachesolr_angularjs_search_preprocess_filter_sort_link($vars);
+}
+
+/**
+ * Preprocess facetapi_link.
+ */
+function _apachesolr_angularjs_search_preprocess_filter_sort_link(&$vars) {
+  if (drupal_match_path(current_path(), APACHESOLR_ANGULARJS_SEARCH_BASE_PATH . '/*')) {
+    $vars['path'] = current_path();
+  }
+}
+
+/**
  * Return sid for expired searches.
  *
  * A search is considered expired if created + $delete_time > REQUEST_TIME.
