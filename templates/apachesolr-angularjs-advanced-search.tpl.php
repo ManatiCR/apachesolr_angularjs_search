@@ -20,7 +20,7 @@
           <a href="#" class="advanced-search--group-delete" data-ng-if="main.groups.length > 1" data-ng-click="main.deleteGroup(groupIndex); $event.preventDefault();">Delete Group</a>
         </div>
         <div class="advanced-search--group-content">
-          <div class="advanced-search--group-operator">
+          <div class="advanced-search--group-operator" data-ng-if="group.fields.length > 1">
             <a href="#" data-ng-click="$event.preventDefault();" class="advanced-search--operator-toggle">{{group.internalConnector | uppercase}}</a>
             <select class="advanced-search--operator-select" data-ng-options="option | uppercase for option in main.operators" data-ng-model="group.internalConnector"></select>
           </div>
