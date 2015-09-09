@@ -37,7 +37,8 @@
                 <div data-ng-if="!choice.path" data-ng-bind-html="choice.name | highlight: $select.search"></div>
                 <div class="choice" data-ng-if="choice.path" data-ng-click=$event.preventDefault();>
                   <span>{{ choice.name }} ({{ choice.resultCount }})</span>
-                  <a title="{{ choice.name }}" href="{{ choice.path }}" class="{{ choice.classes }}">Info</a>
+                  <button data-ng-click="main.startPopup(choice, $event);" title="{{ choice.name }}" id="choice-{{ choice.id }}" class="{{ choice.classes }}">Info</button>
+                  <input type="hidden" class="choice-{{ choice.id }}-url" value="{{ choice.path }}"/>
                 </div>
               </ui-select-choices>
             </ui-select>
