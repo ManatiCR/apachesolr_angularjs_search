@@ -23,6 +23,7 @@
       main.deleteGroup = deleteGroup;
       main.saveGroup = saveGroup;
       main.getChoices = getChoices;
+      main.startPopup = startPopup;
       main.fields = {};
       main.groups = [];
       main.operators = [];
@@ -168,6 +169,23 @@
             }
           });
         }
+      }
+
+      function startPopup(choice, $event) {
+        $event.stopPropagation();
+        var base = 'choice-' + choice.id;
+        if (!choice.clicked) {
+          choice.clicked = true;
+          var target = $event.target;
+          angular.element(target).click(Drupal.CTools.Modal.clickAjaxLink);
+          var element_settings = {};
+          element_settings.url = choice.path;
+          element_settings.event = 'click';
+          element_settings.setClick = true;
+
+          Drupal.ajax[base] = new Drupal.ajax(base, target, element_settings);
+        }
+        Drupal.ajax[base].trigger();
       }
 
       function clearForm() {
