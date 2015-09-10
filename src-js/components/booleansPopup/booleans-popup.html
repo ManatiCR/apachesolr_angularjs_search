@@ -1,0 +1,6 @@
+<div class="booleans-popup--container" data-ng-if="vm.show">
+  <button class="booleans-popup--and" data-ng-click="vm.addBoolean('AND', $event)">AND</button>
+  <button class="booleans-popup--or" data-ng-click="vm.addBoolean('OR', $event)">OR</button>
+  <button class="booleans-popup--not" data-ng-click="vm.addBoolean('NOT', $event)">NOT</button>
+</div>
+<textarea field="vm.field" class="advanced-search--field-value form-textarea" data-ng-if="vm.field.type == 'fulltext'" data-ng-model="vm.field.value" data-ng-keypress="vm.textChange($event)"></textarea>

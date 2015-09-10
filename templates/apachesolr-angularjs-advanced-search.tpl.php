@@ -30,7 +30,7 @@
             <input class="advanced-search--field-value form-{{field.type}}" type="{{ field.type }}" data-ng-if="field.type != 'fulltext' && !field.autocompletePath" data-ng-model="field.value" />
             <label class="advanced-search--field-value2-label advanced-search--field-fromto-label" data-ng-if="field.format === 'fromto'">{{ field.to_label }}</label>
             <input class="advanced-search--field-value2 form-{{field.type}}" type="{{ field.type }}" data-ng-if="field.type != 'fulltext' && !field.autocompletePath && field.format === 'fromto'" data-ng-model="field.value2" />
-            <textarea class="advanced-search--field-value form-textarea" data-ng-if="field.type == 'fulltext'" data-ng-model="field.value"></textarea>
+            <aas-booleans-popup data-ng-if="field.type == 'fulltext'" field="field"></aas-booleans-popup>
             <ui-select multiple data-ng-if="field.autocompletePath" data-ng-model="field.value" theme="bootstrap" data-ng-disabled="disabled" reset-search-input="true">
               <ui-select-match placeholder="Select a {{ field.label }}"> {{ $item.name }} </ui-select-match>
               <ui-select-choices repeat="choice in field.choices track by choice.id" refresh="main.getChoices(field, $select.search)" refresh-delay="0">

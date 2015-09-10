@@ -17,9 +17,11 @@
       function advancedSearchFunction() {
         var fields = Drupal.settings.apachesolrAngularjs.fields;
         var pageId = Drupal.settings.apachesolrAngularjs.pageId;
+        var modulePath = Drupal.settings.apachesolrAngularjs.modulePath;
         var data = {
           fields: fields,
-          pageId: pageId
+          pageId: pageId,
+          modulePath: modulePath,
         };
 
         // We need to ensure dom is ready before getting this element.
