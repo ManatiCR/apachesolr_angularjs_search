@@ -693,33 +693,60 @@ function apachesolr_angularjs_search_build_query($groups, $limit_by) {
 
   $limit = '';
   foreach ($limit_by as $field_index => $field) {
-    if ($field['id'] !== '__fulltext_search' && (!empty($field['value']) || !empty($field['value2']))) {
-      $limit .= $field['id'] . ':';
-    }
-    if (empty($field['format']) && empty($field['autocompletePath']) && !empty($field['value'])) {
-      $limit .= $field['value'];
-    }
-    elseif (!empty($field['autocompletePath']) && !empty($field['value'])) {
-      foreach ($field['value'] as $value) {
-        // @TODO: Optional OR.
-        $limit .= $value['id'] . ' OR ';
+    if ($field['type'] != 'group') {
+      $result = apachesolr_angularjs_search_get_field_query($field);
+      if ($result) {
+        $limit .= $result . ' AND ';
       }
-      $limit = substr($limit, 0, -4);
     }
-    elseif (!empty($field['format']) && $field['format'] === 'fromto' && (!empty($field['value']) || !empty($field['value2']))) {
-      $left_limit = !empty($field['value']) ? $field['value'] : '*';
-      $right_limit = !empty($field['value2']) ? $field['value2'] : '*';
-      $limit .= '[' . $left_limit . ' TO ' . $right_limit . ']';
+    else {
+      foreach ($field['fields'] as $group_field) {
+        $result = apachesolr_angularjs_search_get_field_query($group_field);
+        if ($result) {
+          $limit .= $result . ' AND ';
+        }
+      }
     }
-
-    $limit .= ' ';
   }
+
+  $limit = substr($limit, 0, -5);
 
   if (trim($limit)) {
     $query .= ' AND ( ' . $limit . ' )';
   }
 
   return $query;
+}
+
+/**
+ * Create query string for a given field.
+ */
+function apachesolr_angularjs_search_get_field_query($field) {
+  $query = '';
+  if ($field['id'] != '__fulltext_search' && (!empty($field['value']) || !empty($field['value2'])) && $field['type'] != 'group') {
+    // No fulltext, no field with 2 values; no group.
+    $query .= $field['id'] . ':';
+  }
+  if (empty($field['format']) && empty($field['autocompletePath']) && !empty($field['value'])) {
+    // No field with 2 values, no autocomplete.
+    $query .= $field['value'];
+  }
+  elseif (!empty($field['autocompletePath']) && !empty($field['value'])) {
+    // Autocomplete field.
+    foreach ($field['value'] as $value) {
+      // @TODO: Optional OR.
+      $query .= $value['id'] . ' OR ';
+    }
+    $query = substr($query, 0, -4);
+  }
+  elseif (!empty($field['format']) && $field['format'] === 'fromto' && (!empty($field['value']) || !empty($field['value2']))) {
+    // Field with 2 values.
+    $left_limit = !empty($field['value']) ? $field['value'] : '*';
+    $right_limit = !empty($field['value2']) ? $field['value2'] : '*';
+    $query .= '[' . $left_limit . ' TO ' . $right_limit . ']';
+  }
+
+  return trim($query);
 }
 
 /**
