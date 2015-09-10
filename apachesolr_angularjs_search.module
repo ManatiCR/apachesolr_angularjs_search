@@ -412,6 +412,9 @@ function apachesolr_angularjs_search_get_basic_search_block() {
   return array();
 }
 
+/**
+ * Return build array for help tips block.
+ */
 function apachesolr_angularjs_search_get_help_tips_block() {
   $build = array();
   $help_tips = variable_get('apachesolr_angularjs_search_help_tips', array());
