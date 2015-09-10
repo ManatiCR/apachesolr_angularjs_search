@@ -661,24 +661,7 @@ function apachesolr_angularjs_search_build_query($groups, $limit_by) {
     $next_connector = $group['nextConnector'];
     $query .= '( ';
     foreach ($group['fields'] as $field_index => $field) {
-      if ($field['id'] !== '__fulltext_search' && (!empty($field['value']) || !empty($field['value2']))) {
-        $query .= $field['id'] . ':';
-      }
-      if (empty($field['format']) && empty($field['autocompletePath']) && !empty($field['value'])) {
-        $query .= $field['value'];
-      }
-      elseif (!empty($field['autocompletePath']) && !empty($field['value'])) {
-        foreach ($field['value'] as $value) {
-          // @TODO: Optional OR.
-          $query .= $value['id'] . ' OR ';
-        }
-        $query = substr($query, 0, -4);
-      }
-      elseif (!empty($field['format']) && $field['format'] === 'fromto' && (!empty($field['value']) || !empty($field['value2']))) {
-        $left_limit = !empty($field['value']) ? $field['value'] : '*';
-        $right_limit = !empty($field['value2']) ? $field['value2'] : '*';
-        $query .= '[' . $left_limit . ' TO ' . $right_limit . ']';
-      }
+      $query .= apachesolr_angularjs_search_get_field_query($field);
 
       if (isset($group['fields'][$field_index + 1])) {
         $query .= " $internal_connector";
@@ -686,7 +669,7 @@ function apachesolr_angularjs_search_build_query($groups, $limit_by) {
       $query .= ' ';
     }
 
-    $query .= " )";
+    $query .= ")";
 
     if (isset($groups[$group_index + 1])) {
       $query .= " $next_connector";
