@@ -667,13 +667,29 @@ function apachesolr_angularjs_search_build_query($groups, $limit_by) {
     $internal_connector = $group['internalConnector'];
     $next_connector = $group['nextConnector'];
     $query .= '( ';
+    $missing_parenthesis = FALSE;
     foreach ($group['fields'] as $field_index => $field) {
+      $field_connector_added = FALSE;
+      if (!$missing_parenthesis) {
+        $query .= '( ( ';
+        $missing_parenthesis = TRUE;
+      }
       $query .= apachesolr_angularjs_search_get_field_query($field);
 
-      if (isset($group['fields'][$field_index + 1])) {
+      if ((!empty($group['fields'][$field_index + 1]['id']) && $group['fields'][$field_index + 1]['id'] !== $field['id']) || (empty($group['fields'][$field_index + 1]['id']) && $missing_parenthesis)) {
+        $query .= ' ) )';
+        $missing_parenthesis = FALSE;
+      }
+      elseif (!empty($group['fields'][$field_index + 1]['id']) && $group['fields'][$field_index + 1]['id'] === $field['id']) {
+        $query .= ' ) ' . $field['nextConnector'] . ' (';
+        $field_connector_added = TRUE;
+      }
+
+      if (!$field_connector_added && isset($group['fields'][$field_index + 1])) {
         $query .= " $internal_connector";
       }
       $query .= ' ';
+
     }
 
     $query .= ")";
@@ -708,7 +724,6 @@ function apachesolr_angularjs_search_build_query($groups, $limit_by) {
     $query .= ' AND ( ' . $limit . ' )';
   }
 
-  // @TODO: Handle boolean operators in fields.
   return $query;
 }
 
@@ -723,7 +738,18 @@ function apachesolr_angularjs_search_get_field_query($field) {
   }
   if (empty($field['format']) && empty($field['autocompletePath']) && !empty($field['value'])) {
     // No field with 2 values, no autocomplete.
-    $query .= $field['value'];
+    $value_connector = '';
+    $values = apachesolr_angularjs_search_get_field_values($field['value'], $value_connector);
+    $query .= $values[0];
+
+    // Discard first value because we already used it.
+    array_shift($values);
+    if (!empty($values)) {
+      foreach ($values as $index => $value) {
+        $query .= ' ' . $value_connector . ' ';
+        $query .= $field['id'] . ':' . $value;
+      }
+    }
   }
   elseif (!empty($field['autocompletePath']) && !empty($field['value'])) {
     // Autocomplete field.
@@ -741,6 +767,34 @@ function apachesolr_angularjs_search_get_field_query($field) {
   }
 
   return trim($query);
+}
+
+/**
+ * Get a list of values for a given field.
+ */
+function apachesolr_angularjs_search_get_field_values($value, &$value_connector = '', $values = array()) {
+  $pattern = '/^(.*)\sAND\s(.*)|^(.*)\sOR\s(.*)|^(.*)\sNOT\s(.*)/';
+  $matches = array();
+  if (preg_match($pattern, $value, $matches) == 0) {
+    $values[] = $value;
+    return array_reverse($values);
+  }
+  else {
+    if (!$value_connector) {
+      if (!empty($matches[1])) {
+        $value_connector = 'AND';
+      }
+      elseif (!empty($matches[3])) {
+        $value_connector = 'OR';
+      }
+      elseif (!empty($matches[5])) {
+        $value_connector = 'NOT';
+      }
+    }
+    $values[] = end($matches);
+    $value = $matches[count($matches) - 2];
+    return apachesolr_angularjs_search_get_field_values($value, $value_connector, $values);
+  }
 }
 
 /**
