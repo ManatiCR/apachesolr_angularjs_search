@@ -29,6 +29,7 @@ function booleansPopup($rootScope, drupalDataService) {
     vm.show = false;
     vm.textChange = textChange;
     vm.addBoolean = addBoolean;
+    vm.firstBoolean = '';
 
     var target;
     var selectionStart;
@@ -47,18 +48,42 @@ function booleansPopup($rootScope, drupalDataService) {
     }
 
     function addBoolean(operator, $event) {
-      var part = vm.field.value.substr(selectionStart + 1);
-      vm.field.value = vm.field.value.substr(0, selectionStart);
-      vm.field.value += ' ' + operator + ' ';
-      vm.field.value += part;
+
+      var addBooleanInField = true;
       vm.show = false;
-      var selectionSum = operator.length + 2;
-      var cursorPosition = selectionStart + selectionSum;
-      angular.element(target).focus();
-      setTimeout(function() {
-        // Let's wait focus has finished before applying selectionRange.
-        target.setSelectionRange(cursorPosition, cursorPosition);
-      }, 0);
+
+      if (vm.field.id !== '__fulltext_search' && vm.firstBoolean && vm.firstBoolean !== operator) {
+        addBooleanInField = false;
+      }
+
+      if (addBooleanInField) {
+
+        if (!vm.firstBoolean) {
+          vm.firstBoolean = operator;
+        }
+
+        var part = vm.field.value.substr(selectionStart + 1);
+        vm.field.value = vm.field.value.substr(0, selectionStart);
+        vm.field.value += ' ' + operator + ' ';
+        vm.field.value += part;
+        var selectionSum = operator.length + 2;
+        var cursorPosition = selectionStart + selectionSum;
+        angular.element(target).focus();
+        setTimeout(function() {
+          // Let's wait focus has finished before applying selectionRange.
+          target.setSelectionRange(cursorPosition, cursorPosition);
+        }, 0);
+      }
+      else {
+        var part = vm.field.value.substr(selectionStart + 1);
+        vm.field.value = vm.field.value.substr(0, selectionStart);
+        vm.field.value += part;
+        vm.field.nextConnector = operator.toLowerCase();
+        $scope.$parent.main.addSameField($scope.$parent.groupIndex, $scope.$parent.$index);
+        setTimeout(function() {
+          angular.element(target).parents('.advanced-search--field-container').next().find('.advanced-search--field-value').focus();
+        }, 0);
+      }
     }
   }
 }
