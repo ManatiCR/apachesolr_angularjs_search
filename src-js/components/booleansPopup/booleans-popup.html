@@ -3,4 +3,5 @@
   <button class="booleans-popup--or" data-ng-click="vm.addBoolean('OR', $event)">OR</button>
   <button class="booleans-popup--not" data-ng-click="vm.addBoolean('NOT', $event)">NOT</button>
 </div>
+<input class="advanced-search--field-value form-{{vm.field.type}}" type="{{ vm.field.type }}" data-ng-if="vm.field.type != 'fulltext' && !vm.field.autocompletePath && vm.field.format !== 'fromto'" data-ng-model="vm.field.value"  data-ng-keypress="vm.textChange($event)"/>
 <textarea field="vm.field" class="advanced-search--field-value form-textarea" data-ng-if="vm.field.type == 'fulltext'" data-ng-model="vm.field.value" data-ng-keypress="vm.textChange($event)"></textarea>
