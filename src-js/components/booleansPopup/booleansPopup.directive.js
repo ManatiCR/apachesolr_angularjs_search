@@ -100,6 +100,7 @@ function booleansPopup($rootScope, drupalDataService) {
 
     function highlightChange($markers) {
       var lastInserted = {};
+      // @TODO: Fix random behaviors when boolean is not inserted at end.
       if ($markers.length) {
         lastInserted = $markers[$markers.length - 1];
         if (!vm.firstBoolean) {
@@ -114,6 +115,9 @@ function booleansPopup($rootScope, drupalDataService) {
             angular.element(target).parents('.advanced-search--field-container').next().find('.advanced-search--field-value').focus();
           }, 0);
         }
+      }
+      else {
+        vm.firstBoolean = '';
       }
     }
   }
