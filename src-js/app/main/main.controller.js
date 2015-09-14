@@ -147,7 +147,11 @@
       }
 
       function addSameField(groupIndex, index) {
+        if (!main.groups[groupIndex].fields[index].nextConnector) {
+          main.groups[groupIndex].fields[index].nextConnector = 'or';
+        }
         var field = angular.copy(main.groups[groupIndex].fields[index]);
+        field.value = null;
         addField(groupIndex, field, index);
       }
 
