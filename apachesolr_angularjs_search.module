@@ -705,6 +705,7 @@ function apachesolr_angularjs_search_build_query($groups, $limit_by) {
     $query .= ' AND ( ' . $limit . ' )';
   }
 
+  // @TODO: Handle boolean operators in fields.
   return $query;
 }
 
