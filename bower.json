@@ -7,7 +7,11 @@
     "angular-cookies": ">=1.4.*",
     "angular-sanitize": ">=1.4.*",
     "angular-touch": ">=1.4.*",
-    "angular-ui-select": ">=0.12.*"
+    "angular-ui-select": ">=0.12.*",
+    "angular-input-highlight": ">=0.1.1"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "resolutions": {
+    "angular": ">=1.4.*"
+  }
 }

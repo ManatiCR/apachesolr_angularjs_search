@@ -1,7 +1,7 @@
 <div class="booleans-popup--container" data-ng-if="vm.show">
-  <button class="booleans-popup--and" data-ng-click="vm.addBoolean('AND', $event)">AND</button>
-  <button class="booleans-popup--or" data-ng-click="vm.addBoolean('OR', $event)">OR</button>
-  <button class="booleans-popup--not" data-ng-click="vm.addBoolean('NOT', $event)">NOT</button>
+  <button class="booleans-popup--and" data-ng-click="vm.addBoolean('AND')">AND</button>
+  <button class="booleans-popup--or" data-ng-click="vm.addBoolean('OR')">OR</button>
+  <button class="booleans-popup--not" data-ng-click="vm.addBoolean('NOT')">NOT</button>
 </div>
-<input class="advanced-search--field-value form-{{vm.field.type}}" type="{{ vm.field.type }}" data-ng-if="vm.field.type != 'fulltext' && !vm.field.autocompletePath && vm.field.format !== 'fromto'" data-ng-model="vm.field.value"  data-ng-keypress="vm.textChange($event)"/>
-<textarea field="vm.field" class="advanced-search--field-value form-textarea" data-ng-if="vm.field.type == 'fulltext'" data-ng-model="vm.field.value" data-ng-keypress="vm.textChange($event)"></textarea>
+<input data-highlight="vm.format" data-highlight-onchange="vm.highlightChange($markers)" class="advanced-search--field-value form-{{vm.field.type}}" type="{{ vm.field.type }}" data-ng-if="vm.field.type != 'fulltext' && !vm.field.autocompletePath && vm.field.format !== 'fromto'" data-ng-model="vm.field.value"  data-ng-keypress="vm.textChange($event)"/>
+<textarea data-highlight="vm.format" data-highlight-onchange="vm.highlightChange($markers)" field="vm.field" class="advanced-search--field-value form-textarea" data-ng-if="vm.field.type == 'fulltext'" data-ng-model="vm.field.value" data-ng-keypress="vm.textChange($event)"></textarea>

@@ -29,15 +29,27 @@ function booleansPopup($rootScope, drupalDataService) {
     vm.show = false;
     vm.textChange = textChange;
     vm.addBoolean = addBoolean;
+    vm.highlightChange = highlightChange;
+    vm.format = {
+      '#619FFF': /AND|OR|NOT/g
+    };
     vm.firstBoolean = '';
 
     var target;
     var selectionStart;
 
+    if (!vm.field.value) {
+      // Prevent error with hightlight.
+      vm.field.value = '';
+    }
+
     function textChange($event) {
+      if (!target) {
+        target = $event.target;
+      }
+
       if ($event.charCode === 44) {
         vm.show = true;
-        target = $event.target;
         selectionStart = target.selectionStart;
         angular.element(target).focus();
       }
@@ -47,7 +59,7 @@ function booleansPopup($rootScope, drupalDataService) {
       return true;
     }
 
-    function addBoolean(operator, $event) {
+    function addBoolean(operator) {
 
       var addBooleanInField = true;
       vm.show = false;
@@ -83,6 +95,25 @@ function booleansPopup($rootScope, drupalDataService) {
         setTimeout(function() {
           angular.element(target).parents('.advanced-search--field-container').next().find('.advanced-search--field-value').focus();
         }, 0);
+      }
+    }
+
+    function highlightChange($markers) {
+      var lastInserted = {};
+      if ($markers.length) {
+        lastInserted = $markers[$markers.length - 1];
+        if (!vm.firstBoolean) {
+          vm.firstBoolean = lastInserted.text;
+        }
+
+        if (vm.field.id !== '__fulltext_search' && vm.firstBoolean !== lastInserted.text) {
+          vm.field.value = vm.field.value.substr(0, vm.field.value.length - 3);
+          vm.field.nextConnector = lastInserted.text.toLowerCase();
+          $scope.$parent.main.addSameField($scope.$parent.groupIndex, $scope.$parent.$index);
+          setTimeout(function() {
+            angular.element(target).parents('.advanced-search--field-container').next().find('.advanced-search--field-value').focus();
+          }, 0);
+        }
       }
     }
   }
