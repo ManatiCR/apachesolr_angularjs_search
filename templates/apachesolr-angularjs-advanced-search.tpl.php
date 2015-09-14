@@ -46,7 +46,10 @@
               <a class="advanced-search--field-action-item advanced-search--field-delete" data-ng-show="(groupIndex === 0 && $index > 0) && group.closeButtonVisible[$index]" href="#" data-ng-click="main.deleteField(groupIndex, $index); $event.preventDefault();">Delete lorem ipsum</a>
               <a class="advanced-search--field-action-item advanced-search--field-add" data-ng-show="group.closeButtonVisible[$index]" href="#" data-ng-click="main.addSameField(groupIndex, $index); $event.preventDefault();">Add</a>
             </div>
-            <div class="advanced-search--field-link" data-ng-if="group.selectedFields[$index + 1].hide">LINK</div>
+            <div class="advanced-search--next-field-operator" data-ng-if="group.fields.length > $index + 1">
+              <a href="#" data-ng-click="$event.preventDefault();" class="advanced-search--next-field-operator-toggle">{{field.nextConnector | uppercase}}</a>
+              <select class="advanced-search--next-field-operator-select" data-ng-options="option | uppercase for option in main.operators" data-ng-model="field.nextConnector"></select>
+            </div>
           </div>
           <div class="advanced-search--add-another">
             <a href="#" class="advanced-search--add-another-button" data-ng-if="!group.activeAddField" data-ng-click="group.activeAddField = true; $event.preventDefault();">Add Field</a>
