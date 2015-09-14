@@ -177,7 +177,7 @@
         if (!choice.clicked) {
           choice.clicked = true;
           var target = $event.target;
-          angular.element(target).click(Drupal.CTools.Modal.clickAjaxLink);
+          angular.element(target).on('click', Drupal.CTools.Modal.clickAjaxLink);
           var element_settings = {};
           element_settings.url = choice.path;
           element_settings.event = 'click';
