@@ -11,6 +11,7 @@ function booleansPopup($rootScope, drupalDataService) {
   });
 
   var directive = {
+    // @TODO: Change hardcoded path.
     templateUrl: 'sites/all/modules/custom/apachesolr_angularjs_search' + '/src-js/components/booleansPopup/booleans-popup.html',
     restrict: 'E',
     scope: {
@@ -30,11 +31,13 @@ function booleansPopup($rootScope, drupalDataService) {
     vm.addBoolean = addBoolean;
 
     var target;
+    var selectionStart;
 
     function textChange($event) {
       if ($event.charCode === 44) {
         vm.show = true;
         target = $event.target;
+        selectionStart = target.selectionStart;
         angular.element(target).focus();
       }
       else {
@@ -47,7 +50,13 @@ function booleansPopup($rootScope, drupalDataService) {
       vm.field.value = vm.field.value.substr(0, vm.field.value.length - 1);
       vm.field.value += ' ' + operator + ' ';
       vm.show = false;
+      var selectionSum = operator.length + 2;
+      var cursorPosition = selectionStart + selectionSum;
       angular.element(target).focus();
+      setTimeout(function() {
+        // Let's wait focus has finished before applying selectionRange.
+        target.setSelectionRange(cursorPosition, cursorPosition);
+      }, 0);
     }
   }
 }
