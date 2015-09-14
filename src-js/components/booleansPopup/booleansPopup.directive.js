@@ -47,8 +47,10 @@ function booleansPopup($rootScope, drupalDataService) {
     }
 
     function addBoolean(operator, $event) {
-      vm.field.value = vm.field.value.substr(0, vm.field.value.length - 1);
+      var part = vm.field.value.substr(selectionStart + 1);
+      vm.field.value = vm.field.value.substr(0, selectionStart);
       vm.field.value += ' ' + operator + ' ';
+      vm.field.value += part;
       vm.show = false;
       var selectionSum = operator.length + 2;
       var cursorPosition = selectionStart + selectionSum;
