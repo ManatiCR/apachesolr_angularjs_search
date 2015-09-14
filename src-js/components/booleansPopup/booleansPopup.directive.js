@@ -31,7 +31,7 @@ function booleansPopup($rootScope, drupalDataService) {
     vm.addBoolean = addBoolean;
     vm.highlightChange = highlightChange;
     vm.format = {
-      '#619FFF': /AND|OR|NOT/g
+      '#619FFF': /\sAND|\sOR|\sNOT/g
     };
     vm.firstBoolean = '';
 
@@ -108,7 +108,7 @@ function booleansPopup($rootScope, drupalDataService) {
 
         if (vm.field.id !== '__fulltext_search' && vm.firstBoolean !== lastInserted.text) {
           vm.field.value = vm.field.value.substr(0, vm.field.value.length - 3);
-          vm.field.nextConnector = lastInserted.text.toLowerCase();
+          vm.field.nextConnector = lastInserted.text.toLowerCase().trim();
           $scope.$parent.main.addSameField($scope.$parent.groupIndex, $scope.$parent.$index);
           setTimeout(function() {
             angular.element(target).parents('.advanced-search--field-container').next().find('.advanced-search--field-value').focus();
