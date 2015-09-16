@@ -51,7 +51,7 @@ function booleansPopup($rootScope, drupalDataService) {
       if ($event.charCode === 44) {
         vm.show = true;
         selectionStart = target.selectionStart;
-        angular.element(target).focus();
+        target.focus();
       }
       else {
         vm.show = false;
@@ -80,7 +80,7 @@ function booleansPopup($rootScope, drupalDataService) {
         vm.field.value += part;
         var selectionSum = operator.length + 2;
         var cursorPosition = selectionStart + selectionSum;
-        angular.element(target).focus();
+        target.focus();
         setTimeout(function() {
           // Let's wait focus has finished before applying selectionRange.
           target.setSelectionRange(cursorPosition, cursorPosition);
