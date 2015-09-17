@@ -43,7 +43,7 @@
               </ui-select-choices>
             </ui-select>
             <div class="advanced-search--field-actions">
-              <a class="advanced-search--field-action-item advanced-search--field-delete" data-ng-show="(groupIndex === 0 && $index > 0) && group.closeButtonVisible[$index]" href="#" data-ng-click="main.deleteField(groupIndex, $index); $event.preventDefault();">Delete lorem ipsum</a>
+              <a class="advanced-search--field-action-item advanced-search--field-delete" data-ng-show="((groupIndex === 0 && $index > 0) || groupIndex > 0) && group.closeButtonVisible[$index]" href="#" data-ng-click="main.deleteField(groupIndex, $index); $event.preventDefault();">Delete lorem ipsum</a>
               <a class="advanced-search--field-action-item advanced-search--field-add" data-ng-show="group.closeButtonVisible[$index]" href="#" data-ng-click="main.addSameField(groupIndex, $index); $event.preventDefault();">Add</a>
             </div>
             <div class="advanced-search--next-field-operator" data-ng-if="group.fields.length > $index + 1 && group.selectedFields[$index + 1].hide">
