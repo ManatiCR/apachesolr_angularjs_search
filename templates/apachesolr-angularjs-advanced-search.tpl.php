@@ -20,7 +20,7 @@
           <a href="#" class="advanced-search--group-delete" data-ng-if="main.groups.length > 1" data-ng-click="main.deleteGroup(groupIndex); $event.preventDefault();">Delete Group</a>
         </div>
         <div class="advanced-search--group-content">
-          <div class="advanced-search--group-operator" data-aas-booleans-select data-aas-booleans-select-options="main.operators" data-ng-model="group.internalConnector" data-ng-if="group.fields.length">
+          <div class="advanced-search--group-operator" data-aas-booleans-select data-aas-booleans-select-options="main.operators" data-ng-model="group.internalConnector" data-ng-show="group.differentFieldsCount > 1">
           </div>
           <div class="advanced-search--field-container" data-ng-if="field.id" data-ng-repeat="field in group.fields" data-ng-mouseenter="group.closeButtonVisible[$index] = true" data-ng-mouseleave="group.closeButtonVisible[$index] = false">
             <select class="advanced-search--field-type" data-ng-if="!group.selectedFields[$index].hide" data-ng-change="main.fieldChanged(groupIndex, $index)" data-ng-model="group.selectedFields[$index]" data-ng-options="option.label for option in main.fields.selected track by option.id"></select>

@@ -73,7 +73,8 @@
           selectedFields : [],
           closeButtonVisible : [],
           activeCount : 0,
-          activeAddField : false
+          activeAddField : false,
+          differentFieldsCount: 1
         };
       }
 
@@ -121,7 +122,22 @@
 
       function addFieldConfirm(groupIndex) {
         var field = angular.copy(main.selectedField);
-        addField(groupIndex, field);
+        if (!fieldExistsInGroup(field, main.groups[groupIndex])) {
+          main.groups[groupIndex].differentFieldsCount ++;
+        }
+        var index = addField(groupIndex, field);
+        if (main.groups[groupIndex].fields[index - 1].id === main.groups[groupIndex].fields[index].id ) {
+          main.groups[groupIndex].fields[index - 1].nextConnector = 'or';
+        }
+      }
+
+      function fieldExistsInGroup(field, group) {
+        for (i = 0; i < group.fields.length; i++) {
+          if (group.fields[i].id === field.id) {
+            return true;
+          }
+        }
+        return false;
       }
 
       function addField(groupIndex, field, index) {
@@ -137,6 +153,7 @@
           main.groups[groupIndex].activeAddField = false;
         }
         main.groups[groupIndex].activeCount++;
+        return index;
       }
 
       function deleteField(groupIndex, index) {
