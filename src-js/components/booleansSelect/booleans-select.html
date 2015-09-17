@@ -1,0 +1,6 @@
+<div class="booleans-select--container">
+  <button class="booleans-select--toggle" data-ng-click="vm.expanded = !vm.expanded" data-ng-show="!vm.expanded">{{ vm.selected | uppercase }}</button>
+  <ul class="booleans-select--list" data-ng-show="vm.expanded">
+    <li class="booleans-select--list-item" data-ng-repeat="option in vm.options" data-ng-click="vm.selectItem(option)"> {{ option | uppercase }}</li>
+  </ul>
+</div>
