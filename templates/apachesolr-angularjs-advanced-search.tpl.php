@@ -20,9 +20,7 @@
           <a href="#" class="advanced-search--group-delete" data-ng-if="main.groups.length > 1" data-ng-click="main.deleteGroup(groupIndex); $event.preventDefault();">Delete Group</a>
         </div>
         <div class="advanced-search--group-content">
-          <div class="advanced-search--group-operator" data-ng-if="group.fields.length > 1">
-            <a href="#" data-ng-click="$event.preventDefault();" class="advanced-search--operator-toggle">{{group.internalConnector | uppercase}}</a>
-            <select class="advanced-search--operator-select" data-ng-options="option | uppercase for option in main.operators" data-ng-model="group.internalConnector"></select>
+          <div class="advanced-search--group-operator" data-aas-booleans-select data-aas-booleans-select-options="main.operators" data-ng-model="group.internalConnector" data-ng-if="group.fields.length">
           </div>
           <div class="advanced-search--field-container" data-ng-if="field.id" data-ng-repeat="field in group.fields" data-ng-mouseenter="group.closeButtonVisible[$index] = true" data-ng-mouseleave="group.closeButtonVisible[$index] = false">
             <select class="advanced-search--field-type" data-ng-if="!group.selectedFields[$index].hide" data-ng-change="main.fieldChanged(groupIndex, $index)" data-ng-model="group.selectedFields[$index]" data-ng-options="option.label for option in main.fields.selected track by option.id"></select>
@@ -46,9 +44,7 @@
               <a class="advanced-search--field-action-item advanced-search--field-delete" data-ng-show="((groupIndex === 0 && $index > 0) || groupIndex > 0) && group.closeButtonVisible[$index]" href="#" data-ng-click="main.deleteField(groupIndex, $index); $event.preventDefault();">Delete lorem ipsum</a>
               <a class="advanced-search--field-action-item advanced-search--field-add" data-ng-show="group.closeButtonVisible[$index]" href="#" data-ng-click="main.addSameField(groupIndex, $index); $event.preventDefault();">Add</a>
             </div>
-            <div class="advanced-search--next-field-operator" data-ng-if="group.fields.length > $index + 1 && group.selectedFields[$index + 1].hide">
-              <a href="#" data-ng-click="$event.preventDefault();" class="advanced-search--next-field-operator-toggle">{{field.nextConnector | uppercase}}</a>
-              <select class="advanced-search--next-field-operator-select" data-ng-options="option | uppercase for option in main.operators" data-ng-model="field.nextConnector"></select>
+            <div class="advanced-search--next-field-operator" data-ng-if="group.fields.length > $index + 1 && group.selectedFields[$index + 1].hide" data-aas-booleans-select data-aas-booleans-select-options="main.operators" data-ng-model="field.nextConnector">
             </div>
           </div>
           <div class="advanced-search--add-another">
@@ -59,9 +55,7 @@
             </div>
           </div>
         </div>
-        <div class="advanced-search--group-connector" data-ng-if="main.groups[groupIndex + 1]">
-          <a href="#" data-ng-click="$event.preventDefault();" class="advanced-search--connector-toggle">{{group.nextConnector | uppercase}}</a>
-          <select class="advanced-search--group-connector-select" data-ng-options="option | uppercase for option in main.operators" data-ng-model="group.nextConnector"></select>
+        <div class="advanced-search--group-connector" data-ng-if="main.groups[groupIndex + 1]" data-aas-booleans-select data-aas-booleans-select-options="main.operators" data-ng-model="group.nextConnector">
         </div>
       </div>
       <div class="advanced-search--add-group">
