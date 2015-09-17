@@ -29,26 +29,15 @@
             <label class="advanced-search--field-value2-label advanced-search--field-fromto-label" data-ng-if="field.format === 'fromto'">{{ field.to_label }}</label>
             <input class="advanced-search--field-value2 form-{{field.type}}" type="{{ field.type }}" data-ng-if="field.type != 'fulltext' && !field.autocompletePath && field.format === 'fromto'" data-ng-model="field.value2" />
             <aas-booleans-popup data-ng-if="field.type === 'fulltext' || (field.type === 'text' && field.format !== 'fromto')" field="field"></aas-booleans-popup>
-            <ui-select class="advanced-search--field-autocomplete" multiple data-ng-if="field.autocompletePath" data-ng-model="field.value" theme="bootstrap" data-ng-disabled="disabled" reset-search-input="true">
-              <ui-select-match placeholder="Select a {{ field.label }}"> {{ $item.name }} </ui-select-match>
-              <ui-select-choices repeat="choice in field.choices track by choice.id" refresh="main.getChoices(field, $select.search)" refresh-delay="0">
-                <div data-ng-if="!choice.path" data-ng-bind-html="choice.name | highlight: $select.search"></div>
-                <div class="choice" data-ng-if="choice.path" data-ng-click=$event.preventDefault();>
-                  <span>{{ choice.name }} ({{ choice.resultCount }})</span>
-                  <button data-ng-click="main.startPopup(choice, $event);" title="{{ choice.name }}" id="choice-{{ choice.id }}" class="{{ choice.classes }}">Info</button>
-                  <input type="hidden" class="choice-{{ choice.id }}-url" value="{{ choice.path }}"/>
-                </div>
-              </ui-select-choices>
-            </ui-select>
             <div class="advanced-search--field-actions">
               <a class="advanced-search--field-action-item advanced-search--field-delete" data-ng-show="((groupIndex === 0 && $index > 0) || groupIndex > 0) && group.closeButtonVisible[$index]" href="#" data-ng-click="main.deleteField(groupIndex, $index); $event.preventDefault();">Delete lorem ipsum</a>
-              <a class="advanced-search--field-action-item advanced-search--field-add" data-ng-show="group.closeButtonVisible[$index]" href="#" data-ng-click="main.addSameField(groupIndex, $index); $event.preventDefault();">Add</a>
+              <a class="advanced-search--field-action-item advanced-search--field-add" data-ng-show="group.closeButtonVisible[$index]" href="#" data-ng-click="main.addSameField(groupIndex, $index); main.booleansPopup.show = false; $event.preventDefault();">Add</a>
             </div>
             <div class="advanced-search--next-field-operator" data-ng-if="group.fields.length > $index + 1 && group.selectedFields[$index + 1].hide" data-aas-booleans-select data-aas-booleans-select-options="main.operators" data-ng-model="field.nextConnector">
             </div>
           </div>
           <div class="advanced-search--add-another">
-            <a href="#" class="advanced-search--add-another-button" data-ng-if="!group.activeAddField" data-ng-click="group.activeAddField = true; $event.preventDefault();">Add Field</a>
+            <a href="#" class="advanced-search--add-another-button" data-ng-if="!group.activeAddField" data-ng-click="group.activeAddField = true; main.booleansPopup.show = false; $event.preventDefault();">Add Field</a>
             <div class="advanced-search--add-type" data-ng-if="group.activeAddField">
               <select class="advanced-search--add-type-select" data-ng-model="main.selectedField" ng-options="option.label for option in main.fields.selected track by option.id"></select>
               <a href="#" class="advanced-search--add-type-button" data-ng-click="main.addFieldConfirm(groupIndex); $event.preventDefault();">Add</a>

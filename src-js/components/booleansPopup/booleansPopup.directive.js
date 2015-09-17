@@ -26,10 +26,12 @@ function booleansPopup($rootScope, drupalDataService) {
   function BooleansPopupController($scope) {
     var vm = this;
 
-    vm.show = false;
+    vm.parentScope = $scope.$parent;
+    vm.booleansPopup = vm.parentScope.main.booleansPopup = {show: false};
     vm.textChange = textChange;
     vm.addBoolean = addBoolean;
     vm.highlightChange = highlightChange;
+    vm.optionSelected = optionSelected;
     vm.format = {
       '#619FFF': /\sAND|\sOR|\sNOT/g
     };
@@ -49,12 +51,12 @@ function booleansPopup($rootScope, drupalDataService) {
       }
 
       if ($event.charCode === 44) {
-        vm.show = true;
+        vm.booleansPopup.show = true;
         selectionStart = target.selectionStart;
         target.focus();
       }
       else {
-        vm.show = false;
+        vm.booleansPopup.show = false;
       }
       return true;
     }
@@ -62,7 +64,7 @@ function booleansPopup($rootScope, drupalDataService) {
     function addBoolean(operator) {
 
       var addBooleanInField = true;
-      vm.show = false;
+      vm.booleansPopup.show = false;
 
       if (vm.field.id !== '__fulltext_search' && vm.firstBoolean && vm.firstBoolean !== operator) {
         addBooleanInField = false;
@@ -74,27 +76,38 @@ function booleansPopup($rootScope, drupalDataService) {
           vm.firstBoolean = operator;
         }
 
-        var part = vm.field.value.substr(selectionStart + 1);
-        vm.field.value = vm.field.value.substr(0, selectionStart);
-        vm.field.value += ' ' + operator + ' ';
-        vm.field.value += part;
+        if (vm.type === 'autocomplete') {
+          vm.field.value.push({id: operator, name: operator, class:'advanced-search--field-autocomplete-operator'});
+        }
+        else {
+          var part = vm.field.value.substr(selectionStart + 1);
+          vm.field.value = vm.field.value.substr(0, selectionStart);
+          vm.field.value += ' ' + operator + ' ';
+          vm.field.value += part;
+        }
         var selectionSum = operator.length + 2;
         var cursorPosition = selectionStart + selectionSum;
-        target.focus();
-        setTimeout(function() {
-          // Let's wait focus has finished before applying selectionRange.
-          target.setSelectionRange(cursorPosition, cursorPosition);
-        }, 0);
+        if (target) {
+          target.focus();
+          setTimeout(function() {
+            // Let's wait focus has finished before applying selectionRange.
+            target.setSelectionRange(cursorPosition, cursorPosition);
+          }, 0);
+        }
       }
       else {
-        var part = vm.field.value.substr(selectionStart + 1);
-        vm.field.value = vm.field.value.substr(0, selectionStart);
-        vm.field.value += part;
+        if (vm.type !== 'autocomplete') {
+          var part = vm.field.value.substr(selectionStart + 1);
+          vm.field.value = vm.field.value.substr(0, selectionStart);
+          vm.field.value += part;
+        }
         vm.field.nextConnector = operator.toLowerCase();
         $scope.$parent.main.addSameField($scope.$parent.groupIndex, $scope.$parent.$index);
-        setTimeout(function() {
-          angular.element(target).parents('.advanced-search--field-container').next().find('.advanced-search--field-value').focus();
-        }, 0);
+        if (target) {
+          setTimeout(function() {
+            angular.element(target).parents('.advanced-search--field-container').next().find('.advanced-search--field-value').focus();
+          }, 0);
+        }
       }
     }
 
@@ -120,5 +133,22 @@ function booleansPopup($rootScope, drupalDataService) {
         vm.firstBoolean = '';
       }
     }
+
+    function optionSelected() {
+      if (vm.field.value) {
+        vm.booleansPopup.show = true;
+        vm.type = 'autocomplete';
+        angular.element(document.getElementsByClassName('ui-select-search')).on('keydown', hideBooleansPopup);
+      }
+      else {
+        vm.booleansPopup.show = true;
+      }
+    }
+
+    function hideBooleansPopup() {
+      vm.booleansPopup.show = false;
+      angular.element(document.getElementsByClassName('ui-select-search')).unbind('keydown', hideBooleansPopup);
+    }
+
   }
 }
