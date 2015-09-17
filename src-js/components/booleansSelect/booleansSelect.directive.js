@@ -27,7 +27,6 @@ function booleansSelect($rootScope, drupalDataService) {
   function BooleansSelectController($scope) {
     var vm = this;
     vm.expanded = false;
-    console.log(vm);
 
     vm.selectItem = selectItem;
 
