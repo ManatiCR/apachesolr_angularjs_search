@@ -422,7 +422,7 @@ function apachesolr_angularjs_search_get_help_tips_block() {
     $content = check_markup($help_tips['value'], $help_tips['format']);
     $build['content'] = array(
       '#type' => 'markup',
-      '#markup' => $content,
+      '#markup' => '<div class="aas-help-tips-block">' . $content . '</div>',
     );
   }
   return $build;
