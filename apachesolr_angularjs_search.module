@@ -500,6 +500,9 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
         $path . '/src-js/components/booleansPopup/booleansPopup.directive.js' => array(
           'type' => 'file',
         ),
+        $path . '/src-js/components/booleansSelect/booleansSelect.directive.js' => array(
+          'type' => 'file',
+        ),
       ),
       'css' => array(
         $path . '/bower_components/angular-ui-select/dist/select.min.css' => array(
