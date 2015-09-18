@@ -65,7 +65,6 @@ function booleansPopup($rootScope, drupalDataService) {
 
       var addBooleanInField = true;
       vm.booleansPopup.show = false;
-
       if (vm.field.id !== '__fulltext_search' && vm.firstBoolean && vm.firstBoolean !== operator) {
         addBooleanInField = false;
       }
@@ -105,7 +104,7 @@ function booleansPopup($rootScope, drupalDataService) {
         $scope.$parent.main.addSameField($scope.$parent.groupIndex, $scope.$parent.$index);
         if (target) {
           setTimeout(function() {
-            angular.element(target).parents('.advanced-search--field-container').next().find('.advanced-search--field-value').focus();
+        //    angular.element(target).parents('.advanced-search--field-container').next().find('.advanced-search--field-value').focus();
           }, 0);
         }
       }
@@ -116,11 +115,9 @@ function booleansPopup($rootScope, drupalDataService) {
       // @TODO: Fix random behaviors when boolean is not inserted at end.
       if ($markers.length) {
         lastInserted = $markers[$markers.length - 1];
-        if (!vm.firstBoolean) {
-          vm.firstBoolean = lastInserted.text;
-        }
+        vm.firstBoolean = $markers[0].text.trim();
 
-        if (vm.field.id !== '__fulltext_search' && vm.firstBoolean !== lastInserted.text) {
+        if (vm.field.id !== '__fulltext_search' && vm.firstBoolean !== lastInserted.text.trim()) {
           vm.field.value = vm.field.value.substr(0, vm.field.value.length - 3);
           vm.field.nextConnector = lastInserted.text.toLowerCase().trim();
           $scope.$parent.main.addSameField($scope.$parent.groupIndex, $scope.$parent.$index);
