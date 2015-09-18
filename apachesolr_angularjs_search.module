@@ -740,7 +740,7 @@ function apachesolr_angularjs_search_get_field_query($field) {
     $query .= $field['id'] . ':';
   }
   if (empty($field['format']) && empty($field['autocompletePath']) && !empty($field['value'])) {
-    // No field with 2 values, no autocomplete.
+    // No field with value2, no autocomplete.
     $value_connector = '';
     $values = apachesolr_angularjs_search_get_field_values($field['value'], $value_connector);
     $query .= $values[0];
@@ -756,11 +756,18 @@ function apachesolr_angularjs_search_get_field_query($field) {
   }
   elseif (!empty($field['autocompletePath']) && !empty($field['value'])) {
     // Autocomplete field.
-    foreach ($field['value'] as $value) {
-      // @TODO: Optional OR.
-      $query .= $value['id'] . ' OR ';
+    $value_connector = '';
+    $values = apachesolr_angularjs_search_get_autocomplete_field_values($field['value'], $value_connector);
+    $query .= $values[0];
+
+    // Discard first value because we already used it.
+    array_shift($values);
+    if (!empty($values)) {
+      foreach ($values as $index => $value) {
+        $query .= ' ' . $value_connector . ' ';
+        $query .= $field['id'] . ':' . $value;
+      }
     }
-    $query = substr($query, 0, -4);
   }
   elseif (!empty($field['format']) && $field['format'] === 'fromto' && (!empty($field['value']) || !empty($field['value2']))) {
     // Field with 2 values.
@@ -798,6 +805,22 @@ function apachesolr_angularjs_search_get_field_values($value, &$value_connector 
     $value = $matches[count($matches) - 2];
     return apachesolr_angularjs_search_get_field_values($value, $value_connector, $values);
   }
+}
+
+/**
+ * Get a list of values for a given autocomplete field.
+ */
+function apachesolr_angularjs_search_get_autocomplete_field_values($value, &$value_connector = '', $values = array()) {
+  $operators = array('AND', 'OR', 'NOT');
+  foreach ($value as $element) {
+    if (is_numeric($element['id'])) {
+      $values[] = $element['id'];
+    }
+    elseif (!$value_connector && in_array($element['id'], $operators)) {
+      $value_connector = $element['id'];
+    }
+  }
+  return $values;
 }
 
 /**
