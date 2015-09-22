@@ -37,7 +37,7 @@
             </div>
           </div>
           <div class="advanced-search--add-another">
-            <a href="#" class="advanced-search--add-another-button" data-ng-if="!group.activeAddField" data-ng-click="group.activeAddField = true; main.booleansPopup.show = false; $event.preventDefault();">Add Field</a>
+            <a href="#" class="advanced-search--add-another-button" data-ng-if="!group.activeAddField" data-ng-click="group.activeAddField = true; main.booleansPopup.show = false; $event.preventDefault();">Add New Field</a>
             <div class="advanced-search--add-type" data-ng-if="group.activeAddField">
               <select class="advanced-search--add-type-select" data-ng-model="main.selectedField" ng-options="option.label for option in main.fields.selected track by option.id"></select>
               <a href="#" class="advanced-search--add-type-button" data-ng-click="main.addFieldConfirm(groupIndex); $event.preventDefault();">Add</a>
