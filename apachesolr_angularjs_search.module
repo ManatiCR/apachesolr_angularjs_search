@@ -601,6 +601,7 @@ function apachesolr_angularjs_search_process_query($uri = '') {
       $query = apachesolr_angularjs_search_build_query($groups, $limit_by);
       $search->groups = $groups;
       $search->query = $query;
+      $search->limit_by = $limit_by;
       apachesolr_angularjs_search_save_temporary_search($search);
 
       // Need to set this for making the pager works.
