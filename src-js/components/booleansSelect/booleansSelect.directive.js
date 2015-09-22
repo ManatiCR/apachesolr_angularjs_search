@@ -12,7 +12,7 @@ function booleansSelect($rootScope, drupalDataService) {
 
   var directive = {
     // @TODO: Change hardcoded path.
-    templateUrl: 'sites/all/modules/custom/apachesolr_angularjs_search' + '/src-js/components/booleansSelect/booleans-select.html',
+    templateUrl: '/sites/all/modules/custom/apachesolr_angularjs_search' + '/src-js/components/booleansSelect/booleans-select.html',
     restrict: 'A',
     scope: {
       options: '=aasBooleansSelectOptions',
