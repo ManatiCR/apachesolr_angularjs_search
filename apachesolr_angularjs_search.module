@@ -899,6 +899,19 @@ function apachesolr_angularjs_search_valid_uri_and_user($uri, $account = 0) {
 }
 
 /**
+ * Returns a search searching by given uri.
+ */
+function apachesolr_angularjs_search_load_search_by_uri($uri) {
+  $query = db_query('SELECT sid, uri, name, created, last_run, uid, page_id, status, groups, limit_by, query FROM {aas_search_saved} WHERE uri = :uri', array(':uri' => $uri));
+  $search = $query->fetchObject();
+  if ($search) {
+    return $search;
+  }
+
+  return FALSE;
+}
+
+/**
  * Save temporary search.
  */
 function apachesolr_angularjs_search_save_temporary_search(&$search) {
