@@ -687,7 +687,7 @@ function apachesolr_angularjs_search_build_query($groups, $limit_by) {
         $missing_parenthesis = FALSE;
       }
       elseif (!empty($group['fields'][$field_index + 1]['id']) && $group['fields'][$field_index + 1]['id'] === $field['id']) {
-        $query .= ' ) ' . $field['nextConnector'] . ' (';
+        $query .= ' ) ' . $group['fields'][$field_index + 1]['previousConnector'] . ' (';
         $field_connector_added = TRUE;
       }
 

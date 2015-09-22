@@ -137,7 +137,7 @@
         }
         var index = addField(groupIndex, field);
         if (main.groups[groupIndex].fields[index - 1] && main.groups[groupIndex].fields[index - 1].id === main.groups[groupIndex].fields[index].id ) {
-          main.groups[groupIndex].fields[index - 1].nextConnector = 'or';
+          main.groups[groupIndex].fields[index].previousConnector = 'or';
         }
       }
 
@@ -174,8 +174,8 @@
       }
 
       function addSameField(groupIndex, index) {
-        if (!main.groups[groupIndex].fields[index].nextConnector) {
-          main.groups[groupIndex].fields[index].nextConnector = 'or';
+        if (!main.groups[groupIndex].fields[index].previousConnector) {
+          main.groups[groupIndex].fields[index].previousConnector = 'or';
         }
         var field = angular.copy(main.groups[groupIndex].fields[index]);
         field.value = null;

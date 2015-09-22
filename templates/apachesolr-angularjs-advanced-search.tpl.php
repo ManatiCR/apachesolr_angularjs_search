@@ -24,6 +24,8 @@
           </div>
           <div class="advanced-search--field-container" data-ng-if="field.id" data-ng-repeat="field in group.fields" data-ng-mouseenter="group.closeButtonVisible[$index] = true" data-ng-mouseleave="group.closeButtonVisible[$index] = false">
             <select class="advanced-search--field-type" data-ng-if="!group.selectedFields[$index].hide" data-ng-change="main.fieldChanged(groupIndex, $index)" data-ng-model="group.selectedFields[$index]" data-ng-options="option.label for option in main.fields.selected track by option.id"></select>
+            <div class="advanced-search--previous-field-operator" data-ng-if="$index > 0 && group.selectedFields[$index - 1].id === group.selectedFields[$index].id" data-aas-booleans-select data-aas-booleans-select-options="main.operators" data-ng-model="field.previousConnector">
+            </div>
             <label class="advanced-search--field-value-label advanced-search--field-fromto-label" data-ng-if="field.format === 'fromto'">{{ field.from_label }}</label>
             <input class="advanced-search--field-value form-{{field.type}}" type="{{ field.type }}" data-ng-if="field.type != 'fulltext' && !field.autocompletePath && field.format === 'fromto'" data-ng-model="field.value" />
             <label class="advanced-search--field-value2-label advanced-search--field-fromto-label" data-ng-if="field.format === 'fromto'">{{ field.to_label }}</label>
@@ -32,8 +34,6 @@
             <div class="advanced-search--field-actions">
               <a class="advanced-search--field-action-item advanced-search--field-delete" data-ng-show="((groupIndex === 0 && $index > 0) || groupIndex > 0) && group.closeButtonVisible[$index]" href="#" data-ng-click="main.deleteField(groupIndex, $index); $event.preventDefault();">Delete lorem ipsum</a>
               <a class="advanced-search--field-action-item advanced-search--field-add" data-ng-show="group.closeButtonVisible[$index]" href="#" data-ng-click="main.addSameField(groupIndex, $index); main.booleansPopup.show = false; $event.preventDefault();">Add</a>
-            </div>
-            <div class="advanced-search--next-field-operator" data-ng-if="group.fields.length > $index + 1 && group.selectedFields[$index + 1].hide" data-aas-booleans-select data-aas-booleans-select-options="main.operators" data-ng-model="field.nextConnector">
             </div>
           </div>
           <div class="advanced-search--add-another">
