@@ -71,6 +71,13 @@ function apachesolr_angularjs_search_schema() {
         'size' => 'big',
         'description' => 'The groups status for this search',
       ),
+      'limit_by' => array(
+        'type' => 'blob',
+        'not null' => FALSE,
+        'serialize' => TRUE,
+        'size' => 'big',
+        'description' => 'The limit by status for this search',
+      ),
       'query' => array(
         'type' => 'blob',
         'not null' => FALSE,
