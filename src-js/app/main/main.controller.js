@@ -35,6 +35,8 @@
       var data = drupalDataService.getDrupalData();
       var fields = data.fields;
       var pageId = data.pageId;
+      var groups = data.groups;
+      var limitBy = data.limitBy;
 
       var status;
       var i;
@@ -52,12 +54,20 @@
         }
       }
       main.fields = fields;
-      main.groups[0] = getDefaultGroup('default', 0);
-      for (i = 0; i < main.fields.always.length; i++) {
-        main.groups[0].fields[i] = main.fields.always[i];
-        main.groups[0].activeCount++;
+      if (limitBy) {
+        main.fields.limitby = limitBy;
       }
-      main.groups[0].selectedFields[0] = main.groups[0].fields[0];
+      if (!groups) {
+        main.groups[0] = getDefaultGroup('default', 0);
+        for (i = 0; i < main.fields.always.length; i++) {
+          main.groups[0].fields[i] = main.fields.always[i];
+          main.groups[0].activeCount++;
+        }
+        main.groups[0].selectedFields[0] = main.groups[0].fields[0];
+      }
+      else {
+        main.groups = groups;
+      }
       main.selectedField = getField('__fulltext_search');
 
       main.operators = ['and', 'or', 'not'];
@@ -126,7 +136,7 @@
           main.groups[groupIndex].differentFieldsCount ++;
         }
         var index = addField(groupIndex, field);
-        if (main.groups[groupIndex].fields[index - 1].id === main.groups[groupIndex].fields[index].id ) {
+        if (main.groups[groupIndex].fields[index - 1] && main.groups[groupIndex].fields[index - 1].id === main.groups[groupIndex].fields[index].id ) {
           main.groups[groupIndex].fields[index - 1].nextConnector = 'or';
         }
       }

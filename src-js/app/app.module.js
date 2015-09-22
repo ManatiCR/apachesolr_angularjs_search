@@ -18,10 +18,14 @@
         var fields = Drupal.settings.apachesolrAngularjs.fields;
         var pageId = Drupal.settings.apachesolrAngularjs.pageId;
         var modulePath = Drupal.settings.apachesolrAngularjs.modulePath;
+        var groups = Drupal.settings.apachesolrAngularjs.groups;
+        var limitBy = Drupal.settings.apachesolrAngularjs.limitBy;
         var data = {
           fields: fields,
           pageId: pageId,
           modulePath: modulePath,
+          groups: groups,
+          limitBy: limitBy
         };
 
         // We need to ensure dom is ready before getting this element.

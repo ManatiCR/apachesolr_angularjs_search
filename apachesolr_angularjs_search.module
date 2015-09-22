@@ -601,6 +601,7 @@ function apachesolr_angularjs_search_process_query($uri = '') {
       $query = apachesolr_angularjs_search_build_query($groups, $limit_by);
       $search->groups = $groups;
       $search->query = $query;
+      $search->limit_by = $limit_by;
       apachesolr_angularjs_search_save_temporary_search($search);
 
       // Need to set this for making the pager works.
@@ -889,6 +890,19 @@ function apachesolr_angularjs_search_valid_uri_and_user($uri, $account = 0) {
     $account = $user;
   }
   $query = db_query('SELECT sid, uri, name, created, last_run, uid, page_id, status, query FROM {aas_search_saved} WHERE uid = :uid AND uri = :uri', array(':uid' => $account->uid, ':uri' => $uri));
+  $search = $query->fetchObject();
+  if ($search) {
+    return $search;
+  }
+
+  return FALSE;
+}
+
+/**
+ * Returns a search searching by given uri.
+ */
+function apachesolr_angularjs_search_load_search_by_uri($uri) {
+  $query = db_query('SELECT sid, uri, name, created, last_run, uid, page_id, status, groups, limit_by, query FROM {aas_search_saved} WHERE uri = :uri', array(':uri' => $uri));
   $search = $query->fetchObject();
   if ($search) {
     return $search;
