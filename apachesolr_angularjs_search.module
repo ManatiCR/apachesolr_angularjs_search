@@ -625,6 +625,8 @@ function apachesolr_angularjs_search_process_query($uri = '') {
 
     // Update last_run field.
     $search->last_run = REQUEST_TIME;
+    unset($search->groups);
+    unset($search->limit_by);
     drupal_write_record('aas_search_saved', $search, 'sid');
   }
   else {
