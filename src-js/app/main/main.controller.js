@@ -194,7 +194,7 @@
 
       function getChoices(field, search) {
         if (search && search.length > 2) {
-          $http.get(field.autocompletePath + '/' + search).then(function(response) {
+          $http.get('/' + field.autocompletePath + '/' + search).then(function(response) {
             if (response.status === 200) {
               field.choices = response.data;
             }
@@ -205,17 +205,20 @@
       function startPopup(choice, $event) {
         $event.stopPropagation();
         var base = 'choice-' + choice.id;
+        var x = $event.pageX;
+        var y = $event.pageY - 50;
         if (!choice.clicked) {
           choice.clicked = true;
           var target = $event.target;
           angular.element(target).on('click', Drupal.CTools.Modal.clickAjaxLink);
           var element_settings = {};
-          element_settings.url = choice.path;
+          element_settings.url = '/' + choice.path;
           element_settings.event = 'click';
           element_settings.setClick = true;
 
           Drupal.ajax[base] = new Drupal.ajax(base, target, element_settings);
         }
+        window.scroll(x, y);
         Drupal.ajax[base].trigger();
       }
 
