@@ -595,7 +595,7 @@ function apachesolr_angularjs_search_process_query($uri = '') {
     $groups = !empty($data['groups']) ? $data['groups'] : array();
     $limit_by = !empty($data['limitBy']) ? $data['limitBy'] : array();
     $page_id = !empty($data['pageId']) ? check_plain($data['pageId']) : '';
-    if ($user->uid && $groups && $page_id) {
+    if ($groups && $page_id) {
       $search = new stdClass();
       $search->page_id = $page_id;
       $query = apachesolr_angularjs_search_build_query($groups, $limit_by);
@@ -612,7 +612,7 @@ function apachesolr_angularjs_search_process_query($uri = '') {
       return drupal_json_output($response);
     }
   }
-  elseif ($search = apachesolr_angularjs_search_valid_uri_and_user($uri, $user)) {
+  elseif ($search = apachesolr_angularjs_search_load_search_by_uri($uri)) {
     $query = $search->query;
     $page_id = $search->page_id;
     // 10 seconds as allowed latency.
@@ -879,23 +879,6 @@ function apachesolr_angularjs_search_save_search($form, $form_state) {
   else {
     return t('There was an error saving your search.');
   }
-}
-
-/**
- * Returns a search for a given uri and account or FALSE if doesn't exist.
- */
-function apachesolr_angularjs_search_valid_uri_and_user($uri, $account = 0) {
-  if (!$account) {
-    global $user;
-    $account = $user;
-  }
-  $query = db_query('SELECT sid, uri, name, created, last_run, uid, page_id, status, query FROM {aas_search_saved} WHERE uid = :uid AND uri = :uri', array(':uid' => $account->uid, ':uri' => $uri));
-  $search = $query->fetchObject();
-  if ($search) {
-    return $search;
-  }
-
-  return FALSE;
 }
 
 /**
