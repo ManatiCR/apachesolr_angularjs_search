@@ -291,8 +291,8 @@ function apachesolr_angularjs_search_views_api() {
  * Implements hook_cron().
  */
 function apachesolr_angularjs_search_cron() {
-  // Get Delete time. Default to 1 week: 604800
-  $delete_time = variable_get('apachesolr_angularjs_search_delete_time', 604800);
+  // Get Delete time. Default to 1 day: 86400
+  $delete_time = variable_get('apachesolr_angularjs_search_delete_time', 86400);
   $search_ids = apachesolr_angularjs_search_get_expired_searches($delete_time);
   if (!empty($search_ids)) {
     db_delete('aas_search_saved')
@@ -1027,7 +1027,7 @@ function apachesolr_angularjs_search_admin_form($form, $form_state) {
     '#title' => t('Delete time'),
     '#type' => 'textfield',
     '#description' => t('Allowed time to live for a temporary search (in seconds).'),
-    '#default_value' => variable_get('apachesolr_angularjs_search_delete_time', 604800),
+    '#default_value' => variable_get('apachesolr_angularjs_search_delete_time', 86400),
     '#required' => TRUE,
   );
 
