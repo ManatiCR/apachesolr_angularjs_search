@@ -18,7 +18,7 @@
     var directive = {
       // @TODO: Change hardcoded path.
       templateUrl: '/sites/all/modules/custom/apachesolr_angularjs_search' + '/src-js/components/booleansPopup/booleans-popup.html',
-      restrict: 'E',
+      restrict: 'A',
       scope: {
         field: '='
       },
