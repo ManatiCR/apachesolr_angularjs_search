@@ -24,7 +24,8 @@
       },
       controller: BooleansPopupController,
       controllerAs: 'vm',
-      bindToController: true
+      bindToController: true,
+      link: BooleansPopupLink
     };
     return directive;
 
@@ -95,6 +96,11 @@
               target.setSelectionRange(cursorPosition, cursorPosition);
             }, 0);
           }
+          if (!vm.field.autocompletePath) {
+            setTimeout(function() {
+              $scope.element.find('textarea, input').data('highlighter').highlight();
+            }, 0);
+          }
         }
         else {
           if (vm.type !== 'autocomplete') {
@@ -149,6 +155,21 @@
         angular.element(document.getElementsByClassName('ui-select-search')).unbind('keydown', hideBooleansPopup);
       }
 
+    }
+
+    function BooleansPopupLink(scope, element, attrs) {
+      var setHighlight = setHighlight;
+
+      setTimeout(setHighlight, 0);
+
+      function setHighlight() {
+        element.find('textarea, input').highlightTextarea({
+          words: ['AND', 'OR', 'NOT'],
+          color: '#CCC'
+        });
+
+        scope.element = element;;
+      }
     }
   }
 })();
