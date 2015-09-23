@@ -118,20 +118,40 @@
         }
       }
 
-      function highlightChange($markers) {
-        var lastInserted = {};
-        // @TODO: Fix random behaviors when boolean is not inserted at end.
-        if ($markers.length) {
-          lastInserted = $markers[$markers.length - 1];
-          vm.firstBoolean = $markers[0].text.trim();
+      function separateFieldValue(field, booleanToSeparate) {
+        var newFieldValue = field.value.substr(field.value.indexOf(booleanToSeparate) + booleanToSeparate.length, field.value.length - 1).trim();
+        field.value = field.value.substr(0, field.value.indexOf(booleanToSeparate));
+        $scope.$parent.main.addSameField($scope.$parent.groupIndex, $scope.$parent.$index);
+        $scope.$parent.main.groups[$scope.$parent.groupIndex].fields[$scope.$parent.$index + 1].previousConnector = booleanToSeparate;
+        $scope.$parent.main.groups[$scope.$parent.groupIndex].fields[$scope.$parent.$index + 1].value = newFieldValue;
+        return newFieldValue;
+      }
 
-          if (vm.field.id !== '__fulltext_search' && vm.firstBoolean !== lastInserted.text.trim()) {
-            vm.field.value = vm.field.value.substr(0, vm.field.value.length - 3);
-            vm.field.nextConnector = lastInserted.text.toLowerCase().trim();
-            $scope.$parent.main.addSameField($scope.$parent.groupIndex, $scope.$parent.$index);
-            setTimeout(function() {
-              angular.element(target).parents('.advanced-search--field-container').next().find('.advanced-search--field-value').focus();
-            }, 0);
+      function verifyFieldValue(field, matches) {
+        if (matches.length) {
+          var firstMatch = matches[0];
+          for (var index = 1; index < matches.length; index++) {
+            if (matches[index] !== firstMatch) {
+              var newFieldValue = separateFieldValue(field, matches[index]);
+              var regex = new RegExp('(AND|OR|NOT)');
+              var newFieldMatches = newFieldValue.match(regex);
+              if (newFieldMatches !== null) {
+                // Add matches.
+                verifyFieldValue($scope.$parent.main.groups[$scope.$parent.groupIndex].fields[$scope.$parent.$index + 1], newFieldMatches);
+              }
+              break;
+            }
+          }
+        }
+      }
+
+      function highlightChange($event) {
+        var $markers = $event.matches;
+        if ($markers.length) {
+
+          if (vm.field.id !== '__fulltext_search') {
+            verifyFieldValue(vm.field, $markers);
+            jQuery($event.target).data('highlighter').highlight();
           }
         }
         else {
@@ -164,6 +184,8 @@
           words: ['AND', 'OR', 'NOT'],
           color: '#CCC'
         });
+
+        jQuery(element).bind('matchesChanged', scope.vm.highlightChange);
 
         scope.element = element;
       }
