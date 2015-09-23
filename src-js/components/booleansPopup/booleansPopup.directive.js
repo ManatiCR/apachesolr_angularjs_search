@@ -37,9 +37,6 @@
       vm.addBoolean = addBoolean;
       vm.highlightChange = highlightChange;
       vm.optionSelected = optionSelected;
-      vm.format = {
-        '#619FFF': /\sAND|\sOR|\sNOT/g
-      };
       vm.firstBoolean = '';
 
       var target;

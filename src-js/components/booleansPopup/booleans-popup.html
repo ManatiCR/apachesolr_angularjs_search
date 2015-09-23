@@ -3,8 +3,8 @@
   <button class="booleans-popup--or" data-ng-click="vm.addBoolean('OR')">OR</button>
   <button class="booleans-popup--not" data-ng-click="vm.addBoolean('NOT')">NOT</button>
 </div>
-<input data-highlight="vm.format" data-highlight-onchange="vm.highlightChange($markers)" class="advanced-search--field-value form-{{vm.field.type}}" type="{{ vm.field.type }}" data-ng-if="vm.field.type != 'fulltext' && !vm.field.autocompletePath && vm.field.format !== 'fromto'" data-ng-model="vm.field.value"  data-ng-keypress="vm.textChange($event)"/>
-<textarea data-highlight="vm.format" data-highlight-onchange="vm.highlightChange($markers)" field="vm.field" class="advanced-search--field-value form-textarea" data-ng-if="vm.field.type == 'fulltext'" data-ng-model="vm.field.value" data-ng-keypress="vm.textChange($event)"></textarea>
+<input class="advanced-search--field-value form-{{vm.field.type}}" type="{{ vm.field.type }}" data-ng-if="vm.field.type != 'fulltext' && !vm.field.autocompletePath && vm.field.format !== 'fromto'" data-ng-model="vm.field.value"  data-ng-keypress="vm.textChange($event)"/>
+<textarea class="advanced-search--field-value form-textarea" data-ng-if="vm.field.type == 'fulltext'" data-ng-model="vm.field.value" data-ng-keypress="vm.textChange($event)"></textarea>
 <ui-select class="advanced-search--field-autocomplete" multiple data-ng-if="vm.field.autocompletePath" data-ng-model="vm.field.value" theme="bootstrap" data-ng-disabled="disabled" reset-search-input="true" data-ng-change="vm.optionSelected()">
   <ui-select-match placeholder="Select a {{ vm.field.label }}">
     <span class="{{$item.class || 'item'}}">{{ $item.name }}</span>
