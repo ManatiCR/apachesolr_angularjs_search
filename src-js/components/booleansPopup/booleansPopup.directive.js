@@ -18,13 +18,14 @@
     var directive = {
       // @TODO: Change hardcoded path.
       templateUrl: '/sites/all/modules/custom/apachesolr_angularjs_search' + '/src-js/components/booleansPopup/booleans-popup.html',
-      restrict: 'E',
+      restrict: 'A',
       scope: {
         field: '='
       },
       controller: BooleansPopupController,
       controllerAs: 'vm',
-      bindToController: true
+      bindToController: true,
+      link: BooleansPopupLink
     };
     return directive;
 
@@ -37,9 +38,6 @@
       vm.addBoolean = addBoolean;
       vm.highlightChange = highlightChange;
       vm.optionSelected = optionSelected;
-      vm.format = {
-        '#619FFF': /\sAND|\sOR|\sNOT/g
-      };
       vm.firstBoolean = '';
 
       var target;
@@ -98,6 +96,11 @@
               target.setSelectionRange(cursorPosition, cursorPosition);
             }, 0);
           }
+          if (!vm.field.autocompletePath) {
+            setTimeout(function() {
+              $scope.element.find('textarea, input').data('highlighter').highlight();
+            }, 0);
+          }
         }
         else {
           if (vm.type !== 'autocomplete') {
@@ -152,6 +155,21 @@
         angular.element(document.getElementsByClassName('ui-select-search')).unbind('keydown', hideBooleansPopup);
       }
 
+    }
+
+    function BooleansPopupLink(scope, element, attrs) {
+      var setHighlight = setHighlight;
+
+      setTimeout(setHighlight, 0);
+
+      function setHighlight() {
+        element.find('textarea, input').highlightTextarea({
+          words: ['AND', 'OR', 'NOT'],
+          color: '#CCC'
+        });
+
+        scope.element = element;;
+      }
     }
   }
 })();

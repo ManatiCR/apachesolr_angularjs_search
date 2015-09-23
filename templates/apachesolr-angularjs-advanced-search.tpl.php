@@ -30,7 +30,7 @@
             <input class="advanced-search--field-value form-{{field.type}}" type="{{ field.type }}" data-ng-if="field.type != 'fulltext' && !field.autocompletePath && field.format === 'fromto'" data-ng-model="field.value" />
             <label class="advanced-search--field-value2-label advanced-search--field-fromto-label" data-ng-if="field.format === 'fromto'">{{ field.to_label }}</label>
             <input class="advanced-search--field-value2 form-{{field.type}}" type="{{ field.type }}" data-ng-if="field.type != 'fulltext' && !field.autocompletePath && field.format === 'fromto'" data-ng-model="field.value2" />
-            <aas-booleans-popup data-ng-if="field.type === 'fulltext' || (field.type === 'text' && field.format !== 'fromto')" field="field"></aas-booleans-popup>
+            <div data-aas-booleans-popup="true" data-ng-if="field.type === 'fulltext' || (field.type === 'text' && field.format !== 'fromto')" data-field="field"></div>
             <div class="advanced-search--field-actions">
               <a class="advanced-search--field-action-item advanced-search--field-delete" data-ng-show="((groupIndex === 0 && $index > 0) || groupIndex > 0) && group.closeButtonVisible[$index]" href="#" data-ng-click="main.deleteField(groupIndex, $index); $event.preventDefault();">Delete lorem ipsum</a>
               <a class="advanced-search--field-action-item advanced-search--field-add" data-ng-show="group.closeButtonVisible[$index]" href="#" data-ng-click="main.addSameField(groupIndex, $index); main.booleansPopup.show = false; $event.preventDefault();">Add</a>
