@@ -8,7 +8,7 @@
     "angular-sanitize": ">=1.4.*",
     "angular-touch": ">=1.4.*",
     "angular-ui-select": ">=0.12.*",
-    "jquery-highlighttextarea": "https://github.com/kporras07/jquery-highlighttextarea.git#97f7430c845c01a962eef6d56de7e841cdd7afbb"
+    "jquery-highlighttextarea": "https://github.com/kporras07/jquery-highlighttextarea.git#30fa2d5971de45057febc49f9a4288e92eaf82fc"
   },
   "devDependencies": {},
   "resolutions": {
