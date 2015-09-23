@@ -98,7 +98,7 @@
           }
           if (!vm.field.autocompletePath) {
             setTimeout(function() {
-              $scope.element.find('textarea, input').data('highlighter').highlight();
+              jQuery($scope.element).find('textarea, input').data('highlighter').highlight();
             }, 0);
           }
         }
@@ -158,18 +158,17 @@
     }
 
     function BooleansPopupLink(scope, element, attrs) {
-      var setHighlight = setHighlight;
-
-      setTimeout(setHighlight, 0);
 
       function setHighlight() {
-        element.find('textarea, input').highlightTextarea({
+        jQuery(element).find('textarea, input').highlightTextarea({
           words: ['AND', 'OR', 'NOT'],
           color: '#CCC'
         });
 
-        scope.element = element;;
+        scope.element = element;
       }
+
+      setTimeout(setHighlight, 0);
     }
   }
 })();
