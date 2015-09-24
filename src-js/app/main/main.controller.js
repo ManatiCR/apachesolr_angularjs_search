@@ -216,12 +216,12 @@
           choice.clicked = true;
           var target = $event.target;
           angular.element(target).on('click', Drupal.CTools.Modal.clickAjaxLink);
-          var element_settings = {};
-          element_settings.url = '/' + choice.path;
-          element_settings.event = 'click';
-          element_settings.setClick = true;
+          var elementSettings = {};
+          elementSettings.url = '/' + choice.path;
+          elementSettings.event = 'click';
+          elementSettings.setClick = true;
 
-          Drupal.ajax[base] = new Drupal.ajax(base, target, element_settings);
+          Drupal.ajax[base] = new Drupal.ajax(base, target, elementSettings);
         }
         window.scroll(x, y);
         Drupal.ajax[base].trigger();

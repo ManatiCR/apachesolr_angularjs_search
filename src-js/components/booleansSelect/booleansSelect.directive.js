@@ -29,7 +29,7 @@
     };
     return directive;
 
-    function BooleansSelectController($scope) {
+    function BooleansSelectController() {
       var vm = this;
       vm.expanded = false;
 

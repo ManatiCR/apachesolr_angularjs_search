@@ -70,7 +70,7 @@
       jQuery.ajax(ajax.options);
     }
     catch (err) {
-      alert('An error occurred while attempting to process ' + ajax.options.url);
+      console.log('An error occurred while attempting to process ' + ajax.options.url);
       return false;
     }
 

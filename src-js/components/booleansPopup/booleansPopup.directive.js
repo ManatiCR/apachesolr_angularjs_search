@@ -72,6 +72,7 @@
           addBooleanInField = false;
         }
 
+        var part;
         if (addBooleanInField) {
 
           if (!vm.firstBoolean) {
@@ -82,7 +83,7 @@
             vm.field.value.push({id: operator, name: operator, class:'advanced-search--field-autocomplete-operator'});
           }
           else {
-            var part = vm.field.value.substr(selectionStart + 1);
+            part = vm.field.value.substr(selectionStart + 1);
             vm.field.value = vm.field.value.substr(0, selectionStart);
             vm.field.value += ' ' + operator + ' ';
             vm.field.value += part;
@@ -104,7 +105,7 @@
         }
         else {
           if (vm.type !== 'autocomplete') {
-            var part = vm.field.value.substr(selectionStart + 1);
+            part = vm.field.value.substr(selectionStart + 1);
             vm.field.value = vm.field.value.substr(0, selectionStart);
             vm.field.value += part;
           }
@@ -177,7 +178,7 @@
 
     }
 
-    function BooleansPopupLink(scope, element, attrs) {
+    function BooleansPopupLink(scope, element) {
 
       function setHighlight() {
         jQuery(element).find('textarea, input').highlightTextarea({
