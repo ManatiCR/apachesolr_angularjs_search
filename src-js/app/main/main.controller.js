@@ -13,6 +13,11 @@
 
     $rootScope.$on('drupalDataReady', function() {
 
+      // Listen new group.
+      $rootScope.$on('newGroupReady', function($event, group) {
+        main.groups.push(group);
+      });
+
       main.clearForm = clearForm;
       main.processForm = processForm;
       main.fieldChanged = fieldChanged;

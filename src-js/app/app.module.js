@@ -40,6 +40,19 @@
     }
   };
 
+  Drupal.behaviors.apachesolrAngularjsNewGroup = {
+    attach: function() {
+        if (Drupal.settings.apachesolrAngularjs.newGroup) {
+          var group = angular.copy(Drupal.settings.apachesolrAngularjs.newGroup);
+          Drupal.settings.apachesolrAngularjs.newGroup = false;
+          var mainControllerElement = angular.element(document.getElementById('advanced-search-controller'));
+          var drupalDataService = mainControllerElement.injector().get('drupalDataService');
+          drupalDataService.setNewGroup(group);
+          mainControllerElement.scope().$apply();
+        }
+    }
+  };
+
   /**
    * Add an extra function to the Drupal ajax object
    * which allows us to trigger an ajax response without

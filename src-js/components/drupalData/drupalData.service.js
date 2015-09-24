@@ -17,12 +17,17 @@
       $rootScope.$emit('drupalDataReady');
     }
 
+    function setNewGroup(group) {
+      $rootScope.$emit('newGroupReady', group);
+    }
+
     function getDrupalData() {
       return data;
     }
 
     return {
       setDrupalData: setDrupalData,
+      setNewGroup: setNewGroup,
       getDrupalData: getDrupalData
     };
   }

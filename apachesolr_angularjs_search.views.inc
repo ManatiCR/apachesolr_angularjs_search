@@ -223,6 +223,15 @@ function apachesolr_angularjs_search_views_data() {
     ),
   );
 
+  $data['aas_search_saved_groups']['view_link'] = array(
+    'title' => t('Add Group Link'),
+    'help' => t('Add this search group to actual view'),
+    'real field' => 'sgid',
+    'field' => array(
+      'handler' => 'apachesolr_angularjs_search_group_handler_field_view_link',
+    ),
+  );
+
   $data['aas_search_saved_groups']['name'] = array(
     'title' => t('Name'),
     'help' => t('The Search Group Name'),

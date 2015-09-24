@@ -900,6 +900,56 @@ function apachesolr_angularjs_search_load_search_by_uri($uri) {
 }
 
 /**
+ * Returns a search group by given sgid.
+ */
+function apachesolr_angularjs_search_group_load($sgid) {
+  $query = db_query('SELECT sgid, name, created, last_used, uid, data FROM {aas_search_saved_groups} WHERE sgid = :sgid', array(':sgid' => $sgid));
+  $group = $query->fetchObject();
+  if ($group) {
+    return $group;
+  }
+
+  return FALSE;
+}
+
+/**
+ * Returns a form for adding a given group to actual search.
+ */
+function apachesolr_angularjs_search_add_group_form($form, $form_state, $group, $title) {
+  $form['group'] = array(
+    '#type' => 'value',
+    '#value' => $group,
+  );
+
+  $form['link'] = array(
+    '#value' => check_plain($title),
+    '#type' => 'button',
+    '#ajax' => array(
+      'callback' => 'apachesolr_angularjs_search_add_group_callback',
+    ),
+    '#attributes' => array(
+      'class' => array('saved-search-groups--add-group-button'),
+    ),
+  );
+
+  return $form;
+}
+
+/**
+ * Callback for add group form button.
+ */
+function apachesolr_angularjs_search_add_group_callback($form, $form_state) {
+  $group = $form_state['values']['group'];
+  $data = unserialize($group->data);
+  $settings = array(
+    'apachesolrAngularjs' => array(
+      'newGroup' => $data,
+    ),
+  );
+  drupal_add_js($settings, 'setting');
+}
+
+/**
  * Save temporary search.
  */
 function apachesolr_angularjs_search_save_temporary_search(&$search) {
