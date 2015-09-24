@@ -10,8 +10,5 @@
     "angular-ui-select": ">=0.12.*",
     "jquery-highlighttextarea": "https://github.com/kporras07/jquery-highlighttextarea.git#30fa2d5971de45057febc49f9a4288e92eaf82fc"
   },
-  "devDependencies": {},
-  "resolutions": {
-    "angular": ">=1.4.*"
-  }
+  "devDependencies": {}
 }
