@@ -721,7 +721,7 @@ function apachesolr_angularjs_search_build_query($groups, $limit_by) {
       foreach ($field['fields'] as $group_field) {
         $result = apachesolr_angularjs_search_get_field_query($group_field);
         if ($result) {
-          $limit .= $result . ' ) AND ';
+          $limit .= ' ( ' . $result . ' ) AND ';
         }
       }
     }
