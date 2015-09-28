@@ -714,20 +714,20 @@ function apachesolr_angularjs_search_build_query($groups, $limit_by) {
     if ($field['type'] != 'group') {
       $result = apachesolr_angularjs_search_get_field_query($field);
       if ($result) {
-        $limit .= $result . ' AND ';
+        $limit .= ' ( ' . $result . ' ) AND ';
       }
     }
     else {
       foreach ($field['fields'] as $group_field) {
         $result = apachesolr_angularjs_search_get_field_query($group_field);
         if ($result) {
-          $limit .= $result . ' AND ';
+          $limit .= $result . ' ) AND ';
         }
       }
     }
   }
 
-  $limit = substr($limit, 0, -5);
+  $limit = substr($limit, 0, -4);
 
   if (trim($limit)) {
     $query .= ' AND ( ' . $limit . ' )';
@@ -745,7 +745,7 @@ function apachesolr_angularjs_search_get_field_query($field) {
     // No fulltext, no field with 2 values; no group.
     $query .= $field['id'] . ':';
   }
-  if (empty($field['format']) && empty($field['autocompletePath']) && !empty($field['value'])) {
+  if (empty($field['format']) && empty($field['autocompletePath']) && !empty($field['value']) && $field['type'] !== 'options') {
     // No field with value2, no autocomplete.
     $value_connector = '';
     $values = apachesolr_angularjs_search_get_field_values($field['value'], $value_connector);
@@ -777,9 +777,24 @@ function apachesolr_angularjs_search_get_field_query($field) {
   }
   elseif (!empty($field['format']) && $field['format'] === 'fromto' && (!empty($field['value']) || !empty($field['value2']))) {
     // Field with 2 values.
-    $left_limit = !empty($field['value']) ? $field['value'] : '*';
-    $right_limit = !empty($field['value2']) ? $field['value2'] : '*';
+    $left_limit = '';
+    $right_limit = '';
+    if ($field['type'] === 'dateYear') {
+      $left_limit = !empty($field['value']) ? $field['value'] . '-01-01T00:00:00.000Z' : '*';
+      $right_limit = !empty($field['value2']) ? $field['value2'] . '-12-31T23:59:59.999Z' : '*';
+    }
+    else {
+      $left_limit = !empty($field['value']) ? $field['value'] : '*';
+      $right_limit = !empty($field['value2']) ? $field['value2'] : '*';
+    }
     $query .= '[' . $left_limit . ' TO ' . $right_limit . ']';
+  }
+  elseif ($field['type'] === 'options') {
+    $query .= array_shift($field['value']);
+    foreach ($field['value'] as $value) {
+      $query .= ' OR ';
+      $query .= $field['id'] . ':' . $value;
+    }
   }
 
   return trim($query);

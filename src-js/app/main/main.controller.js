@@ -29,6 +29,8 @@
       main.saveGroup = saveGroup;
       main.getChoices = getChoices;
       main.startPopup = startPopup;
+      main.selectOption = selectOption;
+      main.isOptionSelected = isOptionSelected;
       main.fields = {};
       main.groups = [];
       main.operators = [];
@@ -250,6 +252,32 @@
           console.log(data);
         });
       }
+
+      function selectOption(optionId, field) {
+        var index = isOptionSelected(optionId, field);
+        if (index === false) {
+          if (!field.value || !field.multiple) {
+            field.value = [];
+          }
+          field.value.push(optionId);
+        }
+        else {
+          field.value.splice(index, 1);
+        }
+      }
+
+      function isOptionSelected(optionId, field) {
+        var index = 0;
+        if (field.value) {
+          for (index = 0; index < field.value.length; index++) {
+            if (field.value[index] === optionId) {
+              return index;
+            }
+          }
+        }
+        return false;
+      }
+
     });
   }
 })();
