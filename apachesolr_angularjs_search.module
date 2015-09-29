@@ -801,9 +801,11 @@ function apachesolr_angularjs_search_get_field_query($field) {
   }
   elseif (!empty($field['autocompletePath']) && !empty($field['value'])) {
     // Autocomplete field.
-    // @TODO: default boolean operator ??
     $value_connector = '';
     $values = apachesolr_angularjs_search_get_autocomplete_field_values($field['value'], $value_connector);
+    if (!$value_connector) {
+      $value_connector = 'AND';
+    }
     $query .= $values[0];
 
     // Discard first value because we already used it.
@@ -877,8 +879,8 @@ function apachesolr_angularjs_search_get_autocomplete_field_values($value, &$val
     if (is_numeric($element['id'])) {
       $values[] = $element['id'];
     }
-    elseif (!$value_connector && in_array($element['id'], $operators)) {
-      $value_connector = $element['id'];
+    elseif (!$value_connector && (strpos($element['id'], 'AND') === 0 || strpos($element['id'], 'OR') === 0 || strpos($element['id'], 'NOT') === 0 )) {
+      $value_connector = substr($element['id'], 0, 3);
     }
   }
   return $values;

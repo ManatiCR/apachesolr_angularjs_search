@@ -80,7 +80,8 @@
           }
 
           if (vm.type === 'autocomplete') {
-            vm.field.value.push({id: operator, name: operator, class:'advanced-search--field-autocomplete-operator'});
+            var length = vm.field.value.length;
+            vm.field.value.push({id: operator + '-' + length, name: operator, class:'advanced-search--field-autocomplete-operator'});
           }
           else {
             part = vm.field.value.substr(selectionStart + 1);
