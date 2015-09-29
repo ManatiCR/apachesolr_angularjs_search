@@ -110,8 +110,8 @@
             vm.field.value = vm.field.value.substr(0, selectionStart);
             vm.field.value += part;
           }
-          vm.field.nextConnector = operator.toLowerCase();
           $scope.$parent.main.addSameField($scope.$parent.groupIndex, $scope.$parent.$index);
+          $scope.$parent.main.groups[$scope.$parent.groupIndex].fields[$scope.$parent.$index + 1].previousConnector = operator.toLowerCase();
           if (target) {
             setTimeout(function() {
               //    angular.element(target).parents('.advanced-search--field-container').next().find('.advanced-search--field-value').focus();
