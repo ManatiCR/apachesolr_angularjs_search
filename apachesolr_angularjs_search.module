@@ -631,6 +631,7 @@ function apachesolr_angularjs_search_process_query($uri = '') {
     unset($search->groups);
     unset($search->limit_by);
     drupal_write_record('aas_search_saved', $search, 'sid');
+    drupal_static('apachesolr_angularjs_search_name', $search->name);
   }
   else {
     // Not valid uri. Search with given string.
