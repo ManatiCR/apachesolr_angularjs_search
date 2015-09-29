@@ -41,15 +41,28 @@
   };
 
   Drupal.behaviors.apachesolrAngularjsNewGroup = {
-    attach: function() {
-        if (Drupal.settings.apachesolrAngularjs.newGroup) {
-          var group = angular.copy(Drupal.settings.apachesolrAngularjs.newGroup);
-          Drupal.settings.apachesolrAngularjs.newGroup = false;
-          var mainControllerElement = angular.element(document.getElementById('advanced-search-controller'));
-          var drupalDataService = mainControllerElement.injector().get('drupalDataService');
-          drupalDataService.setNewGroup(group);
-          mainControllerElement.scope().$apply();
-        }
+    attach: function(context) {
+      jQuery('.search-group-add-link', context).once('search-group-add', function() {
+        jQuery(this).click(function(ev) {
+          ev.preventDefault();
+          var url = jQuery(this).attr('href');
+          jQuery.ajax({
+            url: url,
+            success: function(data) {
+              if (data) {
+                var group = JSON.parse(data);
+                if (group) {
+                  group = angular.copy(group);
+                  var mainControllerElement = angular.element(document.getElementById('advanced-search-controller'));
+                  var drupalDataService = mainControllerElement.injector().get('drupalDataService');
+                  drupalDataService.setNewGroup(group);
+                  mainControllerElement.scope().$apply();
+                }
+              }
+            }
+          });
+        });
+      });
     }
   };
 

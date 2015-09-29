@@ -43,7 +43,10 @@ class apachesolr_angularjs_search_group_handler_field_view_link extends views_ha
     if ($link_text === '!name') {
       $link_text = $group->name;
     }
-    $form = drupal_get_form('apachesolr_angularjs_search_add_group_form', $group, $link_text);
-    return $form;
+    return l($link_text, 'apachesolr_angularjs_search/add_block/' . $group->sgid, array(
+      'attributes' => array(
+        'class' => array('search-group-add-link'),
+      ),
+    ));
   }
 }
