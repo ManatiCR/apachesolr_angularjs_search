@@ -789,7 +789,7 @@ function apachesolr_angularjs_search_get_field_query($field) {
     }
     $query .= '[' . $left_limit . ' TO ' . $right_limit . ']';
   }
-  elseif ($field['type'] === 'options') {
+  elseif ($field['type'] === 'options' && !empty($field['value'])) {
     $query .= array_shift($field['value']);
     foreach ($field['value'] as $value) {
       $query .= ' OR ';
