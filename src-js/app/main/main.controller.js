@@ -14,6 +14,11 @@
     $rootScope.$on('drupalDataReady', function() {
 
       // Listen new group.
+      $rootScope.$on('newGroupReady', function($event, group) {
+        main.groups.push(group);
+      });
+
+      // Listen newTerm.
       $rootScope.$on('newTermReady', function($event, data) {
         var groupIndex = data.groupIndex;
         var fieldIndex = data.fieldIndex;
