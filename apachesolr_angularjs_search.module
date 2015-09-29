@@ -409,7 +409,37 @@ function apachesolr_angularjs_search_get_environment_fields($env_id) {
  * Return a rendereable array for basic search block.
  */
 function apachesolr_angularjs_search_get_basic_search_block() {
-  return array();
+  $form = drupal_get_form('apachesolr_angularjs_search_basic_form');
+  return $form;
+}
+
+/**
+ * Returns basic search form.
+ */
+function apachesolr_angularjs_search_basic_form($form, $form_state) {
+  $form['search_terms'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Search'),
+    '#title_display' => 'invisible',
+    '#size' => 15,
+    '#default_value' => '',
+    '#attributes' => array('title' => t('Enter the terms you wish to search for.')),
+  );
+
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array('#type' => 'submit', '#value' => t('Search'));
+
+  return $form;
+}
+
+/**
+ * Submit handler for basic search form.
+ */
+function apachesolr_angularjs_search_basic_form_submit($form, &$form_state) {
+  if (isset($_GET['destination'])) {
+    unset($_GET['destination']);
+  }
+  $form_state['redirect'] = APACHESOLR_ANGULARJS_SEARCH_BASE_PATH . '/' . trim($form_state['values']['search_terms']);
 }
 
 /**
