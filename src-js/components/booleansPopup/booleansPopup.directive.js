@@ -181,7 +181,7 @@
     function BooleansPopupLink(scope, element) {
 
       function setHighlight() {
-        jQuery(element).find('textarea, input').highlightTextarea({
+        jQuery(element).find('.form-textarea, .form-text').highlightTextarea({
           words: ['AND', 'OR', 'NOT'],
           color: '#CCC'
         });
