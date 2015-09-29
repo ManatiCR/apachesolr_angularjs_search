@@ -92,7 +92,7 @@ function apachesolr_angularjs_search_delete_search_group($entity, $context = arr
 function apachesolr_angularjs_search_menu() {
   return array(
     APACHESOLR_ANGULARJS_SEARCH_BASE_PATH => array(
-      'title' => 'Search',
+      'title' => '',
       'page callback' => 'apachesolr_angularjs_search_process_query',
       'access callback' => TRUE,
     ),
