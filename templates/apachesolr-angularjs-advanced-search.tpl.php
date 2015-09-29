@@ -72,8 +72,8 @@
             <div class="advanced-search--limitby-group" data-ng-if="field.type == 'group'">
               <label class="advanced-search--field-value-label">{{ field.label }}</label>
               <div class="advanced-search--limitby-group-element" data-ng-repeat="groupField in field.fields">
-                <input class="advanced-search--limitby-group-field form-{{ groupField.type }}" type="{{ groupField.type }}" data-ng-model="groupField.value" />
-                <label class="advanced-search--limitby-group-label">{{ groupField.label }}</label>
+                <input id="{{ groupField.id }}" class="advanced-search--limitby-group-field form-{{ groupField.type }}" type="{{ groupField.type }}" data-ng-model="groupField.value" />
+                <label class="advanced-search--limitby-group-label" for="{{ groupField.id }}">{{ groupField.label }}</label>
               </div>
             </div>
           </div>
