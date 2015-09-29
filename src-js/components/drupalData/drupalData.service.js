@@ -17,8 +17,8 @@
       $rootScope.$emit('drupalDataReady');
     }
 
-    function setNewGroup(group) {
-      $rootScope.$emit('newGroupReady', group);
+    function setNewTerm(data) {
+      $rootScope.$emit('newTermReady', data);
     }
 
     function getDrupalData() {
@@ -27,7 +27,7 @@
 
     return {
       setDrupalData: setDrupalData,
-      setNewGroup: setNewGroup,
+      setNewTerm: setNewTerm,
       getDrupalData: getDrupalData
     };
   }

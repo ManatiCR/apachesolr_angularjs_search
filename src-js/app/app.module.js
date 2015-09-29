@@ -66,6 +66,29 @@
     }
   };
 
+  Drupal.behaviors.apachesolrAngularjsNewTerm = {
+    attach: function() {
+      if (Drupal.settings.apachesolrAngularjs.newTerm) {
+        var term = Drupal.settings.apachesolrAngularjs.newTerm;
+        Drupal.settings.apachesolrAngularjs.newTerm = false;
+        var groupIndex = Drupal.settings.apachesolrAngularjs.groupIndex;
+        Drupal.settings.apachesolrAngularjs.groupIndex = false;
+        var fieldIndex = Drupal.settings.apachesolrAngularjs.fieldIndex;
+        Drupal.settings.apachesolrAngularjs.fieldIndex = false;
+
+        var data = {
+          term: term,
+          groupIndex: groupIndex,
+          fieldIndex: fieldIndex
+        };
+        var mainControllerElement = angular.element(document.getElementById('advanced-search-controller'));
+        var drupalDataService = mainControllerElement.injector().get('drupalDataService');
+        drupalDataService.setNewTerm(data);
+        mainControllerElement.scope().$apply();
+      }
+    }
+  };
+
   /**
    * Add an extra function to the Drupal ajax object
    * which allows us to trigger an ajax response without

@@ -14,8 +14,11 @@
     $rootScope.$on('drupalDataReady', function() {
 
       // Listen new group.
-      $rootScope.$on('newGroupReady', function($event, group) {
-        main.groups.push(group);
+      $rootScope.$on('newTermReady', function($event, data) {
+        var groupIndex = data.groupIndex;
+        var fieldIndex = data.fieldIndex;
+        var term = data.term;
+        main.groups[groupIndex].fields[fieldIndex].value.push({id: term.id, name: term.name});
       });
 
       main.clearForm = clearForm;
@@ -209,7 +212,7 @@
         }
       }
 
-      function startPopup(choice, $event) {
+      function startPopup(choice, $event, groupIndex, fieldIndex) {
         $event.stopPropagation();
         var base = 'choice-' + choice.id;
         var x = $event.pageX;
@@ -219,7 +222,7 @@
           var target = $event.target;
           angular.element(target).on('click', Drupal.CTools.Modal.clickAjaxLink);
           var elementSettings = {};
-          elementSettings.url = '/' + choice.path;
+          elementSettings.url = '/' + choice.path + '/' + groupIndex + '/' + fieldIndex;
           elementSettings.event = 'click';
           elementSettings.setClick = true;
 
