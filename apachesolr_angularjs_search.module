@@ -159,17 +159,7 @@ function apachesolr_angularjs_search_block_configure($delta) {
   $default_page = apachesolr_search_default_search_page();
   $entity_type = 'node';
 
-  if ($delta == 'aas_basic') {
-    $form['apachesolr_angularjs_search_basic_page'] = array(
-      '#title' => t('Page'),
-      '#type' => 'select',
-      '#options' => $page_options,
-      '#default_value' => variable_get('apachesolr_angularjs_search_basic_page', $default_page),
-      '#required' => TRUE,
-    );
-    return $form;
-  }
-  elseif ($delta == 'aas_advanced') {
+  if ($delta == 'aas_advanced') {
     // @TODO Remove and fix ajax.
     $form['notice'] = array(
       '#markup' => t('If you change page; please save and go here again for selecting fields.'),
@@ -208,10 +198,7 @@ function apachesolr_angularjs_search_block_configure($delta) {
  * Implements hook_block_save().
  */
 function apachesolr_angularjs_search_block_save($delta, $edit) {
-  if ($delta == 'aas_basic') {
-    variable_set('apachesolr_angularjs_search_basic_page', $edit['apachesolr_angularjs_search_basic_page']);
-  }
-  elseif ($delta == 'aas_advanced') {
+  if ($delta == 'aas_advanced') {
     $page_id = $edit['apachesolr_angularjs_search_advanced_page'];
     variable_set('apachesolr_angularjs_search_advanced_page', $page_id);
     $page = apachesolr_search_page_load($page_id);
