@@ -185,7 +185,7 @@
           main.groups[groupIndex].fields[index].previousConnector = 'or';
         }
         var field = angular.copy(main.groups[groupIndex].fields[index]);
-        field.value = null;
+        field.value = [];
         addField(groupIndex, field, index);
       }
 
