@@ -707,44 +707,58 @@ function apachesolr_angularjs_search_process_query($uri = '') {
 }
 
 /**
+ * Determines whether a search group is empty or not.
+ */
+function apachesolr_angularjs_search_empty_group($group) {
+  foreach ($group['fields'] as $field) {
+    if (!empty($field['value'])) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/**
  * Builds a query string based on search groups.
  */
 function apachesolr_angularjs_search_build_query($groups, $limit_by) {
   $query = '';
   foreach ($groups as $group_index => $group) {
-    $internal_connector = $group['internalConnector'];
-    $next_connector = $group['nextConnector'];
-    $query .= '( ';
-    $missing_parenthesis = FALSE;
-    foreach ($group['fields'] as $field_index => $field) {
-      $field_connector_added = FALSE;
-      if (!$missing_parenthesis) {
-        $query .= '( ( ';
-        $missing_parenthesis = TRUE;
+    if (!apachesolr_angularjs_search_empty_group($group)) {
+      $internal_connector = $group['internalConnector'];
+      $next_connector = $group['nextConnector'];
+      $query .= '( ';
+      $missing_parenthesis = FALSE;
+      foreach ($group['fields'] as $field_index => $field) {
+        $field_connector_added = FALSE;
+        if (!$missing_parenthesis) {
+          $query .= '( ( ';
+          $missing_parenthesis = TRUE;
+        }
+        $query .= apachesolr_angularjs_search_get_field_query($field);
+
+        if ((!empty($group['fields'][$field_index + 1]['id']) && $group['fields'][$field_index + 1]['id'] !== $field['id']) || (empty($group['fields'][$field_index + 1]['id']) && $missing_parenthesis)) {
+          $query .= ' ) )';
+          $missing_parenthesis = FALSE;
+        }
+        elseif (!empty($group['fields'][$field_index + 1]['id']) && $group['fields'][$field_index + 1]['id'] === $field['id']) {
+          $query .= ' ) ' . $group['fields'][$field_index + 1]['previousConnector'] . ' (';
+          $field_connector_added = TRUE;
+        }
+
+        if (!$field_connector_added && isset($group['fields'][$field_index + 1])) {
+          $query .= " $internal_connector";
+        }
+        $query .= ' ';
+
       }
-      $query .= apachesolr_angularjs_search_get_field_query($field);
 
-      if ((!empty($group['fields'][$field_index + 1]['id']) && $group['fields'][$field_index + 1]['id'] !== $field['id']) || (empty($group['fields'][$field_index + 1]['id']) && $missing_parenthesis)) {
-        $query .= ' ) )';
-        $missing_parenthesis = FALSE;
+      $query .= ")";
+
+      if (isset($groups[$group_index + 1])) {
+        $query .= " $next_connector";
+        $query .= ' ';
       }
-      elseif (!empty($group['fields'][$field_index + 1]['id']) && $group['fields'][$field_index + 1]['id'] === $field['id']) {
-        $query .= ' ) ' . $group['fields'][$field_index + 1]['previousConnector'] . ' (';
-        $field_connector_added = TRUE;
-      }
-
-      if (!$field_connector_added && isset($group['fields'][$field_index + 1])) {
-        $query .= " $internal_connector";
-      }
-      $query .= ' ';
-
-    }
-
-    $query .= ")";
-
-    if (isset($groups[$group_index + 1])) {
-      $query .= " $next_connector";
-      $query .= ' ';
     }
   }
 
