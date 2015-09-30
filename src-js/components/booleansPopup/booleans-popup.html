@@ -5,7 +5,7 @@
 </div>
 <input class="advanced-search--field-value form-{{vm.field.type}}" type="{{ vm.field.type }}" data-ng-if="vm.field.type != 'fulltext' && !vm.field.autocompletePath && vm.field.format !== 'fromto'" data-ng-model="vm.field.value"  data-ng-keypress="vm.textChange($event)"/>
 <textarea class="advanced-search--field-value form-textarea" data-ng-if="vm.field.type == 'fulltext'" data-ng-model="vm.field.value" data-ng-keypress="vm.textChange($event)"></textarea>
-<div class="advanced-search--field-autocomplete-searching" data-ng-show="vm.field.searching" data-ng-init="vm.searching = false">
+<div class="advanced-search--field-autocomplete-searching" data-ng-show="vm.field.searching">
   <span class="advanced-search--field-autocomplete-searching-text">Searching...</span>
 </div>
 <ui-select class="advanced-search--field-autocomplete" multiple data-ng-if="vm.field.autocompletePath" data-ng-model="vm.field.value" theme="bootstrap" data-ng-disabled="disabled" reset-search-input="true" data-ng-change="vm.optionSelected()">
