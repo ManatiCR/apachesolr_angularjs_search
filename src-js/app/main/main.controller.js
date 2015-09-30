@@ -39,6 +39,7 @@
       main.startPopup = startPopup;
       main.selectOption = selectOption;
       main.isOptionSelected = isOptionSelected;
+      main.groupNameKeypress = groupNameKeypress;
       main.fields = {};
       main.groups = [];
       main.operators = [];
@@ -178,6 +179,7 @@
           main.groups[groupIndex].activeAddField = false;
         }
         main.groups[groupIndex].activeCount++;
+        main.groups[groupIndex].saved = false;
         return index;
       }
 
@@ -258,8 +260,13 @@
       }
 
       function saveGroup(groupIndex) {
+        main.groups[groupIndex].name = main.groups[groupIndex].tempName;
+        main.groups[groupIndex].tempName = undefined;
         searchGroupService.saveGroup(main.groups[groupIndex]).then(function(data) {
-          console.log(data);
+          if (data.status === 200) {
+            main.groups[groupIndex].saved = true;
+            main.groups[groupIndex].saving = false;
+          }
         });
       }
 
@@ -286,6 +293,12 @@
           }
         }
         return false;
+      }
+
+      function groupNameKeypress($event, groupIndex) {
+        if ($event.keyCode === 27) {
+          main.groups[groupIndex].saving = false;
+        }
       }
 
     });
