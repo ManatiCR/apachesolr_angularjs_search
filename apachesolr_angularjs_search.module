@@ -92,7 +92,7 @@ function apachesolr_angularjs_search_delete_search_group($entity, $context = arr
 function apachesolr_angularjs_search_menu() {
   return array(
     APACHESOLR_ANGULARJS_SEARCH_BASE_PATH => array(
-      'title' => 'Search',
+      'title' => '',
       'page callback' => 'apachesolr_angularjs_search_process_query',
       'access callback' => TRUE,
     ),
@@ -106,6 +106,13 @@ function apachesolr_angularjs_search_menu() {
       'page callback' => 'drupal_get_form',
       'page arguments' => array('apachesolr_angularjs_search_admin_form'),
       'access arguments' => array('administer settings for apachesolr angularjs search'),
+    ),
+    'apachesolr_angularjs_search/add_block/%' => array(
+      'title' => '',
+      'page callback' => 'apachesolr_angularjs_search_add_block',
+      'page arguments' => array(2),
+      'access callback' => TRUE,
+      'type' => MENU_CALLBACK,
     ),
   );
 }
@@ -307,6 +314,20 @@ function apachesolr_angularjs_search_preprocess_facetapi_link_inactive(&$vars) {
  */
 function apachesolr_angularjs_search_preprocess_facetapi_link_active(&$vars) {
   _apachesolr_angularjs_search_preprocess_filter_sort_link($vars);
+}
+
+/**
+ * Page callback for save search group.
+ */
+function apachesolr_angularjs_search_add_block($group_id) {
+  $group = apachesolr_angularjs_search_group_load($group_id);
+  if ($group) {
+    $data = unserialize($group->data);
+    echo drupal_json_encode($data);
+  }
+  else {
+    echo 0;
+  }
 }
 
 /**
@@ -782,6 +803,9 @@ function apachesolr_angularjs_search_get_field_query($field) {
     // Autocomplete field.
     $value_connector = '';
     $values = apachesolr_angularjs_search_get_autocomplete_field_values($field['value'], $value_connector);
+    if (!$value_connector) {
+      $value_connector = 'AND';
+    }
     $query .= $values[0];
 
     // Discard first value because we already used it.
@@ -855,8 +879,8 @@ function apachesolr_angularjs_search_get_autocomplete_field_values($value, &$val
     if (is_numeric($element['id'])) {
       $values[] = $element['id'];
     }
-    elseif (!$value_connector && in_array($element['id'], $operators)) {
-      $value_connector = $element['id'];
+    elseif (!$value_connector && (strpos($element['id'], 'AND') === 0 || strpos($element['id'], 'OR') === 0 || strpos($element['id'], 'NOT') === 0 )) {
+      $value_connector = substr($element['id'], 0, 3);
     }
   }
   return $values;
@@ -943,43 +967,6 @@ function apachesolr_angularjs_search_group_load($sgid) {
   }
 
   return FALSE;
-}
-
-/**
- * Returns a form for adding a given group to actual search.
- */
-function apachesolr_angularjs_search_add_group_form($form, $form_state, $group, $title) {
-  $form['group'] = array(
-    '#type' => 'value',
-    '#value' => $group,
-  );
-
-  $form['link'] = array(
-    '#value' => check_plain($title),
-    '#type' => 'button',
-    '#ajax' => array(
-      'callback' => 'apachesolr_angularjs_search_add_group_callback',
-    ),
-    '#attributes' => array(
-      'class' => array('saved-search-groups--add-group-button'),
-    ),
-  );
-
-  return $form;
-}
-
-/**
- * Callback for add group form button.
- */
-function apachesolr_angularjs_search_add_group_callback($form, $form_state) {
-  $group = $form_state['values']['group'];
-  $data = unserialize($group->data);
-  $settings = array(
-    'apachesolrAngularjs' => array(
-      'newGroup' => $data,
-    ),
-  );
-  drupal_add_js($settings, 'setting');
 }
 
 /**

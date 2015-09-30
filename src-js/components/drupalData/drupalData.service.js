@@ -21,6 +21,10 @@
       $rootScope.$emit('newGroupReady', group);
     }
 
+    function setNewTerm(data) {
+      $rootScope.$emit('newTermReady', data);
+    }
+
     function getDrupalData() {
       return data;
     }
@@ -28,6 +32,7 @@
     return {
       setDrupalData: setDrupalData,
       setNewGroup: setNewGroup,
+      setNewTerm: setNewTerm,
       getDrupalData: getDrupalData
     };
   }

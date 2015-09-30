@@ -16,7 +16,7 @@
     <div data-ng-if="!choice.path" data-ng-bind-html="choice.name | highlight: $select.search"></div>
     <div class="choice" data-ng-if="choice.path" data-ng-click=$event.preventDefault();>
       <span>{{ choice.name }} ({{ choice.resultCount }})</span>
-      <button data-ng-click="vm.parentScope.main.startPopup(choice, $event);" title="{{ choice.name }}" id="choice-{{ choice.id }}" class="{{ choice.classes }}">Info</button>
+      <button data-ng-click="vm.parentScope.main.startPopup(choice, $event, vm.parentScope.groupIndex, vm.parentScope.$index);" title="{{ choice.name }}" id="choice-{{ choice.id }}" class="{{ choice.classes }}">i</button>
       <input type="hidden" class="choice-{{ choice.id }}-url" value="{{ choice.path }}"/>
     </div>
   </ui-select-choices>

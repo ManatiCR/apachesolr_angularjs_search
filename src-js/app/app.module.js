@@ -41,15 +41,51 @@
   };
 
   Drupal.behaviors.apachesolrAngularjsNewGroup = {
+    attach: function(context) {
+      jQuery('.search-group-add-link', context).once('search-group-add', function() {
+        jQuery(this).click(function(ev) {
+          ev.preventDefault();
+          var url = jQuery(this).attr('href');
+          jQuery.ajax({
+            url: url,
+            success: function(data) {
+              if (data) {
+                var group = JSON.parse(data);
+                if (group) {
+                  group = angular.copy(group);
+                  var mainControllerElement = angular.element(document.getElementById('advanced-search-controller'));
+                  var drupalDataService = mainControllerElement.injector().get('drupalDataService');
+                  drupalDataService.setNewGroup(group);
+                  mainControllerElement.scope().$apply();
+                }
+              }
+            }
+          });
+        });
+      });
+    }
+  };
+
+  Drupal.behaviors.apachesolrAngularjsNewTerm = {
     attach: function() {
-        if (Drupal.settings.apachesolrAngularjs.newGroup) {
-          var group = angular.copy(Drupal.settings.apachesolrAngularjs.newGroup);
-          Drupal.settings.apachesolrAngularjs.newGroup = false;
-          var mainControllerElement = angular.element(document.getElementById('advanced-search-controller'));
-          var drupalDataService = mainControllerElement.injector().get('drupalDataService');
-          drupalDataService.setNewGroup(group);
-          mainControllerElement.scope().$apply();
-        }
+      if (Drupal.settings.apachesolrAngularjs.newTerm) {
+        var term = Drupal.settings.apachesolrAngularjs.newTerm;
+        Drupal.settings.apachesolrAngularjs.newTerm = false;
+        var groupIndex = Drupal.settings.apachesolrAngularjs.groupIndex;
+        Drupal.settings.apachesolrAngularjs.groupIndex = false;
+        var fieldIndex = Drupal.settings.apachesolrAngularjs.fieldIndex;
+        Drupal.settings.apachesolrAngularjs.fieldIndex = false;
+
+        var data = {
+          term: term,
+          groupIndex: groupIndex,
+          fieldIndex: fieldIndex
+        };
+        var mainControllerElement = angular.element(document.getElementById('advanced-search-controller'));
+        var drupalDataService = mainControllerElement.injector().get('drupalDataService');
+        drupalDataService.setNewTerm(data);
+        mainControllerElement.scope().$apply();
+      }
     }
   };
 

@@ -80,7 +80,8 @@
           }
 
           if (vm.type === 'autocomplete') {
-            vm.field.value.push({id: operator, name: operator, class:'advanced-search--field-autocomplete-operator'});
+            var length = vm.field.value.length;
+            vm.field.value.push({id: operator + '-' + length, name: operator, class:'advanced-search--field-autocomplete-operator'});
           }
           else {
             part = vm.field.value.substr(selectionStart + 1);
@@ -109,8 +110,8 @@
             vm.field.value = vm.field.value.substr(0, selectionStart);
             vm.field.value += part;
           }
-          vm.field.nextConnector = operator.toLowerCase();
           $scope.$parent.main.addSameField($scope.$parent.groupIndex, $scope.$parent.$index);
+          $scope.$parent.main.groups[$scope.$parent.groupIndex].fields[$scope.$parent.$index + 1].previousConnector = operator.toLowerCase();
           if (target) {
             setTimeout(function() {
               //    angular.element(target).parents('.advanced-search--field-container').next().find('.advanced-search--field-value').focus();
@@ -181,7 +182,7 @@
     function BooleansPopupLink(scope, element) {
 
       function setHighlight() {
-        jQuery(element).find('textarea, input').highlightTextarea({
+        jQuery(element).find('.form-textarea, .form-text').highlightTextarea({
           words: ['AND', 'OR', 'NOT'],
           color: '#CCC'
         });
