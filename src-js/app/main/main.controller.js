@@ -26,6 +26,8 @@
         main.groups[groupIndex].fields[fieldIndex].value.push({id: term.id, name: term.name});
         // Close open Ctools Modals.
         Drupal.CTools.Modal.dismiss();
+        jQuery('body').unbind('keypress');
+        main.groups[groupIndex].fields[fieldIndex].choices = [];
       });
 
       main.clearForm = clearForm;
@@ -217,11 +219,28 @@
           field.searching = true;
           $http.get('/' + field.autocompletePath + '/' + search).then(function(response) {
             if (response.status === 200) {
-              field.choices = response.data;
+              field.choices = [];
+              for (var index = 0; index < response.data.length; index++) {
+                if (!fieldHasValue(field, response.data[index].id)) {
+                  field.choices.push(response.data[index]);
+                }
+              }
             }
             field.searching = false;
           });
         }
+      }
+
+      function fieldHasValue(field, choiceId) {
+        if (!field.value) {
+          field.value = [];
+        }
+        for (var index  = 0; index < field.value.length; index++) {
+          if (field.value[index].id === choiceId) {
+            return true;
+          }
+        }
+        return false;
       }
 
       function startPopup(choice, $event, groupIndex, fieldIndex) {
