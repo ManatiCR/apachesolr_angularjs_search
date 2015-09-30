@@ -41,11 +41,12 @@ class apachesolr_angularjs_search_group_handler_field_view_link extends views_ha
     $group = apachesolr_angularjs_search_group_load($values->sgid);
     $link_text = check_plain($this->options['link_text']);
     if ($link_text === '!name') {
-      $link_text = $group->name;
+      $link_text = check_plain(truncate_utf8($group->name, 20, FALSE, TRUE));
     }
     return l($link_text, 'apachesolr_angularjs_search/add_block/' . $group->sgid, array(
       'attributes' => array(
         'class' => array('search-group-add-link'),
+        'title' => check_plain($group->name),
       ),
     ));
   }
