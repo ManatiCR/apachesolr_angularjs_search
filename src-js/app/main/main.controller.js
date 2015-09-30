@@ -24,6 +24,8 @@
         var fieldIndex = data.fieldIndex;
         var term = data.term;
         main.groups[groupIndex].fields[fieldIndex].value.push({id: term.id, name: term.name});
+        // Close open Ctools Modals.
+        Drupal.CTools.Modal.dismiss();
       });
 
       main.clearForm = clearForm;
