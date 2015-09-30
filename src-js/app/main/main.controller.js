@@ -109,6 +109,7 @@
         if (selectedField) {
           main.groups[groupIndex].fields[index] = selectedField;
           hidePreviousAndNext(groupIndex, index);
+          main.groups[groupIndex].saved = false;
         }
       }
 
