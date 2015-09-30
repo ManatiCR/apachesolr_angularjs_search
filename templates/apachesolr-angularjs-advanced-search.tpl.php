@@ -16,12 +16,14 @@
     <form class="advanced-search--form">
       <div class="advanced-search--group" data-ng-if="group.id" data-ng-repeat="group in main.groups" data-ng-init="groupIndex = $index">
         <div class="advanced-search--group-actions">
+          <?php if (user_is_logged_in()): ?>
           <a href="#" class="advanced-search--group-save" data-ng-if="!group.saved && !group.saving" data-ng-click="group.saving = true">Save this Search Group for next searches</a>
           <span class="advanced-search--group-saved" data-ng-if="group.saved && !group.saving">{{ group.name }}</span>
           <div class="advanced-search--group-save-open" data-ng-if="group.saving">
             <input class="advanced-search--group-save-name" data-ng-model="group.tempName" type="text" data-ng-keypress="main.groupNameKeypress($event, groupIndex)"/>
             <button class="advanced-search--group-save-confirm" type="button" data-ng-click="main.saveGroup(groupIndex)">Save</button>
           </div>
+          <?php endif; ?>
           <a href="#" class="advanced-search--group-delete" data-ng-if="main.groups.length > 1" data-ng-click="main.deleteGroup(groupIndex); $event.preventDefault();">Delete Group</a>
         </div>
         <div class="advanced-search--group-content">
