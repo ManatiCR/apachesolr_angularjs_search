@@ -247,7 +247,7 @@
         $event.stopPropagation();
         var base = 'choice-' + choice.id;
         var x = $event.pageX;
-        var y = $event.pageY - 50;
+        var y = $event.pageY - 250;
         if (!choice.clicked) {
           choice.clicked = true;
           var target = $event.target;
