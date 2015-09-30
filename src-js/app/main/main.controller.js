@@ -201,10 +201,12 @@
 
       function getChoices(field, search) {
         if (search && search.length > 2) {
+          field.searching = true;
           $http.get('/' + field.autocompletePath + '/' + search).then(function(response) {
             if (response.status === 200) {
               field.choices = response.data;
             }
+            field.searching = false;
           });
         }
       }
