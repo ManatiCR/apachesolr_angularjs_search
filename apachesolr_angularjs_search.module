@@ -597,29 +597,31 @@ function apachesolr_angularjs_search_save_group() {
  * Create and return a name for a given search.
  */
 function apachesolr_angularjs_search_get_search_name($groups) {
-  return apachesolr_angularjs_search_get_group_name((object) $groups[0], 'value');
+  $name = '';
+  foreach ($groups as $group) {
+    $name .= apachesolr_angularjs_search_get_group_name($group);
+    $name .= '. ';
+  }
+  $name = substr($name, 0, -2);
+  $name = truncate_utf8($name, 255, FALSE, TRUE);
+  return $name;
 }
 
 /**
  * Create and return a name for a given search group.
  */
-function apachesolr_angularjs_search_get_group_name($group, $source = 'label') {
+function apachesolr_angularjs_search_get_group_name($group) {
   $name = '';
+  if (is_array($group)) {
+    $group = (object) $group;
+  }
   foreach ($group->fields as $field) {
     if (!empty($field['id']) && !empty($field['value'])) {
-      if ($source === 'value' && is_array($field[$source])) {
-        $output = '';
-        foreach ($field[$source] as $element) {
-          $output .= $element['name'] . ', ';
-        }
-        $output = substr($output, 0, -2);
-        $field[$source] = $output;
-      }
-      $name .= $field[$source] . ', ';
+      $name .= $field['label'] . ': ' . $field['value'] . '; ';
     }
   }
   $name = substr($name, 0, -2);
-  $name = truncate_utf8($name, 30, FALSE, TRUE);
+  $name = truncate_utf8($name, 255, FALSE, TRUE);
   return $name;
 }
 
