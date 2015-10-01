@@ -276,6 +276,7 @@
       }
 
       function processForm() {
+        main.processingSearch = true;
         searchPostService.sendSearch(main.groups, main.fields.limitby, pageId).then(function(data) {
           var uri = data.uri;
           window.location.href = uri;

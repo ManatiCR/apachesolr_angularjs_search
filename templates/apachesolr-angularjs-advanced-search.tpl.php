@@ -12,6 +12,9 @@
   <![endif]-->
 
   <div data-ng-cloak id="advanced-search-controller" data-ng-controller="mainController as main">
+    <div class="advanced-search--searching-spinner" data-ng-show="main.processingSearch">
+      <span>PROCESSING SEARCH</span>
+    </div>
 
     <form class="advanced-search--form">
       <div class="advanced-search--group" data-ng-if="group.id" data-ng-repeat="group in main.groups" data-ng-init="groupIndex = $index">
