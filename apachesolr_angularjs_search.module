@@ -704,9 +704,10 @@ function apachesolr_angularjs_search_process_query($uri = '') {
     $page_id = variable_get('apachesolr_angularjs_search_advanced_page', apachesolr_search_default_search_page());
   }
 
+  $sort = isset($_GET['solrsort']) ? $_GET['solrsort'] : '';
   $conditions = array(
     'fq' => array(),
-    'apachesolr_search_sort' => '',
+    'apachesolr_search_sort' => $sort,
   );
   $page = apachesolr_search_page_load($page_id);;
   $build = array();
