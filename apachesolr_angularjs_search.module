@@ -243,7 +243,7 @@ function apachesolr_angularjs_search_block_view($delta) {
   $block = array();
   switch ($delta) {
     case 'aas_basic':
-      $block['subject'] = t('Basic Search');
+      $block['subject'] = '';
       $block['content'] = apachesolr_angularjs_search_get_basic_search_block();
       break;
 
@@ -714,10 +714,10 @@ function apachesolr_angularjs_search_process_query($uri = '') {
 function apachesolr_angularjs_search_empty_group($group) {
   foreach ($group['fields'] as $field) {
     if (!empty($field['value'])) {
-      return false;
+      return FALSE;
     }
   }
-  return true;
+  return TRUE;
 }
 
 /**
@@ -895,7 +895,7 @@ function apachesolr_angularjs_search_get_autocomplete_field_values($value, &$val
     if (is_numeric($element['id'])) {
       $values[] = $element['id'];
     }
-    elseif (!$value_connector && (strpos($element['id'], 'AND') === 0 || strpos($element['id'], 'OR') === 0 || strpos($element['id'], 'NOT') === 0 )) {
+    elseif (!$value_connector && (strpos($element['id'], 'AND') === 0 || strpos($element['id'], 'OR') === 0 || strpos($element['id'], 'NOT') === 0)) {
       $value_connector = substr($element['id'], 0, 3);
     }
   }
