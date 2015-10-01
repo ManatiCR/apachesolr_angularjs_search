@@ -15,6 +15,7 @@
 
       // Listen new group.
       $rootScope.$on('newGroupReady', function($event, group) {
+        group.processingSave = false;
         main.groups.push(group);
       });
 
@@ -283,11 +284,13 @@
 
       function saveGroup(groupIndex) {
         main.groups[groupIndex].name = main.groups[groupIndex].tempName;
-        main.groups[groupIndex].tempName = undefined;
+        main.groups[groupIndex].processingSave = true;
+        main.groups[groupIndex].saving = false;
+        main.groups[groupIndex].saved = true;
         searchGroupService.saveGroup(main.groups[groupIndex]).then(function(data) {
           if (data.status === 200) {
-            main.groups[groupIndex].saved = true;
-            main.groups[groupIndex].saving = false;
+            main.groups[groupIndex].processingSave = false;
+            main.groups[groupIndex].tempName = undefined;
           }
         });
       }
