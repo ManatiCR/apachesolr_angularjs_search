@@ -50,6 +50,12 @@ function apachesolr_angularjs_search_schema() {
         'unsigned' => TRUE,
         'description' => 'Owner of this search',
       ),
+      'session_id' => array(
+        'type' => 'varchar',
+        'not null' => FALSE,
+        'length' => 128,
+        'description' => 'For anonymous searches the drupal session id',
+      ),
       'page_id' => array(
         'type' => 'varchar',
         'length' => '60',
@@ -173,4 +179,19 @@ function apachesolr_angularjs_search_uninstall() {
   variable_del('apachesolr_angularjs_search_advanced_page');
   variable_del('apachesolr_angularjs_search_advanced_fields');
   variable_del('apachesolr_angularjs_search_delete_time');
+}
+
+/**
+ * Add session_id field.
+ */
+function apachesolr_angularjs_search_update_7000() {
+  if (!db_field_exists('aas_search_saved', 'session_id')) {
+    $spec = array(
+      'type' => 'varchar',
+      'not null' => FALSE,
+      'length' => 128,
+      'description' => 'For anonymous searches the drupal session id',
+    );
+    db_add_field('aas_search_saved', 'session_id', $spec);
+  }
 }
