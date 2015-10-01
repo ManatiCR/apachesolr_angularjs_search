@@ -317,6 +317,28 @@ function apachesolr_angularjs_search_preprocess_facetapi_link_active(&$vars) {
 }
 
 /**
+ * Implements hook_query_TAG_alter().
+ */
+function apachesolr_angularjs_search_query_aas_search_saved_access_alter(QueryAlterableInterface $query) {
+  if (user_is_anonymous()) {
+    // We need to have a value in session for getting session saved.
+    $_SESSION['save'] = TRUE;
+    $session_id = session_id();
+    $tables = $query->getTables();
+    $aas_search_saved_table_alias = '';
+    foreach ($tables as $alias => $table_info) {
+      if ($table_info['table'] === 'aas_search_saved') {
+        $aas_search_saved_table_alias = $alias;
+        break;
+      }
+    }
+    if ($aas_search_saved_table_alias) {
+      $query->condition($aas_search_saved_table_alias . '.session_id', $session_id, '=');
+    }
+  }
+}
+
+/**
  * Page callback for save search group.
  */
 function apachesolr_angularjs_search_add_block($group_id) {
@@ -995,6 +1017,12 @@ function apachesolr_angularjs_search_save_temporary_search(&$search) {
   if (empty($search->uid)) {
     global $user;
     $search->uid = $user->uid;
+  }
+  if ($search->uid === 0) {
+    // If anonymous user; set session_id.
+    $_SESSION['save'] = TRUE;
+    $session_id = session_id();
+    $search->session_id = $session_id;
   }
   if (empty($search->created)) {
     $search->created = REQUEST_TIME;
