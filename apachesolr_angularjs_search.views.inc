@@ -17,6 +17,7 @@ function apachesolr_angularjs_search_views_data() {
     'field' => 'sid',
     'title' => t('Saved Search'),
     'help' => t('Saved searches on your site'),
+    'access query tag' => 'aas_search_saved_access',
   );
 
   $data['aas_search_saved']['sid'] = array(
