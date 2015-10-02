@@ -356,7 +356,7 @@ function apachesolr_angularjs_search_add_block($group_id) {
  * Preprocess facetapi_link.
  */
 function _apachesolr_angularjs_search_preprocess_filter_sort_link(&$vars) {
-  if (drupal_match_path(current_path(), APACHESOLR_ANGULARJS_SEARCH_BASE_PATH . '/*')) {
+  if (drupal_match_path(current_path(), APACHESOLR_ANGULARJS_SEARCH_BASE_PATH . "/*\n" . APACHESOLR_ANGULARJS_SEARCH_BASE_PATH)) {
     $vars['path'] = current_path();
   }
 }
