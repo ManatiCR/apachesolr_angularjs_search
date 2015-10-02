@@ -515,7 +515,9 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
     $group_id = $_GET['group_id'];
     $group = apachesolr_angularjs_search_group_load($group_id);
     if ($group) {
-      $settings['groups'][] = unserialize($group->data);
+      $data = unserialize($group->data);
+      $data->processingSave = FALSE;
+      $settings['groups'][] = $data;
     }
   }
 
