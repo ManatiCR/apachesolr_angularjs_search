@@ -152,8 +152,8 @@
         return false;
       }
 
-      function addFieldConfirm(groupIndex) {
-        var field = angular.copy(main.selectedField);
+      function addFieldConfirm(groupIndex, option) {
+        var field = angular.copy(option);
         if (!fieldExistsInGroup(field, main.groups[groupIndex])) {
           main.groups[groupIndex].differentFieldsCount ++;
         }
