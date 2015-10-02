@@ -510,6 +510,15 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
     'pageId' => $page_id,
     'modulePath' => drupal_get_path('module', 'apachesolr_angularjs_search'),
   );
+
+  if (!empty($_GET['group_id']) && is_numeric($_GET['group_id'])) {
+    $group_id = $_GET['group_id'];
+    $group = apachesolr_angularjs_search_group_load($group_id);
+    if ($group) {
+      $settings['groups'][] = unserialize($group->data);
+    }
+  }
+
   $path = drupal_get_path('module', 'apachesolr_angularjs_search');
 
   $build = array(
