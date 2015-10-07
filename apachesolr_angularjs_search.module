@@ -732,6 +732,13 @@ function apachesolr_angularjs_search_process_query($uri = '') {
   if (count($results) === 1 && isset($results['apachesolr_search_browse'])) {
     $page_results_count = 0;
   }
+  $search_terms = &drupal_static('apachesolr_angularjs_search_terms', '');
+  if ($search) {
+    $search_terms = $search->name;
+  }
+  else {
+    $search_terms = $query;
+  }
   $build = apachesolr_search_search_page_custom($results, $page, $build);
   if (isset($build['suggestions'])) {
     // Remove suggestions.
