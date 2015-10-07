@@ -1059,6 +1059,7 @@ function apachesolr_angularjs_search_save_temporary_search(&$search) {
   if (empty($search->name)) {
     $search->name = apachesolr_angularjs_search_get_search_name($search->groups);
   }
+  module_invoke_all('apachesolr_angularjs_search_search_presave', $search);
   return drupal_write_record('aas_search_saved', $search);
 }
 
