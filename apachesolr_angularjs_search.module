@@ -447,17 +447,28 @@ function apachesolr_angularjs_search_get_basic_search_block() {
  * Returns basic search form.
  */
 function apachesolr_angularjs_search_basic_form($form, $form_state) {
+  $form['#prefix'] = '<div class="aas-basic-form">';
+  $form['#suffix'] = '</div>';
   $form['search_terms'] = array(
     '#type' => 'textfield',
     '#title' => t('Search'),
     '#title_display' => 'invisible',
     '#size' => 15,
     '#default_value' => '',
-    '#attributes' => array('title' => t('Enter the terms you wish to search for.')),
+    '#attributes' => array(
+      'title' => t('Enter the terms you wish to search for.'),
+      'class' => array('aas-basic-form--search-terms'),
+    ),
   );
 
   $form['actions'] = array('#type' => 'actions');
-  $form['actions']['submit'] = array('#type' => 'submit', '#value' => t('Search'));
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Search'),
+    '#attributes' => array(
+      'class' => array('aas-basic-form--submit-button'),
+    ),
+  );
 
   return $form;
 }
@@ -650,7 +661,14 @@ function apachesolr_angularjs_search_get_group_name($group) {
   }
   foreach ($group->fields as $field) {
     if (!empty($field['id']) && !empty($field['value'])) {
-      $name .= $field['label'] . ': ' . $field['value'] . '; ';
+      if (!empty($field['autocompletePath'])) {
+        $value = apachesolr_angularjs_search_get_autocomplete_field_values($field['value']);
+      }
+      else {
+        $value = apachesolr_angularjs_search_get_field_values($field['value']);
+      }
+      $value = is_array($value) ? $value[0] : $field['value'];
+      $name .= $field['label'] . ': ' . $value . '; ';
     }
   }
   $name = substr($name, 0, -2);
@@ -947,21 +965,20 @@ function apachesolr_angularjs_search_get_autocomplete_field_values($value, &$val
  * Returns save form for a given search.
  */
 function apachesolr_angularjs_search_save_form($form, $form_state, $search) {
+  $form['#prefix'] = '<div class="aas-save-search-form">';
+  $form['#suffix'] = '</div>';
   $form['search'] = array(
     '#type' => 'value',
     '#value' => $search,
   );
 
-  $form['help'] = array(
-    '#type' => 'markup',
-    '#markup' => t('Set a name and click save if you want to save this view.'),
-    '#weight' => 0,
-  );
-
   $form['name'] = array(
     '#type' => 'textfield',
-    '#title' => t('Name'),
+    '#title' => '',
     '#weight' => 1,
+    '#attributes' => array(
+      'class' => array('aas-save-search-form--name')
+    ),
   );
 
   $form['save'] = array(
@@ -973,6 +990,9 @@ function apachesolr_angularjs_search_save_form($form, $form_state, $search) {
       'method' => 'replace',
       'effect' => 'fade',
       'wrapper' => 'apachesolr-angularjs-search-save-form',
+    ),
+    '#attributes' => array(
+      'class' => array('aas-save-search-form--submit')
     ),
   );
 

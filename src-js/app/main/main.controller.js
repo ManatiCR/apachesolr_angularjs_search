@@ -24,6 +24,9 @@
         var groupIndex = data.groupIndex;
         var fieldIndex = data.fieldIndex;
         var term = data.term;
+        if (main.groups[groupIndex].fields[fieldIndex].value === undefined) {
+          main.groups[groupIndex].fields[fieldIndex].value = [];
+        }
         main.groups[groupIndex].fields[fieldIndex].value.push({id: term.id, name: term.name});
         // Close open Ctools Modals.
         Drupal.CTools.Modal.dismiss();
@@ -45,6 +48,7 @@
       main.selectOption = selectOption;
       main.isOptionSelected = isOptionSelected;
       main.groupNameKeypress = groupNameKeypress;
+      main.clearChoices = clearChoices;
       main.fields = {};
       main.groups = [];
       main.operators = [];
@@ -327,6 +331,18 @@
         }
       }
 
+      function clearChoices(field) {
+        field.choices = [];
+      }
+
+      function setClickHandler() {
+        jQuery('.ui-select-container').once(function() {
+          jQuery(this).click(function() {
+            jQuery(this).find('.ui-select-search').focus();
+          });
+        });
+      }
+      setTimeout(setClickHandler, 0);
     });
   }
 })();

@@ -38,6 +38,7 @@
       vm.addBoolean = addBoolean;
       vm.highlightChange = highlightChange;
       vm.optionSelected = optionSelected;
+      vm.removeChoice = removeChoice;
       vm.firstBoolean = '';
 
       var target;
@@ -177,6 +178,22 @@
         angular.element(document.getElementsByClassName('ui-select-search')).unbind('keydown', hideBooleansPopup);
       }
 
+      function removeChoice(field) {
+        var booleanFound = false;
+        if (field.value) {
+          for (var index = 0; index < field.value.length; index ++) {
+            if (field.value[index].class === 'advanced-search--field-autocomplete-operator') {
+              vm.firstBoolean = field.value[index].name;
+              booleanFound = true;
+              break;
+            }
+          }
+        }
+        if (!booleanFound) {
+          vm.firstBoolean = false;
+        }
+      }
+
     }
 
     function BooleansPopupLink(scope, element) {
@@ -192,7 +209,16 @@
         scope.element = element;
       }
 
+      function setClickHandler() {
+        jQuery('.ui-select-container').once(function() {
+          jQuery(this).click(function() {
+            jQuery(this).find('.ui-select-search').focus();
+          });
+        });
+      }
+
       setTimeout(setHighlight, 0);
+      setTimeout(setClickHandler, 0);
     }
   }
 })();
