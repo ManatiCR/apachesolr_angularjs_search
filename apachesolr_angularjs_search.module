@@ -750,6 +750,13 @@ function apachesolr_angularjs_search_process_query($uri = '') {
   if (count($results) === 1 && isset($results['apachesolr_search_browse'])) {
     $page_results_count = 0;
   }
+  $search_terms = &drupal_static('apachesolr_angularjs_search_terms', '');
+  if ($search) {
+    $search_terms = $search->name;
+  }
+  else {
+    $search_terms = $query;
+  }
   $build = apachesolr_search_search_page_custom($results, $page, $build);
   if (isset($build['suggestions'])) {
     // Remove suggestions.
@@ -1072,6 +1079,7 @@ function apachesolr_angularjs_search_save_temporary_search(&$search) {
   if (empty($search->name)) {
     $search->name = apachesolr_angularjs_search_get_search_name($search->groups);
   }
+  module_invoke_all('apachesolr_angularjs_search_search_presave', $search);
   return drupal_write_record('aas_search_saved', $search);
 }
 
