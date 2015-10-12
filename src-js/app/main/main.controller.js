@@ -32,6 +32,9 @@
         Drupal.CTools.Modal.dismiss();
         jQuery('body').unbind('keypress');
         main.groups[groupIndex].fields[fieldIndex].choices = [];
+
+        // Clear ui-select-search.
+        jQuery(jQuery(jQuery('.advanced-search--group-content')[groupIndex]).find('.advanced-search--field-container')[fieldIndex]).find('.ui-select-search').val('');
       });
 
       main.clearForm = clearForm;
