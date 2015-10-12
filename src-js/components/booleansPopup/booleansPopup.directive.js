@@ -65,10 +65,9 @@
         return true;
       }
 
-      function addBoolean(operator) {
+      function addBoolean(operator, $event) {
 
         var addBooleanInField = true;
-        vm.booleansPopup.show = false;
         if (vm.field.id !== '__fulltext_search' && vm.firstBoolean && vm.firstBoolean !== operator) {
           addBooleanInField = false;
         }
@@ -83,6 +82,7 @@
           if (vm.type === 'autocomplete') {
             var length = vm.field.value.length;
             vm.field.value.push({id: operator + '-' + length, name: operator, class:'advanced-search--field-autocomplete-operator'});
+            jQuery($event.target).parents('.advanced-search--field-container').find('.ui-select-search').focus();
           }
           else {
             part = vm.field.value.substr(selectionStart + 1);
@@ -113,12 +113,8 @@
           }
           $scope.$parent.main.addSameField($scope.$parent.groupIndex, $scope.$parent.$index);
           $scope.$parent.main.groups[$scope.$parent.groupIndex].fields[$scope.$parent.$index + 1].previousConnector = operator.toLowerCase();
-          if (target) {
-            setTimeout(function() {
-              //    angular.element(target).parents('.advanced-search--field-container').next().find('.advanced-search--field-value').focus();
-            }, 0);
-          }
         }
+        vm.booleansPopup.show = false;
       }
 
       function separateFieldValue(field, booleanToSeparate) {
