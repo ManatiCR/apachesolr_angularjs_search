@@ -12,10 +12,6 @@
   <![endif]-->
 
   <div data-ng-cloak id="advanced-search-controller" data-ng-controller="mainController as main">
-    <div class="advanced-search--searching-spinner" data-ng-show="main.processingSearch">
-      <span>PROCESSING SEARCH</span>
-    </div>
-
     <form class="advanced-search--form">
       <div class="advanced-search--group" data-ng-if="group.id" data-ng-repeat="group in main.groups" data-ng-init="groupIndex = $index">
         <div class="advanced-search--group-actions">
@@ -24,7 +20,7 @@
           <span class="advanced-search--group-saved" data-ng-if="group.saved && !group.saving && !group.processingSave">{{ group.name }}</span>
           <div class="advanced-search--group-save-open" data-ng-if="group.saving || group.processingSave">
             <input class="advanced-search--group-save-name" data-ng-model="group.tempName" type="text" data-ng-keypress="main.groupNameKeypress($event, groupIndex)"/>
-            <button class="advanced-search--group-save-confirm" type="button" data-ng-click="main.saveGroup(groupIndex)">Save</button>
+            <input class="advanced-search--group-save-confirm form-submit" type="button" data-ng-click="main.saveGroup(groupIndex)" value="Save"/>
             <span class="advanced-search--group-save-processing" data-ng-if="group.processingSave">Saving...</span>
           </div>
           <?php endif; ?>
@@ -48,10 +44,11 @@
             </div>
           </div>
           <div class="advanced-search--add-another">
-            <a href="#" class="advanced-search--add-another-button" data-ng-if="!group.activeAddField" data-ng-click="group.activeAddField = true; main.booleansPopup.show = false; $event.preventDefault();">Add New Field</a>
+            <a href="#" class="advanced-search--add-another-button" data-ng-init="group.activeAddField = false" data-ng-click="group.activeAddField = !group.activeAddField; main.booleansPopup.show = false; $event.preventDefault();">Add New Field</a>
             <div class="advanced-search--add-type" data-ng-if="group.activeAddField">
-              <select class="advanced-search--add-type-select" data-ng-model="main.selectedField" ng-options="option.label for option in main.fields.selected track by option.id"></select>
-              <a href="#" class="advanced-search--add-type-button" data-ng-click="main.addFieldConfirm(groupIndex); $event.preventDefault();">Add</a>
+              <ul class="advanced-search--add-type-list" data-ng-show="group.activeAddField">
+                <li class="advanced-select--add-type-list-item" data-ng-repeat="option in main.fields.selected" data-ng-click="main.addFieldConfirm(groupIndex, option)">{{ option.label }}</li>
+              </ul>
             </div>
           </div>
         </div>
@@ -77,7 +74,7 @@
             <div class="advanced-search--field-autocomplete-searching" data-ng-show="field.searching">
               <span class="advanced-search--field-autocomplete-searching-text">Searching...</span>
             </div>
-            <ui-select class="advanced-search--field-value form-{{field.type}}" multiple data-ng-if="field.autocompletePath" data-ng-model="field.value" theme="bootstrap" data-ng-disabled="disabled" reset-search-input="true">
+            <ui-select class="advanced-search--field-value form-{{field.type}}" multiple data-ng-if="field.autocompletePath" data-ng-model="field.value" theme="bootstrap" data-ng-disabled="disabled" reset-search-input="true" on-select="main.clearChoices(field)">
               <ui-select-match placeholder="Select a {{ field.label }}"> {{ $item.name }} </ui-select-match>
               <ui-select-choices repeat="choice in field.choices track by choice.id" refresh="main.getChoices(field, $select.search)" refresh-delay="0">
                 <div data-ng-bind-html="choice.name | highlight: $select.search"></div>
@@ -95,7 +92,8 @@
       </div>
       <div class="advanced-search--global-actions">
         <button class="advanced-search--global-reset" data-ng-click="main.clearForm()" type="button">Reset</button>
-        <button class="advanced-search--global-submit" data-ng-click="main.processForm(); $event.preventDefault();" type="submit">Search</button>
+        <button class="advanced-search--global-submit" data-ng-class="{disabled: main.processingSearch}" data-ng-click="!main.processingSearch && main.processForm(); $event.preventDefault();" type="submit">Search</button>
+        <div class="advanced-search--searching-spinner" data-ng-show="main.processingSearch">Processing Search</div>
       </div>
     </form>
   </div>

@@ -356,7 +356,7 @@ function apachesolr_angularjs_search_add_block($group_id) {
  * Preprocess facetapi_link.
  */
 function _apachesolr_angularjs_search_preprocess_filter_sort_link(&$vars) {
-  if (drupal_match_path(current_path(), APACHESOLR_ANGULARJS_SEARCH_BASE_PATH . '/*')) {
+  if (drupal_match_path(current_path(), APACHESOLR_ANGULARJS_SEARCH_BASE_PATH . "/*\n" . APACHESOLR_ANGULARJS_SEARCH_BASE_PATH)) {
     $vars['path'] = current_path();
   }
 }
@@ -447,17 +447,28 @@ function apachesolr_angularjs_search_get_basic_search_block() {
  * Returns basic search form.
  */
 function apachesolr_angularjs_search_basic_form($form, $form_state) {
+  $form['#prefix'] = '<div class="aas-basic-form">';
+  $form['#suffix'] = '</div>';
   $form['search_terms'] = array(
     '#type' => 'textfield',
     '#title' => t('Search'),
     '#title_display' => 'invisible',
     '#size' => 15,
     '#default_value' => '',
-    '#attributes' => array('title' => t('Enter the terms you wish to search for.')),
+    '#attributes' => array(
+      'title' => t('Enter the terms you wish to search for.'),
+      'class' => array('aas-basic-form--search-terms'),
+    ),
   );
 
   $form['actions'] = array('#type' => 'actions');
-  $form['actions']['submit'] = array('#type' => 'submit', '#value' => t('Search'));
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Search'),
+    '#attributes' => array(
+      'class' => array('aas-basic-form--submit-button'),
+    ),
+  );
 
   return $form;
 }
@@ -510,6 +521,17 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
     'pageId' => $page_id,
     'modulePath' => drupal_get_path('module', 'apachesolr_angularjs_search'),
   );
+
+  if (!empty($_GET['group_id']) && is_numeric($_GET['group_id'])) {
+    $group_id = $_GET['group_id'];
+    $group = apachesolr_angularjs_search_group_load($group_id);
+    if ($group) {
+      $data = unserialize($group->data);
+      $data->processingSave = FALSE;
+      $settings['groups'][] = $data;
+    }
+  }
+
   $path = drupal_get_path('module', 'apachesolr_angularjs_search');
 
   $build = array(
@@ -639,7 +661,14 @@ function apachesolr_angularjs_search_get_group_name($group) {
   }
   foreach ($group->fields as $field) {
     if (!empty($field['id']) && !empty($field['value'])) {
-      $name .= $field['label'] . ': ' . $field['value'] . '; ';
+      if (!empty($field['autocompletePath'])) {
+        $value = apachesolr_angularjs_search_get_autocomplete_field_values($field['value']);
+      }
+      else {
+        $value = apachesolr_angularjs_search_get_field_values($field['value']);
+      }
+      $value = is_array($value) ? $value[0] : $field['value'];
+      $name .= $field['label'] . ': ' . $value . '; ';
     }
   }
   $name = substr($name, 0, -2);
@@ -704,17 +733,29 @@ function apachesolr_angularjs_search_process_query($uri = '') {
     $page_id = variable_get('apachesolr_angularjs_search_advanced_page', apachesolr_search_default_search_page());
   }
 
+  $sort = isset($_GET['solrsort']) ? $_GET['solrsort'] : '';
+  $rows = isset($_GET['items_per_page']) ? $_GET['items_per_page'] : 25;
   $conditions = array(
     'fq' => array(),
-    'apachesolr_search_sort' => '',
+    'apachesolr_search_sort' => $sort,
   );
-  $page = apachesolr_search_page_load($page_id);;
+  $page = apachesolr_search_page_load($page_id);
+  if ($rows) {
+    $page['settings']['apachesolr_search_per_page'] = $rows;
+  }
   $build = array();
   $results = apachesolr_search_search_results($query, $conditions, $page);
   $page_results_count = &drupal_static('apachesolr_angularjs_search_page_results_count', 0);
   $page_results_count = count($results);
   if (count($results) === 1 && isset($results['apachesolr_search_browse'])) {
     $page_results_count = 0;
+  }
+  $search_terms = &drupal_static('apachesolr_angularjs_search_terms', '');
+  if ($search) {
+    $search_terms = $search->name;
+  }
+  else {
+    $search_terms = $query;
   }
   $build = apachesolr_search_search_page_custom($results, $page, $build);
   if (isset($build['suggestions'])) {
@@ -931,21 +972,20 @@ function apachesolr_angularjs_search_get_autocomplete_field_values($value, &$val
  * Returns save form for a given search.
  */
 function apachesolr_angularjs_search_save_form($form, $form_state, $search) {
+  $form['#prefix'] = '<div class="aas-save-search-form">';
+  $form['#suffix'] = '</div>';
   $form['search'] = array(
     '#type' => 'value',
     '#value' => $search,
   );
 
-  $form['help'] = array(
-    '#type' => 'markup',
-    '#markup' => t('Set a name and click save if you want to save this view.'),
-    '#weight' => 0,
-  );
-
   $form['name'] = array(
     '#type' => 'textfield',
-    '#title' => t('Name'),
+    '#title' => '',
     '#weight' => 1,
+    '#attributes' => array(
+      'class' => array('aas-save-search-form--name')
+    ),
   );
 
   $form['save'] = array(
@@ -957,6 +997,9 @@ function apachesolr_angularjs_search_save_form($form, $form_state, $search) {
       'method' => 'replace',
       'effect' => 'fade',
       'wrapper' => 'apachesolr-angularjs-search-save-form',
+    ),
+    '#attributes' => array(
+      'class' => array('aas-save-search-form--submit')
     ),
   );
 
@@ -1036,6 +1079,7 @@ function apachesolr_angularjs_search_save_temporary_search(&$search) {
   if (empty($search->name)) {
     $search->name = apachesolr_angularjs_search_get_search_name($search->groups);
   }
+  module_invoke_all('apachesolr_angularjs_search_search_presave', $search);
   return drupal_write_record('aas_search_saved', $search);
 }
 
