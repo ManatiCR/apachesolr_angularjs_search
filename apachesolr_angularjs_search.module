@@ -622,7 +622,7 @@ function apachesolr_angularjs_search_save_group() {
     $group->last_used = REQUEST_TIME;
   }
   if (empty($group->name)) {
-    $group->name = apachesolr_angularjs_search_get_group_name($group->data);
+    $group->name = !empty($group->data->name) ? $group->data->name : apachesolr_angularjs_search_get_group_name($group->data);
   }
   $save_result = drupal_write_record('aas_search_saved_groups', $group);
   $result = new stdClass();
