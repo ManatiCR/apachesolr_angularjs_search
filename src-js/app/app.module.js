@@ -10,13 +10,15 @@
 (function () {
   'use strict';
 
-  angular.module('apachesolrAngularjsSearch', ['ngCookies', 'ngResource', 'ngSanitize', 'ngTouch', 'ui.select'])
-  .config(function($locationProvider) {
-    $locationProvider.html5Mode(true);
-  });
+  angular.module('apachesolrAngularjsSearch', ['ngCookies', 'ngResource', 'ngSanitize', 'ngTouch', 'ui.select']);
   Drupal.behaviors.apachesolrAngularjs = {
     attach: function(context) {
       jQuery('#advancedSearch', context).once('advancedSearch', advancedSearchFunction);
+      if (!jQuery('div.ie9inf').length) {
+        angular.module('apachesolrAngularjsSearch').config(function($locationProvider) {
+          $locationProvider.html5Mode(true);
+        });
+      }
       function advancedSearchFunction() {
         var fields = Drupal.settings.apachesolrAngularjs.fields;
         var pageId = Drupal.settings.apachesolrAngularjs.pageId;

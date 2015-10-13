@@ -289,10 +289,12 @@
         main.processingSearch = true;
         searchPostService.sendSearch(main.groups, main.fields.limitby, pageId).then(function(data) {
           var uri = data.uri;
-          var aasBaseUrl = data.aasBaseUrl;
-          var searchFormPath = data.searchFormPath;
-          var newUri = uri.replace('apachesolr-angularjs-search', 'advancedsearch');
-          $location.path(newUri).replace(aasBaseUrl, searchFormPath);
+          if (!jQuery('div.ie9inf').length) {
+            var aasBaseUrl = data.aasBaseUrl;
+            var searchFormPath = data.searchFormPath;
+            var newUri = uri.replace('apachesolr-angularjs-search', 'advancedsearch');
+            $location.path(newUri).replace(aasBaseUrl, searchFormPath);
+          }
           window.location.href = uri;
         });
       }
