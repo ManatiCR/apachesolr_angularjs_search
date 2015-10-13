@@ -27,14 +27,16 @@
         if (main.groups[groupIndex].fields[fieldIndex].value === undefined) {
           main.groups[groupIndex].fields[fieldIndex].value = [];
         }
-        main.groups[groupIndex].fields[fieldIndex].value.push({id: term.id, name: term.name});
-        // Close open Ctools Modals.
-        Drupal.CTools.Modal.dismiss();
-        jQuery('body').unbind('keypress');
-        main.groups[groupIndex].fields[fieldIndex].choices = [];
+        if (!fieldHasValue(main.groups[groupIndex].fields[fieldIndex], term.id)) {
+          main.groups[groupIndex].fields[fieldIndex].value.push({id: term.id, name: term.name});
+          // Close open Ctools Modals.
+          Drupal.CTools.Modal.dismiss();
+          jQuery('body').unbind('keypress');
+          main.groups[groupIndex].fields[fieldIndex].choices = [];
 
-        // Clear ui-select-search.
-        jQuery(jQuery(jQuery('.advanced-search--group-content')[groupIndex]).find('.advanced-search--field-container')[fieldIndex]).find('.ui-select-search').val('');
+          // Clear ui-select-search.
+          jQuery(jQuery(jQuery('.advanced-search--group-content')[groupIndex]).find('.advanced-search--field-container')[fieldIndex]).find('.ui-select-search').val('');
+        }
       });
 
       main.clearForm = clearForm;
@@ -242,6 +244,7 @@
       function fieldHasValue(field, choiceId) {
         if (!field.value) {
           field.value = [];
+          return false;
         }
         for (var index  = 0; index < field.value.length; index++) {
           if (field.value[index].id === choiceId) {
