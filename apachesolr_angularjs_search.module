@@ -703,6 +703,8 @@ function apachesolr_angularjs_search_process_query($uri = '') {
 
       $response = new stdClass();
       $response->uri = '/' . APACHESOLR_ANGULARJS_SEARCH_BASE_PATH . '/' . $search->uri;
+      $response->aasBaseUrl = APACHESOLR_ANGULARJS_SEARCH_BASE_PATH;
+      $response->searchFormPath = variable_get('apachesolr_angularjs_search_search_base_path', '');
       return drupal_json_output($response);
     }
   }
