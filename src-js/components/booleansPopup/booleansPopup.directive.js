@@ -111,6 +111,12 @@
             part = vm.field.value.substr(selectionStart + 1);
             vm.field.value = vm.field.value.substr(0, selectionStart);
             vm.field.value += part;
+            // @TODO: Preserve focus on normal text field.
+          }
+          else {
+            setTimeout(function() {
+              jQuery($scope.element).parents('.advanced-search--field-container').next().find('.ui-select-search').focus();
+            }, 0);
           }
           $scope.$parent.main.addSameField(vm.group.groupIndex, $scope.$parent.$index);
           $scope.$parent.main.groups[vm.group.groupIndex].fields[$scope.$parent.$index + 1].previousConnector = operator.toLowerCase();
