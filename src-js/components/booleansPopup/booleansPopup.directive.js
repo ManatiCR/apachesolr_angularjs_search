@@ -112,8 +112,8 @@
             vm.field.value = vm.field.value.substr(0, selectionStart);
             vm.field.value += part;
           }
-          $scope.$parent.main.addSameField($scope.$parent.groupIndex, $scope.$parent.$index);
-          $scope.$parent.main.groups[$scope.$parent.groupIndex].fields[$scope.$parent.$index + 1].previousConnector = operator.toLowerCase();
+          $scope.$parent.main.addSameField(vm.group.groupIndex, $scope.$parent.$index);
+          $scope.$parent.main.groups[vm.group.groupIndex].fields[$scope.$parent.$index + 1].previousConnector = operator.toLowerCase();
         }
         vm.booleansPopup.show = false;
       }
@@ -121,9 +121,9 @@
       function separateFieldValue(field, booleanToSeparate) {
         var newFieldValue = field.value.substr(field.value.indexOf(booleanToSeparate) + booleanToSeparate.length, field.value.length - 1).trim();
         field.value = field.value.substr(0, field.value.indexOf(booleanToSeparate));
-        $scope.$parent.main.addSameField($scope.$parent.groupIndex, $scope.$parent.$index);
-        $scope.$parent.main.groups[$scope.$parent.groupIndex].fields[$scope.$parent.$index + 1].previousConnector = booleanToSeparate;
-        $scope.$parent.main.groups[$scope.$parent.groupIndex].fields[$scope.$parent.$index + 1].value = newFieldValue;
+        $scope.$parent.main.addSameField(vm.group.groupIndex, $scope.$parent.$index);
+        $scope.$parent.main.groups[vm.group.groupIndex].fields[$scope.$parent.$index + 1].previousConnector = booleanToSeparate;
+        $scope.$parent.main.groups[vm.group.groupIndex].fields[$scope.$parent.$index + 1].value = newFieldValue;
         return newFieldValue;
       }
 
@@ -137,7 +137,7 @@
               var newFieldMatches = newFieldValue.match(regex);
               if (newFieldMatches !== null) {
                 // Add matches.
-                verifyFieldValue($scope.$parent.main.groups[$scope.$parent.groupIndex].fields[$scope.$parent.$index + 1], newFieldMatches);
+                verifyFieldValue($scope.$parent.main.groups[vm.group.groupIndex].fields[$scope.$parent.$index + 1], newFieldMatches);
               }
               break;
             }
