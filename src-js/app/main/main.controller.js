@@ -222,6 +222,9 @@
 
       function deleteGroup(groupIndex) {
         main.groups.splice(groupIndex, 1);
+        for (var i = 0; i < main.groups.length; i++) {
+          main.groups[i].groupIndex = i;
+        }
       }
 
       function getChoices(field, search) {

@@ -17,24 +17,24 @@
 
   <div data-ng-cloak id="advanced-search-controller" data-ng-controller="mainController as main">
     <form class="advanced-search--form">
-      <div class="advanced-search--group" data-ng-if="group.id" data-ng-repeat="group in main.groups" data-ng-init="groupIndex = $index">
+      <div class="advanced-search--group" data-ng-if="group.id" data-ng-repeat="group in main.groups" data-ng-init="group.groupIndex = $index">
         <div class="advanced-search--group-actions">
           <?php if (user_is_logged_in()): ?>
           <a href="#" class="advanced-search--group-save" data-ng-if="!group.saved && !group.saving" data-ng-click="group.saving = true">Save this Search Group for next searches</a>
           <span class="advanced-search--group-saved" data-ng-if="group.saved && !group.saving && !group.processingSave">{{ group.name }}</span>
           <div class="advanced-search--group-save-open" data-ng-if="group.saving || group.processingSave">
-            <input class="advanced-search--group-save-name" data-ng-model="group.tempName" type="text" data-ng-keypress="main.groupNameKeypress($event, groupIndex)"/>
-            <input class="advanced-search--group-save-confirm form-submit" type="button" data-ng-click="main.saveGroup(groupIndex)" value="Save"/>
+            <input class="advanced-search--group-save-name" data-ng-model="group.tempName" type="text" data-ng-keypress="main.groupNameKeypress($event, group.groupIndex)"/>
+            <input class="advanced-search--group-save-confirm form-submit" type="button" data-ng-click="main.saveGroup(group.groupIndex)" value="Save"/>
             <span class="advanced-search--group-save-processing" data-ng-if="group.processingSave">Saving...</span>
           </div>
           <?php endif; ?>
-          <a href="#" class="advanced-search--group-delete" data-ng-if="main.groups.length > 1" data-ng-click="main.deleteGroup(groupIndex); $event.preventDefault();">Delete Group</a>
+          <a href="#" class="advanced-search--group-delete" data-ng-if="main.groups.length > 1" data-ng-click="main.deleteGroup(group.groupIndex); $event.preventDefault();">Delete Group</a>
         </div>
         <div class="advanced-search--group-content">
           <div class="advanced-search--group-operator" data-aas-booleans-select data-aas-booleans-select-options="main.operators" data-ng-model="group.internalConnector" data-ng-show="group.differentFieldsCount > 1">
           </div>
           <div class="advanced-search--field-container" data-ng-if="field.id" data-ng-repeat="field in group.fields" data-ng-mouseenter="group.closeButtonVisible[$index] = true" data-ng-mouseleave="group.closeButtonVisible[$index] = false">
-            <select class="advanced-search--field-type" data-ng-if="!group.selectedFields[$index].hide" data-ng-change="main.fieldChanged(groupIndex, $index)" data-ng-model="group.selectedFields[$index]" data-ng-options="option.label for option in main.fields.selected track by option.id"></select>
+            <select class="advanced-search--field-type" data-ng-if="!group.selectedFields[$index].hide" data-ng-change="main.fieldChanged(group.groupIndex, $index)" data-ng-model="group.selectedFields[$index]" data-ng-options="option.label for option in main.fields.selected track by option.id"></select>
             <div class="advanced-search--previous-field-operator" data-ng-if="$index > 0 && group.selectedFields[$index - 1].id === group.selectedFields[$index].id" data-aas-booleans-select data-aas-booleans-select-options="main.operators" data-ng-model="field.previousConnector">
             </div>
             <label class="advanced-search--field-value-label advanced-search--field-fromto-label" data-ng-if="field.format === 'fromto'">{{ field.from_label }}</label>
@@ -43,20 +43,20 @@
             <input class="advanced-search--field-value2 form-{{field.type}}" type="{{ field.type }}" data-ng-if="field.type != 'fulltext' && !field.autocompletePath && field.format === 'fromto'" data-ng-model="field.value2" />
             <div class="advanced-search--form-item-container" data-aas-booleans-popup="true" data-ng-if="field.type === 'fulltext' || (field.type === 'text' && field.format !== 'fromto')" data-field="field"></div>
             <div class="advanced-search--field-actions">
-              <a class="advanced-search--field-action-item advanced-search--field-delete" data-ng-show="((groupIndex === 0 && $index > 0) || groupIndex > 0) && group.closeButtonVisible[$index]" href="#" data-ng-click="main.deleteField(groupIndex, $index); $event.preventDefault();">Delete lorem ipsum</a>
-              <a class="advanced-search--field-action-item advanced-search--field-add" data-ng-show="group.closeButtonVisible[$index]" href="#" data-ng-click="main.addSameField(groupIndex, $index); main.booleansPopup.show = false; $event.preventDefault();">Add</a>
+              <a class="advanced-search--field-action-item advanced-search--field-delete" data-ng-show="((group.groupIndex === 0 && $index > 0) || group.groupIndex > 0) && group.closeButtonVisible[$index]" href="#" data-ng-click="main.deleteField(group.groupIndex, $index); $event.preventDefault();">Delete lorem ipsum</a>
+              <a class="advanced-search--field-action-item advanced-search--field-add" data-ng-show="group.closeButtonVisible[$index]" href="#" data-ng-click="main.addSameField(group.groupIndex, $index); main.booleansPopup.show = false; $event.preventDefault();">Add</a>
             </div>
           </div>
           <div class="advanced-search--add-another">
             <a href="#" class="advanced-search--add-another-button" data-ng-init="group.activeAddField = false" data-ng-click="group.activeAddField = !group.activeAddField; main.booleansPopup.show = false; $event.preventDefault();">Add New Field</a>
             <div class="advanced-search--add-type" data-ng-if="group.activeAddField">
               <ul class="advanced-search--add-type-list" data-ng-show="group.activeAddField">
-                <li class="advanced-select--add-type-list-item" data-ng-repeat="option in main.fields.selected" data-ng-click="main.addFieldConfirm(groupIndex, option)">{{ option.label }}</li>
+                <li class="advanced-select--add-type-list-item" data-ng-repeat="option in main.fields.selected" data-ng-click="main.addFieldConfirm(group.groupIndex, option)">{{ option.label }}</li>
               </ul>
             </div>
           </div>
         </div>
-        <div class="advanced-search--group-connector" data-ng-if="main.groups[groupIndex + 1]" data-aas-booleans-select data-aas-booleans-select-options="main.operators" data-ng-model="group.nextConnector">
+        <div class="advanced-search--group-connector" data-ng-if="main.groups[group.groupIndex + 1]" data-aas-booleans-select data-aas-booleans-select-options="main.operators" data-ng-model="group.nextConnector">
         </div>
       </div>
       <div class="advanced-search--add-group">
