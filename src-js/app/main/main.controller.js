@@ -17,6 +17,7 @@
       $rootScope.$on('newGroupReady', function($event, group) {
         group.processingSave = false;
         main.groups.push(group);
+        reindexGroups();
       });
 
       // Listen newTerm.
@@ -222,9 +223,7 @@
 
       function deleteGroup(groupIndex) {
         main.groups.splice(groupIndex, 1);
-        for (var i = 0; i < main.groups.length; i++) {
-          main.groups[i].groupIndex = i;
-        }
+        reindexGroups();
       }
 
       function getChoices(field, search) {
@@ -348,6 +347,12 @@
 
       function clearChoices(field) {
         field.choices = [];
+      }
+
+      function reindexGroups() {
+        for (var i = 0; i < main.groups.length; i++) {
+          main.groups[i].groupIndex = i;
+        }
       }
 
       function setClickHandler() {
