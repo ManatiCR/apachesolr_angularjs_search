@@ -212,7 +212,7 @@ function apachesolr_angularjs_search_block_save($delta, $edit) {
     $environment = $page['env_id'];
     $environment_fields = apachesolr_angularjs_search_get_environment_fields($environment);
     foreach ($edit['apachesolr_angularjs_search_advanced_fields']['sortable_lists'] as $column => &$fields) {
-      if ($column === 'selected') {
+      if ($column === 'selected' || $column === 'limitby') {
         foreach ($fields as $field_name => &$value) {
           if (!empty($value)) {
             $type = $environment_fields[$field_name]->type;
