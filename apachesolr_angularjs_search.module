@@ -51,7 +51,7 @@ function apachesolr_angularjs_search_action_info() {
   return array(
     'apachesolr_angularjs_search_delete_search' => array(
       'type' => 'aas_search_saved',
-      'label' => t('Clear History'),
+      'label' => t('Clear Selected History'),
       'configurable' => FALSE,
       'behavior' => array(
         'deletes_property',
@@ -59,7 +59,7 @@ function apachesolr_angularjs_search_action_info() {
     ),
     'apachesolr_angularjs_search_delete_search_group' => array(
       'type' => 'aas_search_saved_groups',
-      'label' => t('Clear History'),
+      'label' => t('Clear Selected History'),
       'configurable' => FALSE,
       'behavior' => array(
         'deletes_property',
