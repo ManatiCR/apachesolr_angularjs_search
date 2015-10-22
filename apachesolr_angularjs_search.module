@@ -971,11 +971,12 @@ function apachesolr_angularjs_search_get_field_values($value, &$value_connector 
 function apachesolr_angularjs_search_get_autocomplete_field_values($value, &$value_connector = '', $values = array()) {
   $operators = array('AND', 'OR', 'NOT');
   foreach ($value as $element) {
-    if (is_numeric($element['id'])) {
-      $values[] = $element['id'];
+    if (!$value_connector && (strpos($element['id'], 'AND') === 0 || strpos($element['id'], 'OR') === 0 || strpos($element['id'], 'NOT') === 0)) {
+      $dash_position = strpos($element['id'], '-');
+      $value_connector = substr($element['id'], 0, $dash_position);
     }
-    elseif (!$value_connector && (strpos($element['id'], 'AND') === 0 || strpos($element['id'], 'OR') === 0 || strpos($element['id'], 'NOT') === 0)) {
-      $value_connector = substr($element['id'], 0, 3);
+    elseif ($element['id']) {
+      $values[] = $element['id'];
     }
   }
   return $values;
@@ -987,12 +988,12 @@ function apachesolr_angularjs_search_get_autocomplete_field_values($value, &$val
 function apachesolr_angularjs_search_get_autocomplete_field_names($value) {
   $operators = array('AND', 'OR', 'NOT');
   foreach ($value as $element) {
-    if (is_numeric($element['id'])) {
-      $values[] = $element['name'];
-    }
-    elseif (strpos($element['id'], 'AND') === 0 || strpos($element['id'], 'OR') === 0 || strpos($element['id'], 'NOT') === 0) {
+    if (strpos($element['id'], 'AND') === 0 || strpos($element['id'], 'OR') === 0 || strpos($element['id'], 'NOT') === 0) {
       $dash_position = strpos($element['id'], '-');
       $values[] = substr($element['id'], 0, $dash_position);
+    }
+    elseif ($element['id']) {
+      $values[] = $element['name'];
     }
   }
   return $values;
