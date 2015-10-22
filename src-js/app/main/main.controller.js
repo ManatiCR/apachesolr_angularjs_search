@@ -281,6 +281,7 @@
         main.groups[0] = getDefaultGroup('default', 0);
         for (i = 0; i < main.fields.always.length; i++) {
           main.groups[0].fields[i] = main.fields.always[i];
+          main.groups[0].fields[i].value = undefined
           main.groups[0].activeCount++;
         }
         main.groups[0].selectedFields[0] = main.groups[0].fields[0];
