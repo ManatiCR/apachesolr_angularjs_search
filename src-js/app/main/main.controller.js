@@ -303,16 +303,33 @@
       }
 
       function saveGroup(groupIndex) {
-        main.groups[groupIndex].name = main.groups[groupIndex].tempName;
-        main.groups[groupIndex].processingSave = true;
-        main.groups[groupIndex].saving = false;
-        main.groups[groupIndex].saved = true;
-        searchGroupService.saveGroup(main.groups[groupIndex]).then(function(data) {
-          if (data.status === 200) {
-            main.groups[groupIndex].processingSave = false;
-            main.groups[groupIndex].tempName = undefined;
+        if (isGroupEmpty(main.groups[groupIndex])) {
+          main.groups[groupIndex].tempName = undefined;
+          main.groups[groupIndex].saving = false;
+          main.groups[groupIndex].saved = false;
+        }
+        else {
+          main.groups[groupIndex].name = main.groups[groupIndex].tempName;
+          main.groups[groupIndex].processingSave = true;
+          main.groups[groupIndex].saving = false;
+          main.groups[groupIndex].saved = true;
+          searchGroupService.saveGroup(main.groups[groupIndex]).then(function(data) {
+            if (data.status === 200) {
+              main.groups[groupIndex].processingSave = false;
+              main.groups[groupIndex].tempName = undefined;
+            }
+          });
+        }
+      }
+
+      function isGroupEmpty(group) {
+        var fieldIndex = 0;
+        for (fieldIndex = 0; fieldIndex < group.fields.length; fieldIndex++) {
+          if (group.fields[fieldIndex].value) {
+            return false;
           }
-        });
+        }
+        return true;
       }
 
       function selectOption(optionId, field) {
