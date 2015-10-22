@@ -661,13 +661,22 @@ function apachesolr_angularjs_search_get_group_name($group) {
   }
   foreach ($group->fields as $field) {
     if (!empty($field['id']) && !empty($field['value'])) {
+      $autocomplete = FALSE;
       if (!empty($field['autocompletePath'])) {
-        $value = apachesolr_angularjs_search_get_autocomplete_field_values($field['value']);
+        $autocomplete = TRUE;
+        $value = apachesolr_angularjs_search_get_autocomplete_field_names($field['value']);
       }
       else {
         $value = apachesolr_angularjs_search_get_field_values($field['value']);
       }
-      $value = is_array($value) ? $value[0] : $field['value'];
+      if (is_array($value)) {
+        if ($autocomplete) {
+          $value = implode(' ', $value);
+        }
+        else {
+          $value = $value[0];
+        }
+      }
       $name .= $field['label'] . ': ' . $value . '; ';
     }
   }
@@ -967,6 +976,23 @@ function apachesolr_angularjs_search_get_autocomplete_field_values($value, &$val
     }
     elseif (!$value_connector && (strpos($element['id'], 'AND') === 0 || strpos($element['id'], 'OR') === 0 || strpos($element['id'], 'NOT') === 0)) {
       $value_connector = substr($element['id'], 0, 3);
+    }
+  }
+  return $values;
+}
+
+/**
+ * Get a list of values for a given autocomplete field.
+ */
+function apachesolr_angularjs_search_get_autocomplete_field_names($value) {
+  $operators = array('AND', 'OR', 'NOT');
+  foreach ($value as $element) {
+    if (is_numeric($element['id'])) {
+      $values[] = $element['name'];
+    }
+    elseif (strpos($element['id'], 'AND') === 0 || strpos($element['id'], 'OR') === 0 || strpos($element['id'], 'NOT') === 0) {
+      $dash_position = strpos($element['id'], '-');
+      $values[] = substr($element['id'], 0, $dash_position);
     }
   }
   return $values;
