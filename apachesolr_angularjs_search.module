@@ -1230,3 +1230,24 @@ function apachesolr_angularjs_search_admin_form($form, $form_state) {
 
   return system_settings_form($form);
 }
+
+/**
+ * Return the last search for a given user.
+ */
+function apachesolr_angularjs_search_get_user_last_history_search($user, $status = APACHESOLR_ANGULARJS_SEARCH_TEMPORARY, $session_id = FALSE) {
+  if ($user->uid > 0) {
+    $query = db_query('SELECT sid, uri, name, created, last_run, uid, page_id, status, groups, limit_by, query FROM {aas_search_saved} WHERE uid = :uid AND status = :status ORDER BY sid DESC LIMIT 1', array(':uid' => $user->uid, ':status' => $status));
+    $search = $query->fetchObject();
+    if ($search) {
+      return $search;
+    }
+  }
+  else {
+    $query = db_query('SELECT sid, uri, name, created, last_run, uid, page_id, status, groups, limit_by, query FROM {aas_search_saved} WHERE uid = :uid AND status = :status AND session_id = :session_id ORDER BY sid DESC LIMIT 1', array(':uid' => $user->uid, ':status' => $status, ':session_id' => $session_id));
+    $search = $query->fetchObject();
+    if ($search) {
+      return $search;
+    }
+  }
+  return FALSE;
+}
