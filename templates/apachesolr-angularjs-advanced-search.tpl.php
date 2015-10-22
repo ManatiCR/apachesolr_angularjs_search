@@ -68,12 +68,12 @@
           <div class="advanced-search--field-container" data-ng-if="field.id" data-ng-repeat="field in main.fields.limitby">
             <label class="advanced-search--field-value-label" data-ng-if="field.type !== 'group'">{{ field.label }}</label>
             <label class="advanced-search--field-value-label advanced-search--field-fromto-label" data-ng-if="field.format === 'fromto'">{{ field.from_label }}</label>
-            <input class="advanced-search--field-value form-{{field.type}}" type="{{ field.type }}" data-ng-if="field.type != 'fulltext' && field.type != 'options' && !field.autocompletePath && field.type != 'group'" data-ng-model="field.value" />
+            <input class="advanced-search--field-value form-{{field.type}}" data-ng-if="field.type != 'fulltext' && field.type != 'options' && !field.autocompletePath && field.type != 'group'" data-ng-model="field.value" />
             <div class="advanced-search--field-value form-{{field.type}} field-{{field.id}}" data-ng-if="field.type === 'options'">
               <span class="advanced-search--field-option option-{{optionId}}" data-ng-repeat="(optionId, optionName) in field.options" data-ng-click="main.selectOption(optionId, field)" data-ng-class="{selected: main.isOptionSelected(optionId, field) !== false}">{{ optionName }}</span>
             </div>
             <label class="advanced-search--field-value2-label advanced-search--field-fromto-label" data-ng-if="field.format === 'fromto'">{{ field.to_label }}</label>
-            <input class="advanced-search--field-value2 form-{{field.type}}" type="{{ field.type }}" data-ng-if="field.type != 'fulltext' && !field.autocompletePath && field.format === 'fromto'" data-ng-model="field.value2" />
+            <input class="advanced-search--field-value2 form-{{field.type}}" data-ng-if="field.type != 'fulltext' && !field.autocompletePath && field.format === 'fromto'" data-ng-model="field.value2" />
             <textarea class="advanced-search--field-value form-textarea" data-ng-if="field.type == 'fulltext'" data-ng-model="field.value"></textarea>
             <div class="advanced-search--field-autocomplete-searching" data-ng-show="field.searching">
               <span class="advanced-search--field-autocomplete-searching-text">Searching...</span>
