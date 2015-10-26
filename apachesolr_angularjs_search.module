@@ -768,11 +768,8 @@ function apachesolr_angularjs_search_process_query($uri = '') {
   else {
     $search_terms = $query;
   }
+  $page['search_path'] = APACHESOLR_ANGULARJS_SEARCH_BASE_PATH;
   $build = apachesolr_search_search_page_custom($results, $page, $build);
-  if (isset($build['suggestions'])) {
-    // Remove suggestions.
-    unset($build['suggestions']);
-  }
 
   if ($save_option) {
     $save_form = &drupal_static('apachesolr_angularjs_search_save_form', drupal_get_form('apachesolr_angularjs_search_save_form', $search));
