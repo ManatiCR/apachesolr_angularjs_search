@@ -339,6 +339,13 @@ function apachesolr_angularjs_search_query_aas_search_saved_access_alter(QueryAl
 }
 
 /**
+ * Implements hook_apachesolr_query_alter().
+ */
+function apachesolr_angularjs_search_apachesolr_query_alter($query) {
+  $query->replaceParam('q', '{!lucene q.op=AND}' . $query->getParam('q'));
+}
+
+/**
  * Page callback for save search group.
  */
 function apachesolr_angularjs_search_add_block($group_id) {
