@@ -282,12 +282,18 @@
         for (i = 0; i < main.fields.always.length; i++) {
           main.groups[0].fields[i] = main.fields.always[i];
           main.groups[0].fields[i].value = undefined;
+          if (main.groups[0].fields[i].autocompletePath) {
+            main.groups[0].fields[i].value = [];
+          }
           main.groups[0].activeCount++;
         }
         main.groups[0].selectedFields[0] = main.groups[0].fields[0];
         main.selectedField = getField('__fulltext_search');
         for (i = 0; i < main.fields.limitby.length; i++) {
           main.fields.limitby[i].value = undefined;
+          if (main.fields.limitby[i].autocompletePath) {
+            main.fields.limitby[i].value = [];
+          }
           if (main.fields.limitby[i].value2) {
             main.fields.limitby[i].value2 = undefined;
           }
