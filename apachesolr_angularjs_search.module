@@ -868,7 +868,12 @@ function apachesolr_angularjs_search_build_query($groups, $limit_by) {
   $limit = substr($limit, 0, -4);
 
   if (trim($limit)) {
-    $query .= ' AND ( ' . $limit . ' )';
+    if (trim($query)) {
+      $query .= ' AND ( ' . $limit . ' )';
+    }
+    else {
+      $query = $limit;
+    }
   }
 
   return $query;
