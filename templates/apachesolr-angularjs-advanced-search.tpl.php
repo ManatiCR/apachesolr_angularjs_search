@@ -20,7 +20,7 @@
       <div class="advanced-search--group" data-ng-if="group.id" data-ng-repeat="group in main.groups" data-ng-init="group.groupIndex = $index">
         <div class="advanced-search--group-actions">
           <?php if (user_is_logged_in()): ?>
-          <a href="#" class="advanced-search--group-save" data-ng-if="!group.saved && !group.saving" data-ng-click="group.saving = true">Save this Search Group for next searches</a>
+          <a href="#" class="advanced-search--group-save" data-ng-if="!group.saved && !group.saving" data-ng-click="group.saving = true">Save Search Group</a>
           <span class="advanced-search--group-saved" data-ng-if="group.saved && !group.saving && !group.processingSave">{{ group.name }}</span>
           <div class="advanced-search--group-save-open" data-ng-if="group.saving || group.processingSave">
             <input class="advanced-search--group-save-name" data-ng-model="group.tempName" type="text" data-ng-keypress="main.groupNameKeypress($event, group.groupIndex)"/>
@@ -63,8 +63,8 @@
         <a href="#" class="advanced-search--add-group-button" data-ng-click="main.addSearchGroup(); $event.preventDefault();">Add Search Group</a>
       </div>
       <div class="advanced-search--limit-by">
-        <h4 class="advanced-search--limit-by-title">Limits</h4>
         <div class="advanced-search--limit-by-container">
+          <h4 class="advanced-search--limit-by-title">Limits</h4>
           <div class="advanced-search--field-container" data-ng-if="field.id" data-ng-repeat="field in main.fields.limitby">
             <label class="advanced-search--field-value-label" data-ng-if="field.type !== 'group'">{{ field.label }}</label>
             <label class="advanced-search--field-value-label advanced-search--field-fromto-label" data-ng-if="field.format === 'fromto'">{{ field.from_label }}</label>
