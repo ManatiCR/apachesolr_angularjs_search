@@ -44,7 +44,7 @@
             <div class="advanced-search--form-item-container" data-aas-booleans-popup="true" data-ng-if="field.type === 'fulltext' || (field.type === 'text' && field.format !== 'fromto')" data-field="field" data-group="group"></div>
             <div class="advanced-search--field-actions">
               <a class="advanced-search--field-action-item advanced-search--field-delete" data-ng-show="((group.groupIndex === 0 && $index > 0) || group.groupIndex > 0) && group.closeButtonVisible[$index]" href="#" data-ng-click="main.deleteField(group.groupIndex, $index); $event.preventDefault();">Delete lorem ipsum</a>
-              <a class="advanced-search--field-action-item advanced-search--field-add" data-ng-show="group.closeButtonVisible[$index]" href="#" data-ng-click="main.addSameField(group.groupIndex, $index); main.booleansPopup.show = false; $event.preventDefault();">Add</a>
+              <a class="advanced-search--field-action-item advanced-search--field-add" href="#" data-ng-click="main.addSameField(group.groupIndex, $index); main.booleansPopup.show = false; $event.preventDefault();">Add</a>
             </div>
           </div>
           <div class="advanced-search--add-another">
