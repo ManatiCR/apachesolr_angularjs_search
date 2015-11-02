@@ -811,8 +811,8 @@ function apachesolr_angularjs_search_build_query($groups, $limit_by) {
   $query = '';
   foreach ($groups as $group_index => $group) {
     if (!apachesolr_angularjs_search_empty_group($group)) {
-      $internal_connector = $group['internalConnector'];
-      $next_connector = $group['nextConnector'];
+      $internal_connector = strtoupper($group['internalConnector']);
+      $next_connector = strtoupper($group['nextConnector']);
       $query .= '( ';
       $missing_parenthesis = FALSE;
       foreach ($group['fields'] as $field_index => $field) {
@@ -829,7 +829,7 @@ function apachesolr_angularjs_search_build_query($groups, $limit_by) {
             $missing_parenthesis = FALSE;
           }
           elseif (!empty($group['fields'][$field_index + 1]['id']) && $group['fields'][$field_index + 1]['id'] === $field['id']) {
-            $query .= ' ) ' . $group['fields'][$field_index + 1]['previousConnector'] . ' (';
+            $query .= ' ) ' . strtoupper($group['fields'][$field_index + 1]['previousConnector']) . ' (';
             $field_connector_added = TRUE;
           }
 
