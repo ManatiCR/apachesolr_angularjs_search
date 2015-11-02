@@ -744,6 +744,7 @@ function apachesolr_angularjs_search_process_query($uri = '') {
     $page_id = variable_get('apachesolr_angularjs_search_advanced_page', apachesolr_search_default_search_page());
   }
 
+  drupal_static('apachesolr_angularjs_search_query', $query);
   $sort = isset($_GET['solrsort']) ? $_GET['solrsort'] : '';
   $rows = isset($_GET['items_per_page']) ? $_GET['items_per_page'] : 25;
   $conditions = array(
