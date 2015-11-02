@@ -892,14 +892,14 @@ function apachesolr_angularjs_search_get_field_query($field) {
     // No field with value2, no autocomplete.
     $value_connector = '';
     $values = apachesolr_angularjs_search_get_field_values($field['value'], $value_connector);
-    $query .= $values[0];
+    $query .= apachesolr_angularjs_search_strip_metachars($values[0]);
 
     // Discard first value because we already used it.
     array_shift($values);
     if (!empty($values)) {
       foreach ($values as $index => $value) {
         $query .= ' ' . $value_connector . ' ';
-        $query .= $field['id'] . ':' . $value;
+        $query .= $field['id'] . ':' . apachesolr_angularjs_search_strip_metachars($value);
       }
     }
   }
@@ -1259,4 +1259,11 @@ function apachesolr_angularjs_search_get_user_last_history_search($user, $status
     }
   }
   return FALSE;
+}
+
+/**
+ * Strip metachars.
+ */
+function apachesolr_angularjs_search_strip_metachars($input) {
+  return str_replace (array (':', ';', '+', '-', '&', '!', '{', '}', '[', ']', '^', '~'), '', $input);
 }
