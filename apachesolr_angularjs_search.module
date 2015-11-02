@@ -891,7 +891,10 @@ function apachesolr_angularjs_search_get_field_query($field) {
     // No fulltext, no field with 2 values; no group.
     $query .= $field['id'] . ':';
   }
-  if (empty($field['format']) && empty($field['autocompletePath']) && !empty($field['value']) && $field['type'] !== 'options') {
+  if ($field['id'] === '__fulltext_search') {
+    $query .= $field['value'];
+  }
+  elseif (empty($field['format']) && empty($field['autocompletePath']) && !empty($field['value']) && $field['type'] !== 'options') {
     // No field with value2, no autocomplete.
     $value_connector = '';
     $values = apachesolr_angularjs_search_get_field_values($field['value'], $value_connector);
