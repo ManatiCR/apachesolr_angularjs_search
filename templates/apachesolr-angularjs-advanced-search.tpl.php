@@ -20,7 +20,7 @@
       <div class="advanced-search--group" data-ng-if="group.id" data-ng-repeat="group in main.groups" data-ng-init="group.groupIndex = $index">
         <div class="advanced-search--group-actions">
           <?php if (user_is_logged_in()): ?>
-          <a href="#" class="advanced-search--group-save" data-ng-if="!group.saved && !group.saving" data-ng-click="group.saving = true">Save this Search Group for next searches</a>
+          <a href="#" class="advanced-search--group-save" data-ng-if="!group.saved && !group.saving" data-ng-click="group.saving = true">Save Search Group</a>
           <span class="advanced-search--group-saved" data-ng-if="group.saved && !group.saving && !group.processingSave">{{ group.name }}</span>
           <div class="advanced-search--group-save-open" data-ng-if="group.saving || group.processingSave">
             <input class="advanced-search--group-save-name" data-ng-model="group.tempName" type="text" data-ng-keypress="main.groupNameKeypress($event, group.groupIndex)"/>
@@ -44,7 +44,7 @@
             <div class="advanced-search--form-item-container" data-aas-booleans-popup="true" data-ng-if="field.type === 'fulltext' || (field.type === 'text' && field.format !== 'fromto')" data-field="field" data-group="group"></div>
             <div class="advanced-search--field-actions">
               <a class="advanced-search--field-action-item advanced-search--field-delete" data-ng-show="((group.groupIndex === 0 && $index > 0) || group.groupIndex > 0) && group.closeButtonVisible[$index]" href="#" data-ng-click="main.deleteField(group.groupIndex, $index); $event.preventDefault();">Delete lorem ipsum</a>
-              <a class="advanced-search--field-action-item advanced-search--field-add" data-ng-show="group.closeButtonVisible[$index]" href="#" data-ng-click="main.addSameField(group.groupIndex, $index); main.booleansPopup.show = false; $event.preventDefault();">Add</a>
+              <a class="advanced-search--field-action-item advanced-search--field-add" href="#" data-ng-click="main.addSameField(group.groupIndex, $index); main.booleansPopup.show = false; $event.preventDefault();">Add</a>
             </div>
           </div>
           <div class="advanced-search--add-another">
@@ -63,8 +63,8 @@
         <a href="#" class="advanced-search--add-group-button" data-ng-click="main.addSearchGroup(); $event.preventDefault();">Add Search Group</a>
       </div>
       <div class="advanced-search--limit-by">
-        <h4 class="advanced-search--limit-by-title">Limits</h4>
         <div class="advanced-search--limit-by-container">
+          <h4 class="advanced-search--limit-by-title">Limits</h4>
           <div class="advanced-search--field-container" data-ng-if="field.id" data-ng-repeat="field in main.fields.limitby">
             <label class="advanced-search--field-value-label" data-ng-if="field.type !== 'group'">{{ field.label }}</label>
             <label class="advanced-search--field-value-label advanced-search--field-fromto-label" data-ng-if="field.format === 'fromto'">{{ field.from_label }}</label>

@@ -339,6 +339,13 @@ function apachesolr_angularjs_search_query_aas_search_saved_access_alter(QueryAl
 }
 
 /**
+ * Implements hook_apachesolr_query_alter().
+ */
+function apachesolr_angularjs_search_apachesolr_query_alter($query) {
+  $query->replaceParam('q', '{!lucene q.op=AND}' . $query->getParam('q'));
+}
+
+/**
  * Page callback for save search group.
  */
 function apachesolr_angularjs_search_add_block($group_id) {
@@ -769,11 +776,8 @@ function apachesolr_angularjs_search_process_query($uri = '') {
   else {
     $search_terms = $query;
   }
+  $page['search_path'] = APACHESOLR_ANGULARJS_SEARCH_BASE_PATH;
   $build = apachesolr_search_search_page_custom($results, $page, $build);
-  if (isset($build['suggestions'])) {
-    // Remove suggestions.
-    unset($build['suggestions']);
-  }
 
   if ($save_option) {
     $save_form = &drupal_static('apachesolr_angularjs_search_save_form', drupal_get_form('apachesolr_angularjs_search_save_form', $search));
@@ -865,7 +869,12 @@ function apachesolr_angularjs_search_build_query($groups, $limit_by) {
   $limit = substr($limit, 0, -4);
 
   if (trim($limit)) {
-    $query .= ' AND ( ' . $limit . ' )';
+    if (trim($query)) {
+      $query .= ' AND ( ' . $limit . ' )';
+    }
+    else {
+      $query = $limit;
+    }
   }
 
   return $query;
@@ -884,14 +893,14 @@ function apachesolr_angularjs_search_get_field_query($field) {
     // No field with value2, no autocomplete.
     $value_connector = '';
     $values = apachesolr_angularjs_search_get_field_values($field['value'], $value_connector);
-    $query .= $values[0];
+    $query .= apachesolr_angularjs_search_strip_metachars($values[0]);
 
     // Discard first value because we already used it.
     array_shift($values);
     if (!empty($values)) {
       foreach ($values as $index => $value) {
         $query .= ' ' . $value_connector . ' ';
-        $query .= $field['id'] . ':' . $value;
+        $query .= $field['id'] . ':' . apachesolr_angularjs_search_strip_metachars($value);
       }
     }
   }
@@ -1230,4 +1239,32 @@ function apachesolr_angularjs_search_admin_form($form, $form_state) {
   );
 
   return system_settings_form($form);
+}
+
+/**
+ * Return the last search for a given user.
+ */
+function apachesolr_angularjs_search_get_user_last_history_search($user, $status = APACHESOLR_ANGULARJS_SEARCH_TEMPORARY, $session_id = FALSE) {
+  if ($user->uid > 0) {
+    $query = db_query('SELECT sid, uri, name, created, last_run, uid, page_id, status, groups, limit_by, query FROM {aas_search_saved} WHERE uid = :uid AND status = :status ORDER BY sid DESC LIMIT 1', array(':uid' => $user->uid, ':status' => $status));
+    $search = $query->fetchObject();
+    if ($search) {
+      return $search;
+    }
+  }
+  else {
+    $query = db_query('SELECT sid, uri, name, created, last_run, uid, page_id, status, groups, limit_by, query FROM {aas_search_saved} WHERE uid = :uid AND status = :status AND session_id = :session_id ORDER BY sid DESC LIMIT 1', array(':uid' => $user->uid, ':status' => $status, ':session_id' => $session_id));
+    $search = $query->fetchObject();
+    if ($search) {
+      return $search;
+    }
+  }
+  return FALSE;
+}
+
+/**
+ * Strip metachars.
+ */
+function apachesolr_angularjs_search_strip_metachars($input) {
+  return str_replace (array (':', ';', '+', '-', '&', '!', '{', '}', '[', ']', '^', '~'), '', $input);
 }
