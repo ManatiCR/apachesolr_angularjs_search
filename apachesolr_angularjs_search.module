@@ -729,8 +729,7 @@ function apachesolr_angularjs_search_process_query($uri = '') {
   elseif ($search = apachesolr_angularjs_search_load_search_by_uri($uri)) {
     $query = $search->query;
     $page_id = $search->page_id;
-    // 10 seconds as allowed latency.
-    if ($search->created == $search->last_run && $search->created + 10 >= REQUEST_TIME) {
+    if ($search->status == APACHESOLR_ANGULARJS_SEARCH_TEMPORARY) {
       $save_option = TRUE;
     }
     else {
