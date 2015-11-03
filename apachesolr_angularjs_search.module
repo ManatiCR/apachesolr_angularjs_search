@@ -763,6 +763,7 @@ function apachesolr_angularjs_search_process_query($uri = '') {
   if ($rows) {
     $page['settings']['apachesolr_search_per_page'] = $rows;
   }
+  drupal_alter('apachesolr_search_search_conditions', $conditions);
   $build = array();
   $results = apachesolr_search_search_results($query, $conditions, $page);
   $page_results_count = &drupal_static('apachesolr_angularjs_search_page_results_count', 0);
