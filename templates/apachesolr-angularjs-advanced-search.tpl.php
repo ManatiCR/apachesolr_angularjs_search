@@ -17,7 +17,7 @@
 
   <div data-ng-cloak id="advanced-search-controller" data-ng-controller="mainController as main">
     <form class="advanced-search--form">
-      <div class="advanced-search--group" data-ng-if="group.id" data-ng-repeat="group in main.groups" data-ng-init="group.groupIndex = $index">
+      <div class="advanced-search--group" data-ng-class='{"advanced-search--group-boolean-active": group.differentFieldsCount > 1}' data-ng-if="group.id" data-ng-repeat="group in main.groups" data-ng-init="group.groupIndex = $index">
         <div class="advanced-search--group-actions">
           <?php if (user_is_logged_in()): ?>
           <a href="#" class="advanced-search--group-save" data-ng-if="!group.saved && !group.saving" data-ng-click="group.saving = true">Save Search Group</a>
