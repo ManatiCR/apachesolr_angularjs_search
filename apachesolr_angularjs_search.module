@@ -656,7 +656,6 @@ function apachesolr_angularjs_search_get_search_name($groups) {
     $name .= '. ';
   }
   $name = substr($name, 0, -2);
-  $name = truncate_utf8($name, 255, FALSE, TRUE);
   return $name;
 }
 
@@ -685,7 +684,6 @@ function apachesolr_angularjs_search_get_group_name($group) {
     }
   }
   $name = substr($name, 0, -2);
-  $name = truncate_utf8($name, 255, FALSE, TRUE);
   return $name;
 }
 
