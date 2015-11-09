@@ -26,7 +26,7 @@ function apachesolr_angularjs_search_schema() {
         'description' => 'Uri used for accessing this search',
       ),
       'name' => array(
-        'type' => 'varchar',
+        'type' => 'blob',
         'length' => '255',
         'not null' => FALSE,
         'default' => 'Automatically saved search',
@@ -123,7 +123,7 @@ function apachesolr_angularjs_search_schema() {
         'description' => 'Primary identifier for a search group',
       ),
       'name' => array(
-        'type' => 'varchar',
+        'type' => 'blob',
         'length' => '255',
         'not null' => FALSE,
         'default' => '',
@@ -194,4 +194,23 @@ function apachesolr_angularjs_search_update_7000() {
     );
     db_add_field('aas_search_saved', 'session_id', $spec);
   }
+}
+
+/**
+ * Change name field from varchar to blob.
+ */
+function apachesolr_angularjs_search_update_7001() {
+  db_change_field('aas_search_saved', 'name', 'name', array(
+    'type' => 'blob',
+    'length' => '255',
+    'not null' => FALSE,
+    'description' => 'Name used for identifying this search',
+  ));
+
+  db_change_field('aas_search_saved_groups', 'name', 'name', array(
+    'type' => 'blob',
+    'length' => '255',
+    'not null' => FALSE,
+    'description' => 'Name used for identifying this search group',
+  ));
 }
