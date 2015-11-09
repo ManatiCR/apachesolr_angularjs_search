@@ -164,22 +164,11 @@
 
       function addFieldConfirm(groupIndex, option) {
         var field = angular.copy(option);
-        if (!fieldExistsInGroup(field, main.groups[groupIndex])) {
-          main.groups[groupIndex].differentFieldsCount ++;
-        }
         var index = addField(groupIndex, field);
         if (main.groups[groupIndex].fields[index - 1] && main.groups[groupIndex].fields[index - 1].id === main.groups[groupIndex].fields[index].id ) {
           main.groups[groupIndex].fields[index].previousConnector = 'or';
         }
-      }
-
-      function fieldExistsInGroup(field, group) {
-        for (i = 0; i < group.fields.length; i++) {
-          if (group.fields[i].id === field.id) {
-            return true;
-          }
-        }
-        return false;
+        updateDifferentFieldCount(groupIndex);
       }
 
       function addField(groupIndex, field, index) {
@@ -204,6 +193,18 @@
         main.groups[groupIndex].selectedFields.splice(index, 1);
         main.groups[groupIndex].activeCount--;
         hidePreviousAndNext(groupIndex, index - 1);
+        updateDifferentFieldCount(groupIndex);
+      }
+
+      function updateDifferentFieldCount(groupIndex) {
+        var fieldIds = [];
+        for (var i = 0; i < main.groups[groupIndex].fields.length; i++) {
+          var field = main.groups[groupIndex].fields[i];
+          if (fieldIds.indexOf(field.id) === -1) {
+            fieldIds.push(field.id);
+          }
+        }
+        main.groups[groupIndex].differentFieldsCount = fieldIds.length;
       }
 
       function addSameField(groupIndex, index) {
@@ -218,6 +219,15 @@
       function addSearchGroup() {
         var position = main.groups.length;
         var group = getDefaultGroup('group_' + position, position);
+        for (var i = 0; i < main.fields.always.length; i++) {
+          group.fields[i] = main.fields.always[i];
+          group.fields[i].value = undefined;
+          if (group.fields[i].autocompletePath) {
+            group.fields[i].value = [];
+          }
+          group.activeCount++;
+        }
+        group.selectedFields[0] = group.fields[0];
         main.groups.push(group);
       }
 
