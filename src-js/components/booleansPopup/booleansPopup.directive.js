@@ -40,6 +40,7 @@
       vm.highlightChange = highlightChange;
       vm.optionSelected = optionSelected;
       vm.removeChoice = removeChoice;
+      vm.openPopup = openPopup;
       vm.firstBoolean = '';
 
       var target;
@@ -68,8 +69,13 @@
 
       function addBoolean(operator, $event) {
 
+        var itemToReplace = null;
         var addBooleanInField = true;
-        if (vm.field.id !== '__fulltext_search' && vm.firstBoolean && vm.firstBoolean !== operator) {
+        if (vm.booleansPopup.itemToReplace) {
+          itemToReplace = vm.booleansPopup.itemToReplace;
+          vm.booleansPopup.itemToReplace = null;
+        }
+        else if (vm.field.id !== '__fulltext_search' && vm.firstBoolean && vm.firstBoolean !== operator) {
           addBooleanInField = false;
         }
 
@@ -80,10 +86,25 @@
             vm.firstBoolean = operator;
           }
 
-          if (vm.type === 'autocomplete') {
+          if (vm.field.autocompletePath) {
             var length = vm.field.value.length;
-            vm.field.value.push({id: operator + '-' + length, name: operator, class:'advanced-search--field-autocomplete-operator'});
-            jQuery($event.target).parents('.advanced-search--field-container').find('.ui-select-search').focus();
+            if (itemToReplace) {
+              var index = 0;
+              for (index = 0; index < vm.field.value.length; index++) {
+                if (itemToReplace.id === vm.field.value[index].id) {
+                  if (index === 1) {
+                    vm.firstBoolean = operator;
+                  }
+                  break;
+                }
+              }
+              vm.field.value.splice(index, 1, {id: operator + '-' + length, name: operator, class:'advanced-search--field-autocomplete-operator'});
+              verifyAutocompleteFieldValues();
+            }
+            else {
+              vm.field.value.push({id: operator + '-' + length, name: operator, class:'advanced-search--field-autocomplete-operator'});
+              jQuery($event.target).parents('.advanced-search--field-container').find('.ui-select-search').focus();
+            }
           }
           else {
             part = vm.field.value.substr(selectionStart + 1);
@@ -107,7 +128,7 @@
           }
         }
         else {
-          if (vm.type !== 'autocomplete') {
+          if (!vm.field.autocompletePath) {
             part = vm.field.value.substr(selectionStart + 1);
             vm.field.value = vm.field.value.substr(0, selectionStart);
             vm.field.value += part;
@@ -151,6 +172,27 @@
         }
       }
 
+      function verifyAutocompleteFieldValues() {
+        var index = 0;
+        var lastBoolean = false;
+        for (index = 0; index < vm.field.value.length; index++) {
+          if (vm.field.value[index].name === 'AND' || vm.field.value[index].name === 'OR' || vm.field.value[index].name === 'NOT') {
+            if (!lastBoolean) {
+              lastBoolean = vm.field.value[index].name;
+            }
+            else if (lastBoolean !== vm.field.value[index].name) {
+              var booleanToSeparate = vm.field.value[index].name;
+              var newFieldValue = vm.field.value.splice(index, vm.field.value.length - index);
+              // Separate in new field.
+              $scope.$parent.main.addSameField(vm.group.groupIndex, $scope.$parent.$index);
+              $scope.$parent.main.groups[vm.group.groupIndex].fields[$scope.$parent.$index + 1].previousConnector = booleanToSeparate;
+              $scope.$parent.main.groups[vm.group.groupIndex].fields[$scope.$parent.$index + 1].value = newFieldValue.splice(1, newFieldValue.length);
+              break;
+            }
+          }
+        }
+      }
+
       function highlightChange($event) {
         var $markers = $event.matches;
         if ($markers.length) {
@@ -168,7 +210,6 @@
       function optionSelected() {
         if (vm.field.value) {
           vm.booleansPopup.show = true;
-          vm.type = 'autocomplete';
           angular.element(document.getElementsByClassName('ui-select-search')).on('keydown', hideBooleansPopup);
         }
         else {
@@ -194,6 +235,13 @@
         }
         if (!booleanFound) {
           vm.firstBoolean = false;
+        }
+      }
+
+      function openPopup($item) {
+        if ($item.class === 'advanced-search--field-autocomplete-operator') {
+          vm.booleansPopup.show = true;
+          vm.booleansPopup.itemToReplace = $item;
         }
       }
 
