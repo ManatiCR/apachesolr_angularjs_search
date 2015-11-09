@@ -33,7 +33,7 @@
         <div class="advanced-search--group-content">
           <div class="advanced-search--group-operator" data-aas-booleans-select data-aas-booleans-select-options="main.operators" data-ng-model="group.internalConnector" data-ng-show="group.differentFieldsCount > 1">
           </div>
-          <div class="advanced-search--field-container" data-ng-if="field.id" data-ng-repeat="field in group.fields" data-ng-mouseenter="group.closeButtonVisible[$index] = true" data-ng-mouseleave="group.closeButtonVisible[$index] = false">
+          <div class="advanced-search--field-container advanced-search--field-{{field.type}}" data-ng-class='{"advanced-search--field-instance": $index > 0 && group.selectedFields[$index - 1].id === group.selectedFields[$index].id}' data-ng-if="field.id" data-ng-repeat="field in group.fields" data-ng-mouseenter="group.closeButtonVisible[$index] = true" data-ng-mouseleave="group.closeButtonVisible[$index] = false">
             <select class="advanced-search--field-type" data-ng-if="!group.selectedFields[$index].hide" data-ng-change="main.fieldChanged(group.groupIndex, $index)" data-ng-model="group.selectedFields[$index]" data-ng-options="option.label for option in main.fields.selected track by option.id"></select>
             <div class="advanced-search--previous-field-operator" data-ng-if="$index > 0 && group.selectedFields[$index - 1].id === group.selectedFields[$index].id" data-aas-booleans-select data-aas-booleans-select-options="main.operators" data-ng-model="field.previousConnector">
             </div>
