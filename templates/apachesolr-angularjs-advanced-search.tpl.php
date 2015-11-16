@@ -20,7 +20,7 @@
       <div class="advanced-search--group" data-ng-class='{"advanced-search--group-boolean-active": group.differentFieldsCount > 1}' data-ng-if="group.id" data-ng-repeat="group in main.groups" data-ng-init="group.groupIndex = $index">
         <div class="advanced-search--group-actions">
           <?php if (user_is_logged_in()): ?>
-          <a href="#" class="advanced-search--group-save" data-ng-if="!group.saved && !group.saving" data-ng-click="group.saving = true">Save Search Group</a>
+          <a href="#" class="advanced-search--group-save" data-ng-if="!group.saved && !group.saving" data-ng-click="group.saving = !main.isGroupEmpty(group)">Save Search Group</a>
           <span class="advanced-search--group-saved" data-ng-if="group.saved && !group.saving && !group.processingSave">{{ group.name }}</span>
           <div class="advanced-search--group-save-open" data-ng-if="group.saving || group.processingSave">
             <input class="advanced-search--group-save-name" data-ng-model="group.tempName" type="text" data-ng-keypress="main.groupNameKeypress($event, group.groupIndex)"/>

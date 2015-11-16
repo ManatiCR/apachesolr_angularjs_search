@@ -55,6 +55,7 @@
       main.isOptionSelected = isOptionSelected;
       main.groupNameKeypress = groupNameKeypress;
       main.clearChoices = clearChoices;
+      main.isGroupEmpty = isGroupEmpty;
       main.fields = {};
       main.groups = [];
       main.operators = [];
@@ -331,23 +332,16 @@
       }
 
       function saveGroup(groupIndex) {
-        if (isGroupEmpty(main.groups[groupIndex])) {
-          main.groups[groupIndex].tempName = undefined;
-          main.groups[groupIndex].saving = false;
-          main.groups[groupIndex].saved = false;
-        }
-        else {
-          main.groups[groupIndex].name = main.groups[groupIndex].tempName;
-          main.groups[groupIndex].processingSave = true;
-          main.groups[groupIndex].saving = false;
-          main.groups[groupIndex].saved = true;
-          searchGroupService.saveGroup(main.groups[groupIndex]).then(function(data) {
-            if (data.status === 200) {
-              main.groups[groupIndex].processingSave = false;
-              main.groups[groupIndex].tempName = undefined;
-            }
-          });
-        }
+        main.groups[groupIndex].name = main.groups[groupIndex].tempName;
+        main.groups[groupIndex].processingSave = true;
+        main.groups[groupIndex].saving = false;
+        main.groups[groupIndex].saved = true;
+        searchGroupService.saveGroup(main.groups[groupIndex]).then(function(data) {
+          if (data.status === 200) {
+            main.groups[groupIndex].processingSave = false;
+            main.groups[groupIndex].tempName = undefined;
+          }
+        });
       }
 
       function isGroupEmpty(group) {
