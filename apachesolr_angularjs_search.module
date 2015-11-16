@@ -51,7 +51,15 @@ function apachesolr_angularjs_search_action_info() {
   return array(
     'apachesolr_angularjs_search_delete_search' => array(
       'type' => 'aas_search_saved',
-      'label' => t('Clear Selected History'),
+      'label' => t('Delete Selected History'),
+      'configurable' => FALSE,
+      'behavior' => array(
+        'deletes_property',
+      ),
+    ),
+    'apachesolr_angularjs_search_saved_delete_search' => array(
+      'type' => 'aas_search_saved',
+      'label' => t('Delete Saved Searches'),
       'configurable' => FALSE,
       'behavior' => array(
         'deletes_property',
@@ -59,7 +67,7 @@ function apachesolr_angularjs_search_action_info() {
     ),
     'apachesolr_angularjs_search_delete_search_group' => array(
       'type' => 'aas_search_saved_groups',
-      'label' => t('Clear Selected History'),
+      'label' => t('Delete Selected Groups'),
       'configurable' => FALSE,
       'behavior' => array(
         'deletes_property',
@@ -72,6 +80,15 @@ function apachesolr_angularjs_search_action_info() {
  * Delete a given search.
  */
 function apachesolr_angularjs_search_delete_search($entity, $context = array()) {
+  db_delete('aas_search_saved')
+    ->condition('sid', $entity->sid)
+    ->execute();
+}
+
+/**
+ * Delete a given saved search.
+ */
+function apachesolr_angularjs_search_saved_delete_search($entity, $context = array()) {
   db_delete('aas_search_saved')
     ->condition('sid', $entity->sid)
     ->execute();
