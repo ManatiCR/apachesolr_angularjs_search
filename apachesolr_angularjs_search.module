@@ -722,7 +722,8 @@ function apachesolr_angularjs_search_process_query($uri = '') {
       $search->page_id = $page_id;
       $query = apachesolr_angularjs_search_build_query($groups, $limit_by);
       $search->groups = $groups;
-      $search->query = $query;
+      $search->query = $query['raw'];
+      $search->name = $query['pretty'];
       $search->limit_by = $limit_by;
       apachesolr_angularjs_search_save_temporary_search($search);
 
@@ -819,77 +820,105 @@ function apachesolr_angularjs_search_empty_group($group) {
  */
 function apachesolr_angularjs_search_build_query($groups, $limit_by) {
   $query = '';
+  $pretty_query = '';
   foreach ($groups as $group_index => $group) {
     if (!apachesolr_angularjs_search_empty_group($group)) {
       $internal_connector = strtoupper($group['internalConnector']);
       $next_connector = strtoupper($group['nextConnector']);
       $query .= '( ';
+      $pretty_query .= '( ';
       $missing_parenthesis = FALSE;
       foreach ($group['fields'] as $field_index => $field) {
         if (!empty($field['value']) || !empty($field['value2'])) {
           $field_connector_added = FALSE;
           if (!$missing_parenthesis) {
             $query .= '( ( ';
+            $pretty_query .= '( ( ';
             $missing_parenthesis = TRUE;
           }
-          $query .= apachesolr_angularjs_search_get_field_query($field);
+          $field_query = apachesolr_angularjs_search_get_field_query($field);
+          $query .= $field_query['raw'];
+          $pretty_query .= $field_query['pretty'];
 
           if ((!empty($group['fields'][$field_index + 1]['id']) && $group['fields'][$field_index + 1]['id'] !== $field['id']) || (empty($group['fields'][$field_index + 1]['id']) && $missing_parenthesis)) {
             $query .= ' ) )';
+            $pretty_query .= ' ) )';
             $missing_parenthesis = FALSE;
           }
           elseif (!empty($group['fields'][$field_index + 1]['id']) && $group['fields'][$field_index + 1]['id'] === $field['id']) {
             $query .= ' ) ' . strtoupper($group['fields'][$field_index + 1]['previousConnector']) . ' (';
+            $pretty_query .= ' ) ' . strtoupper($group['fields'][$field_index + 1]['previousConnector']) . ' (';
             $field_connector_added = TRUE;
           }
 
           if (!$field_connector_added && isset($group['fields'][$field_index + 1]) && (!empty($group['fields'][$field_index + 1]['value']) || !empty($group['fields'][$field_index + 1]['value2']))) {
             $query .= " $internal_connector";
+            $pretty_query .= " $internal_connector";
           }
           $query .= ' ';
+          $pretty_query .= ' ';
 
         }
       }
 
       $query .= ")";
+      $pretty_query .= ")";
 
       if (isset($groups[$group_index + 1])) {
         $query .= " $next_connector";
+        $pretty_query .= " $next_connector";
         $query .= ' ';
+        $pretty_query .= ' ';
       }
     }
   }
 
   $limit = '';
+  $pretty_limit = '';
   foreach ($limit_by as $field_index => $field) {
     if ($field['type'] != 'group') {
-      $result = apachesolr_angularjs_search_get_field_query($field);
-      if ($result) {
-        $limit .= ' ( ' . $result . ' ) AND ';
+      $field_query = apachesolr_angularjs_search_get_field_query($field);
+      if ($field_query['raw']) {
+        $limit .= ' ( ' . $field_query['raw'] . ' ) AND ';
+        $pretty_limit .= ' ( ' . $field_query['pretty'] . ' ) AND ';
       }
     }
     else {
       foreach ($field['fields'] as $group_field) {
-        $result = apachesolr_angularjs_search_get_field_query($group_field);
-        if ($result) {
-          $limit .= ' ( ' . $result . ' ) AND ';
+        $field_query = apachesolr_angularjs_search_get_field_query($group_field);
+        if ($field_query['raw']) {
+          $limit .= ' ( ' . $field_query['raw'] . ' ) AND ';
+          $pretty_limit .= ' ( ' . $field_query['pretty'] . ' ) AND ';
         }
       }
     }
   }
 
   $limit = substr($limit, 0, -4);
+  $pretty_limit = substr($pretty_limit, 0, -4);
 
   if (trim($limit)) {
     if (trim($query)) {
       $query .= ' AND ( ' . $limit . ' )';
+      $pretty_query .= ' AND ( ' . $pretty_limit . ' )';
     }
     else {
       $query = $limit;
+      $pretty_query = $pretty_limit;
     }
   }
 
-  return $query;
+  $fields = variable_get('apachesolr_angularjs_search_advanced_fields');
+  foreach ($fields['sortable_lists'] as $category) {
+    foreach ($category as $field) {
+      $pretty_query = str_replace($field['id'], $field['label'], $pretty_query);
+    }
+  }
+
+  return array(
+    'raw' => $query,
+    'pretty' => $pretty_query,
+  );
 }
 
 /**
@@ -897,25 +926,31 @@ function apachesolr_angularjs_search_build_query($groups, $limit_by) {
  */
 function apachesolr_angularjs_search_get_field_query($field) {
   $query = '';
+  $pretty_query = '';
   if ($field['id'] != '__fulltext_search' && (!empty($field['value']) || !empty($field['value2'])) && $field['type'] != 'group') {
     // No fulltext, no field with 2 values; no group.
     $query .= $field['id'] . ':';
+    $pretty_query .= $field['id'] . ':';
   }
   if ($field['id'] === '__fulltext_search') {
     $query .= $field['value'];
+    $pretty_query .= $field['value'];
   }
   elseif (empty($field['format']) && empty($field['autocompletePath']) && !empty($field['value']) && $field['type'] !== 'options') {
     // No field with value2, no autocomplete.
     $value_connector = '';
     $values = apachesolr_angularjs_search_get_field_values($field['value'], $value_connector);
     $query .= apachesolr_angularjs_search_strip_metachars($values[0]);
+    $pretty_query .= apachesolr_angularjs_search_strip_metachars($values[0]);
 
     // Discard first value because we already used it.
     array_shift($values);
     if (!empty($values)) {
       foreach ($values as $index => $value) {
         $query .= ' ' . $value_connector . ' ';
+        $pretty_query .= ' ' . $value_connector . ' ';
         $query .= $field['id'] . ':' . apachesolr_angularjs_search_strip_metachars($value);
+        $pretty_query .= $field['id'] . ':' . apachesolr_angularjs_search_strip_metachars($value);
       }
     }
   }
@@ -926,14 +961,17 @@ function apachesolr_angularjs_search_get_field_query($field) {
     if (!$value_connector) {
       $value_connector = 'AND';
     }
-    $query .= $values[0];
+    $query .= $values[0]['id'];
+    $pretty_query .= $values[0]['name'];
 
     // Discard first value because we already used it.
     array_shift($values);
     if (!empty($values)) {
       foreach ($values as $index => $value) {
         $query .= ' ' . $value_connector . ' ';
-        $query .= $field['id'] . ':' . $value;
+        $pretty_query .= ' ' . $value_connector . ' ';
+        $query .= $field['id'] . ':' . $value['id'];
+        $pretty_query .= $field['id'] . ':' . $value['name'];
       }
     }
   }
@@ -950,16 +988,23 @@ function apachesolr_angularjs_search_get_field_query($field) {
       $right_limit = !empty($field['value2']) ? $field['value2'] : '*';
     }
     $query .= '[' . $left_limit . ' TO ' . $right_limit . ']';
+    $pretty_query .= '[' . $left_limit . ' TO ' . $right_limit . ']';
   }
   elseif ($field['type'] === 'options' && !empty($field['value'])) {
     $query .= array_shift($field['value']);
+    $pretty_query .= array_shift($field['value']);
     foreach ($field['value'] as $value) {
       $query .= ' OR ';
+      $pretty_query .= ' OR ';
       $query .= $field['id'] . ':' . $value;
+      $pretty_query .= $field['id'] . ':' . $value;
     }
   }
 
-  return trim($query);
+  return array(
+    'raw' => trim($query),
+    'pretty' => trim($pretty_query),
+  );
 }
 
 /**
@@ -1001,7 +1046,7 @@ function apachesolr_angularjs_search_get_autocomplete_field_values($value, &$val
       $value_connector = substr($element['id'], 0, $dash_position);
     }
     elseif ($element['id']) {
-      $values[] = $element['id'];
+      $values[] = $element;
     }
   }
   return $values;
