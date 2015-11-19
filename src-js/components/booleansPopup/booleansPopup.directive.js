@@ -41,6 +41,7 @@
       vm.optionSelected = optionSelected;
       vm.removeChoice = removeChoice;
       vm.openPopup = openPopup;
+      vm.positionPopup = positionPopup;
       vm.firstBoolean = '';
 
       var target;
@@ -243,6 +244,15 @@
           vm.booleansPopup.show = true;
           vm.booleansPopup.itemToReplace = $item;
         }
+      }
+
+      function positionPopup($event) {
+        setTimeout(function() {
+          var booleansPopupContainer = jQuery($event.target).parents('.advanced-search--form-item-container').children('.booleans-popup--container');
+          var left = $event.pageX - jQuery($event.target).parents('.advanced-search--field-autocomplete').offset().left - (booleansPopupContainer.width() / 2);
+          booleansPopupContainer.css('left', left + 'px');
+        }, 0);
+
       }
 
     }
