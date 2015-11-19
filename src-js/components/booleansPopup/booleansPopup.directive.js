@@ -99,13 +99,17 @@
                   break;
                 }
               }
-              vm.field.value.splice(index, 1, {id: operator + '-' + length, name: operator, class:'advanced-search--field-autocomplete-operator'});
+              vm.field.value.splice(index, 1, {id: operator + '-' + (length - 1), name: operator, class:'advanced-search--field-autocomplete-operator'});
               verifyAutocompleteFieldValues();
             }
             else {
               vm.field.value.push({id: operator + '-' + length, name: operator, class:'advanced-search--field-autocomplete-operator'});
               jQuery($event.target).parents('.advanced-search--field-container').find('.ui-select-search').focus();
             }
+            // Remove X on new added boolean.
+            setTimeout(function() {
+              jQuery('.advanced-search--field-autocomplete-operator').parents('.ui-select-match-item').children('.ui-select-match-close').remove();
+            }, 0);
           }
           else {
             part = vm.field.value.substr(selectionStart + 1);
@@ -278,8 +282,15 @@
         });
       }
 
+      function removeCloseBoolean() {
+        setTimeout(function() {
+          jQuery('.advanced-search--field-autocomplete-operator').parents('.ui-select-match-item').children('.ui-select-match-close').remove();
+        }, 0);
+      }
+
       setTimeout(setHighlight, 0);
       setTimeout(setClickHandler, 0);
+      setTimeout(removeCloseBoolean, 0);
     }
   }
 })();
