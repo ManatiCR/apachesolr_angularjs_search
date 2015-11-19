@@ -933,8 +933,8 @@ function apachesolr_angularjs_search_get_field_query($field) {
     $pretty_query .= $field['id'] . ':';
   }
   if ($field['id'] === '__fulltext_search') {
-    $query .= $field['value'];
-    $pretty_query .= $field['value'];
+    $query .= apachesolr_angularjs_search_strip_metachars($field['value']);
+    $pretty_query .= apachesolr_angularjs_search_strip_metachars($field['value']);
   }
   elseif (empty($field['format']) && empty($field['autocompletePath']) && !empty($field['value']) && $field['type'] !== 'options') {
     // No field with value2, no autocomplete.
@@ -1332,7 +1332,7 @@ function apachesolr_angularjs_search_get_user_last_history_search($user, $status
  */
 function apachesolr_angularjs_search_strip_metachars($input) {
   return str_replace(
-    array(':', ';', '+', '-', '&', '!', '{', '}', '[', ']', '^', '~'),
+    array(':', ';', '+', '-', '&', '!', '{', '}', '[', ']', '^'),
     '',
     $input);
 }
