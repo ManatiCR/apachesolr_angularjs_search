@@ -563,6 +563,9 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
   $build = array(
     '#markup' => theme('apachesolr_angularjs_advanced_search'),
     '#attached' => array(
+      'library' => array(
+        0 => array('system', 'ui.resizable'),
+      ),
       'js' => array(
         0 => array(
           'data' => array('apachesolrAngularjs' => $settings),

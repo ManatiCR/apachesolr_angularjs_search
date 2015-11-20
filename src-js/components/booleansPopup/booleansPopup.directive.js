@@ -266,7 +266,8 @@
       function setHighlight() {
         jQuery(element).find('.form-textarea, .form-text').highlightTextarea({
           words: ['AND', 'OR', 'NOT'],
-          color: '#CCC'
+          color: '#CCC',
+          resizable: true,
         });
 
         jQuery(element).bind('matchesChanged', scope.vm.highlightChange);
