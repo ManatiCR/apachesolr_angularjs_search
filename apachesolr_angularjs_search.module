@@ -1338,5 +1338,5 @@ function apachesolr_angularjs_search_strip_metachars($input) {
     array(':', ';', '+', '&', '!', '{', '}', '[', ']', '^'),
     '',
     $input);
-  return str_replace('-', '\-', $input);
+  return str_replace('-', '\\-', $input);
 }
