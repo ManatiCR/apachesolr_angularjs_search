@@ -279,7 +279,7 @@
         $element.highlightTextarea({
           words: ['AND', 'OR', 'NOT'],
           color: '#CCC',
-          resizable: true,
+          resizable: $element.hasClass('form-textarea'),
           resizableOptions: {
             maxWidth: $element.outerWidth(true),
             minWidth: $element.outerWidth(true),
