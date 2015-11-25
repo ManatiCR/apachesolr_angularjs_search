@@ -42,6 +42,7 @@
       vm.removeChoice = removeChoice;
       vm.openPopup = openPopup;
       vm.positionPopup = positionPopup;
+      vm.showBooleanIfNecessary = showBooleanIfNecessary;
       vm.firstBoolean = '';
 
       var target;
@@ -257,6 +258,16 @@
           booleansPopupContainer.css('left', left + 'px');
         }, 0);
 
+      }
+
+      function showBooleanIfNecessary() {
+        if (vm.field.value.length) {
+          var lastValue = vm.field.value[vm.field.value.length - 1];
+          if (lastValue.name !== 'OR' && lastValue.name !==  'AND' && lastValue.name !== 'NOT') {
+            return true;
+          }
+        }
+        return false;
       }
 
     }
