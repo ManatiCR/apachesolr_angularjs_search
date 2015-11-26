@@ -175,6 +175,9 @@
       function addField(groupIndex, field, index) {
         var wasUndefined = false;
         if (index === undefined) {
+          if (main.groups[groupIndex].activeCount === undefined) {
+            main.groups[groupIndex].activeCount = main.groups[groupIndex].fields.length;
+          }
           index = main.groups[groupIndex].activeCount;
           wasUndefined = true;
         }
