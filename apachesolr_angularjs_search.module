@@ -786,7 +786,7 @@ function apachesolr_angularjs_search_process_query($uri = '') {
     $page_results_count = 0;
   }
   $search_terms = &drupal_static('apachesolr_angularjs_search_terms', '');
-  if ($search) {
+  if (!empty($search)) {
     $search_terms = $search->name;
   }
   else {
