@@ -936,8 +936,9 @@ function apachesolr_angularjs_search_get_field_query($field) {
     $pretty_query .= $field['id'] . ':';
   }
   if ($field['id'] === '__fulltext_search') {
-    $query .= apachesolr_angularjs_search_strip_metachars($field['value']);
-    $pretty_query .= apachesolr_angularjs_search_strip_metachars($field['value']);
+    $characters_to_strip = array(';', '+', '&', '!', '{', '}', '^');
+    $query .= apachesolr_angularjs_search_strip_metachars($field['value'], $characters_to_strip);
+    $pretty_query .= apachesolr_angularjs_search_strip_metachars($field['value'], $characters_to_strip);
   }
   elseif (empty($field['format']) && empty($field['autocompletePath']) && !empty($field['value']) && $field['type'] !== 'options') {
     // No field with value2, no autocomplete.
@@ -1333,9 +1334,9 @@ function apachesolr_angularjs_search_get_user_last_history_search($user, $status
 /**
  * Strip metachars.
  */
-function apachesolr_angularjs_search_strip_metachars($input) {
+function apachesolr_angularjs_search_strip_metachars($input, $characters_to_strip = array(':', ';', '+', '&', '!', '{', '}', '[', ']', '^')) {
   $input = str_replace(
-    array(':', ';', '+', '&', '!', '{', '}', '[', ']', '^'),
+    $characters_to_strip,
     '',
     $input);
   return str_replace('-', '\\-', $input);
