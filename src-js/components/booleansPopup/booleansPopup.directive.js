@@ -82,10 +82,17 @@
         }
 
         var part;
+        var needToVerify = false;
         if (addBooleanInField) {
 
           if (!vm.firstBoolean) {
-            vm.firstBoolean = operator;
+            if (vm.field.value[1].id !== undefined && (vm.field.value[1].name === 'OR' || vm.field.value[1].name === 'AND' || vm.field.value[1].name === 'NOT')) {
+              vm.firstBoolean = vm.field.value[1].name;
+              needToVerify = true;
+            }
+            else {
+              vm.firstBoolean = operator;
+            }
           }
 
           if (vm.field.autocompletePath) {
@@ -131,6 +138,9 @@
             setTimeout(function() {
               jQuery($scope.element).find('textarea, input').data('highlighter').highlight();
             }, 0);
+          }
+          if (needToVerify) {
+            verifyAutocompleteFieldValues();
           }
         }
         else {
@@ -261,14 +271,19 @@
 
       }
 
-      function showBooleanIfNecessary() {
+      function showBooleanIfNecessary($event) {
         if (vm.field.value.length) {
           var lastValue = vm.field.value[vm.field.value.length - 1];
           if (lastValue.name !== 'OR' && lastValue.name !==  'AND' && lastValue.name !== 'NOT') {
-            return true;
+            vm.booleansPopup.show = true;
+          }
+          else {
+            vm.booleansPopup.show = false;
           }
         }
-        return false;
+        else {
+          vm.booleansPopup.show = false;
+        }
       }
 
     }

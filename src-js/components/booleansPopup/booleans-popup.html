@@ -8,7 +8,7 @@
 <div class="advanced-search--field-autocomplete-searching" data-ng-show="vm.field.searching">
   <span class="advanced-search--field-autocomplete-searching-text">Searching...</span>
 </div>
-<ui-select class="advanced-search--field-autocomplete" multiple data-ng-if="vm.field.autocompletePath" data-ng-model="vm.field.value" theme="bootstrap" data-ng-disabled="disabled" reset-search-input="true" data-ng-change="vm.optionSelected()" on-select="vm.parentScope.main.clearChoices(vm.field)" on-remove="vm.removeChoice(vm.field)" data-ng-click="vm.booleansPopup.show = vm.showBooleanIfNecessary()">
+<ui-select class="advanced-search--field-autocomplete" multiple data-ng-if="vm.field.autocompletePath" data-ng-model="vm.field.value" theme="bootstrap" data-ng-disabled="disabled" reset-search-input="true" data-ng-change="vm.optionSelected()" on-select="vm.parentScope.main.clearChoices(vm.field)" on-remove="vm.removeChoice(vm.field)" data-ng-click="vm.showBooleanIfNecessary($event)">
   <ui-select-match placeholder="Select a {{ vm.field.label }}">
     <span class="{{$item.class || 'item'}}" data-ng-click="vm.openPopup($item, $event); vm.positionPopup($event);">{{ $item.name }}</span>
   </ui-select-match>
