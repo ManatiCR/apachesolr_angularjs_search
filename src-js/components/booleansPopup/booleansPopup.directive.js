@@ -244,10 +244,11 @@
         }
       }
 
-      function openPopup($item) {
+      function openPopup($item, $event) {
         if ($item.class === 'advanced-search--field-autocomplete-operator') {
           vm.booleansPopup.show = true;
           vm.booleansPopup.itemToReplace = $item;
+          $event.stopPropagation();
         }
       }
 
