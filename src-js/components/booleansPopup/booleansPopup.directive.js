@@ -45,6 +45,7 @@
       vm.positionPopup = positionPopup;
       vm.showBooleanIfNecessary = showBooleanIfNecessary;
       vm.firstBoolean = '';
+      vm.avoidGlobalPopup = false;
 
       var target;
       var selectionStart;
@@ -160,6 +161,7 @@
           $scope.$parent.main.groups[vm.group.groupIndex].fields[$scope.$parent.$index + 1].previousConnector = operator.toLowerCase();
         }
         vm.booleansPopup.show = false;
+        vm.avoidGlobalPopup = false;
       }
 
       function separateFieldValue(field, booleanToSeparate) {
@@ -262,6 +264,7 @@
           vm.booleansPopup.show = true;
           vm.booleansPopup.itemToReplace = $item;
           $event.stopPropagation();
+          vm.avoidGlobalPopup = true;
         }
       }
 
