@@ -15,7 +15,7 @@
   <ui-select-choices refresh-delay="800" repeat="choice in vm.field.choices track by choice.id" refresh="vm.parentScope.main.getChoices(vm.field, $select.search)" refresh-delay="0">
     <div data-ng-if="!choice.path" data-ng-bind-html="choice.name | highlight: $select.search"></div>
     <div class="choice" data-ng-if="choice.path" data-ng-click=$event.preventDefault();>
-      <span>{{ choice.name }} ({{ choice.resultCount }})</span>
+      <span>{{ choice.name }} <span data-ng-if="choice.resultCount">({{ choice.resultCount }})</span></span>
       <button data-ng-click="vm.parentScope.main.startPopup(choice, $event, vm.group.groupIndex, vm.parentScope.$index);" title="{{ choice.name }}" id="choice-{{ choice.id }}" class="{{ choice.classes }}">i</button>
       <input type="hidden" class="choice-{{ choice.id }}-url" value="{{ choice.path }}"/>
     </div>
