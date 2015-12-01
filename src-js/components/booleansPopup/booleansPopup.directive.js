@@ -10,6 +10,7 @@
   function booleansPopup($rootScope, drupalDataService) {
 
     var basePath;
+    var $element;
     $rootScope.$on('drupalDataReady', function() {
       var data = drupalDataService.getDrupalData();
       basePath = data.modulePath;
@@ -82,10 +83,17 @@
         }
 
         var part;
+        var needToVerify = false;
         if (addBooleanInField) {
 
           if (!vm.firstBoolean) {
-            vm.firstBoolean = operator;
+            if (vm.field.value[1] !== undefined && (vm.field.value[1].name === 'OR' || vm.field.value[1].name === 'AND' || vm.field.value[1].name === 'NOT')) {
+              vm.firstBoolean = vm.field.value[1].name;
+              needToVerify = true;
+            }
+            else {
+              vm.firstBoolean = operator;
+            }
           }
 
           if (vm.field.autocompletePath) {
@@ -131,6 +139,9 @@
             setTimeout(function() {
               jQuery($scope.element).find('textarea, input').data('highlighter').highlight();
             }, 0);
+          }
+          if (needToVerify) {
+            verifyAutocompleteFieldValues();
           }
         }
         else {
@@ -217,6 +228,8 @@
         if (vm.field.value) {
           vm.booleansPopup.show = true;
           angular.element(document.getElementsByClassName('ui-select-search')).on('keydown', hideBooleansPopup);
+          var textfieldElement = jQuery($element).find('.ui-select-search');
+          positionPopup(null, textfieldElement.offset().left, textfieldElement.offset().top + 47, textfieldElement);
         }
         else {
           vm.booleansPopup.show = true;
@@ -244,35 +257,57 @@
         }
       }
 
-      function openPopup($item) {
+      function openPopup($item, $event) {
         if ($item.class === 'advanced-search--field-autocomplete-operator') {
           vm.booleansPopup.show = true;
           vm.booleansPopup.itemToReplace = $item;
+          $event.stopPropagation();
         }
       }
 
-      function positionPopup($event) {
+      function positionPopup($event, initialX, initialY, element) {
         setTimeout(function() {
-          var booleansPopupContainer = jQuery($event.target).parents('.advanced-search--form-item-container').children('.booleans-popup--container');
-          var left = $event.pageX - jQuery($event.target).parents('.advanced-search--field-autocomplete').offset().left - (booleansPopupContainer.width() / 2);
-          booleansPopupContainer.css('left', left + 'px');
+          if (element === undefined) {
+            element = $event.target;
+          }
+          if (initialX === undefined) {
+            initialX = $event.pageX;
+          }
+          if (initialY === undefined) {
+            initialY = $event.pageY;
+          }
+
+          var booleansPopupContainer = jQuery(element).parents('.advanced-search--form-item-container').children('.booleans-popup--container');
+          var offsetLeft = jQuery(element).parents('.advanced-search--field-autocomplete').offset() !== null ? jQuery(element).parents('.advanced-search--field-autocomplete').offset().left : 0;
+          var offsetTop = jQuery(element).parents('.advanced-search--field-autocomplete').offset() !== null ? jQuery(element).parents('.advanced-search--field-autocomplete').offset().top : 0;
+          var leftPosition = initialX - offsetLeft - (booleansPopupContainer.width() / 2);
+          var topPosition = initialY - offsetTop - (booleansPopupContainer.height() / 2) - 47;
+          booleansPopupContainer.css('left', leftPosition + 'px');
+          booleansPopupContainer.css('top', topPosition + 'px');
         }, 0);
 
       }
 
-      function showBooleanIfNecessary() {
+      function showBooleanIfNecessary($event) {
         if (vm.field.value.length) {
           var lastValue = vm.field.value[vm.field.value.length - 1];
           if (lastValue.name !== 'OR' && lastValue.name !==  'AND' && lastValue.name !== 'NOT') {
-            return true;
+            vm.booleansPopup.show = true;
+            positionPopup($event);
+          }
+          else {
+            vm.booleansPopup.show = false;
           }
         }
-        return false;
+        else {
+          vm.booleansPopup.show = false;
+        }
       }
 
     }
 
     function BooleansPopupLink(scope, element) {
+      $element = element;
 
       function setHighlight() {
         var $element = jQuery(element).find('.form-textarea, .form-text');
