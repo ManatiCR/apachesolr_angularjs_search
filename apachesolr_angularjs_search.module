@@ -1049,7 +1049,7 @@ function apachesolr_angularjs_search_get_autocomplete_field_values($value, &$val
       $dash_position = strpos($element['id'], '-');
       $value_connector = substr($element['id'], 0, $dash_position);
     }
-    elseif ($element['id']) {
+    elseif ($element['id'] && strpos($element['id'], 'AND') !== 0 && strpos($element['id'], 'OR') !== 0 && strpos($element['id'], 'NOT') !== 0) {
       $values[] = $element;
     }
   }
