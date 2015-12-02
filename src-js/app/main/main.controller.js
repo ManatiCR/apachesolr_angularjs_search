@@ -404,6 +404,36 @@
             jQuery(this).find('.ui-select-search').focus();
           });
         });
+        jQuery('.advanced-search--container').once('click', function() {
+          jQuery(this).click(function(event) {
+            if (event.originalEvent.data !== undefined) {
+              var originalField = event.originalEvent.data.field;
+            }
+            for (var groupIndex = 0; groupIndex < main.groups.length; groupIndex++) {
+              for (var fieldIndex = 0; fieldIndex < main.groups[groupIndex].fields.length; fieldIndex++) {
+                var field = main.groups[groupIndex].fields[fieldIndex];
+                if (field.autocompletePath) {
+                  if (originalField) {
+                    if (field.$$hashKey === originalField.$$hashKey) {
+                      if (field.value.length) {
+                        var lastValue = field.value[field.value.length - 1];
+                        if (lastValue.name === 'OR' || lastValue.name ===  'AND' || lastValue.name === 'NOT') {
+                          field.avoidGlobalPopup = true;
+                        }
+                      }
+                    }
+                    else {
+                      field.avoidGlobalPopup = true;
+                    }
+                  }
+                  else {
+                    field.avoidGlobalPopup = true;
+                  }
+                }
+              }
+            }
+          });
+        });
       }
       setTimeout(setClickHandler, 0);
     });

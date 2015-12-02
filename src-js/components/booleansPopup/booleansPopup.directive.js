@@ -46,7 +46,7 @@
       vm.showBooleanIfNecessary = showBooleanIfNecessary;
       vm.cleanShowPopup = cleanShowPopup;
       vm.firstBoolean = '';
-      vm.avoidGlobalPopup = false;
+      vm.field.avoidGlobalPopup = false;
 
       var target;
       var selectionStart;
@@ -162,7 +162,7 @@
           $scope.$parent.main.groups[vm.group.groupIndex].fields[$scope.$parent.$index + 1].previousConnector = operator.toLowerCase();
         }
         vm.booleansPopup.show = false;
-        vm.avoidGlobalPopup = false;
+        vm.field.avoidGlobalPopup = false;
       }
 
       function separateFieldValue(field, booleanToSeparate) {
@@ -272,7 +272,7 @@
           }
           vm.booleansPopup.itemToReplace = $item;
           $event.stopPropagation();
-          vm.avoidGlobalPopup = true;
+          vm.field.avoidGlobalPopup = true;
         }
       }
 
@@ -304,17 +304,24 @@
           var lastValue = vm.field.value[vm.field.value.length - 1];
           if (lastValue.name !== 'OR' && lastValue.name !==  'AND' && lastValue.name !== 'NOT') {
             vm.booleansPopup.show = true;
+            vm.field.avoidGlobalPopup = false;
           }
           else {
             vm.booleansPopup.show = false;
+            vm.field.avoidGlobalPopup = true;
           }
         }
         else {
           vm.booleansPopup.show = false;
+          vm.field.avoidGlobalPopup = true;
         }
+        $event.data = {
+          field: vm.field
+        };
       }
 
       function cleanShowPopup() {
+        vm.booleansPopup.show = false;
         for (var index = 0; index < vm.field.value.length; index++) {
           if (vm.field.value[index].showPopup) {
             vm.field.value[index].showPopup = false;
