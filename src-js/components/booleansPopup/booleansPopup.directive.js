@@ -44,6 +44,7 @@
       vm.openPopup = openPopup;
       vm.positionPopup = positionPopup;
       vm.showBooleanIfNecessary = showBooleanIfNecessary;
+      vm.cleanShowPopup = cleanShowPopup;
       vm.firstBoolean = '';
       vm.avoidGlobalPopup = false;
 
@@ -231,7 +232,6 @@
           vm.booleansPopup.show = true;
           angular.element(document.getElementsByClassName('ui-select-search')).on('keydown', hideBooleansPopup);
           var textfieldElement = jQuery($element).find('.ui-select-search');
-          positionPopup(null, textfieldElement.offset().left, textfieldElement.offset().top + 47, textfieldElement);
         }
         else {
           vm.booleansPopup.show = true;
@@ -262,6 +262,14 @@
       function openPopup($item, $event) {
         if ($item.class === 'advanced-search--field-autocomplete-operator') {
           vm.booleansPopup.show = true;
+          for (var i = 0; i < vm.field.value.length; i++) {
+            if (vm.field.value[i].id === $item.id) {
+              $item.showPopup = true;
+            }
+            else {
+              vm.field.value[i].showPopup = false;
+            }
+          }
           vm.booleansPopup.itemToReplace = $item;
           $event.stopPropagation();
           vm.avoidGlobalPopup = true;
@@ -296,7 +304,6 @@
           var lastValue = vm.field.value[vm.field.value.length - 1];
           if (lastValue.name !== 'OR' && lastValue.name !==  'AND' && lastValue.name !== 'NOT') {
             vm.booleansPopup.show = true;
-            positionPopup($event);
           }
           else {
             vm.booleansPopup.show = false;
@@ -304,6 +311,14 @@
         }
         else {
           vm.booleansPopup.show = false;
+        }
+      }
+
+      function cleanShowPopup() {
+        for (var index = 0; index < vm.field.value.length; index++) {
+          if (vm.field.value[index].showPopup) {
+            vm.field.value[index].showPopup = false;
+          }
         }
       }
 
@@ -344,9 +359,22 @@
         }, 0);
       }
 
+      function relocateBooleansPopup() {
+        setTimeout(function() {
+          var vm = scope.vm;
+          if (vm.field.autocompletePath) {
+            var booleansPopupGlobal = jQuery(element).children('.booleans-popup--container');
+            var searchInput = jQuery(element).find('.ui-select-search');
+            searchInput.wrap('<div class="booleans-popup-input--container"></div>');
+            jQuery(element).find('.booleans-popup-input--container').prepend(booleansPopupGlobal);
+          }
+        }, 0);
+      }
+
       setTimeout(setHighlight, 0);
       setTimeout(setClickHandler, 0);
       setTimeout(removeCloseBoolean, 0);
+      setTimeout(relocateBooleansPopup, 0);
     }
   }
 })();
