@@ -229,11 +229,13 @@
 
       function optionSelected() {
         if (vm.field.value) {
+          vm.parentScope.main.closeAllPopups();
           vm.booleansPopup.show = true;
           angular.element(document.getElementsByClassName('ui-select-search')).on('keydown', hideBooleansPopup);
           var textfieldElement = jQuery($element).find('.ui-select-search');
         }
         else {
+          vm.parentScope.main.closeAllPopups();
           vm.booleansPopup.show = true;
         }
       }
@@ -264,6 +266,7 @@
           vm.booleansPopup.show = true;
           for (var i = 0; i < vm.field.value.length; i++) {
             if (vm.field.value[i].id === $item.id) {
+              vm.parentScope.main.closeAllPopups();
               $item.showPopup = true;
             }
             else {
@@ -303,6 +306,7 @@
         if (vm.field.value.length) {
           var lastValue = vm.field.value[vm.field.value.length - 1];
           if (lastValue.name !== 'OR' && lastValue.name !==  'AND' && lastValue.name !== 'NOT') {
+            vm.parentScope.main.closeAllPopups();
             vm.booleansPopup.show = true;
             vm.field.avoidGlobalPopup = false;
           }

@@ -56,6 +56,7 @@
       main.groupNameKeypress = groupNameKeypress;
       main.clearChoices = clearChoices;
       main.isGroupEmpty = isGroupEmpty;
+      main.closeAllPopups = closeAllPopups;
       main.fields = {};
       main.groups = [];
       main.operators = [];
@@ -355,6 +356,21 @@
           }
         }
         return true;
+      }
+
+      function closeAllPopups() {
+        for (var groupIndex = 0; groupIndex < main.groups.length; groupIndex++) {
+          for (var fieldIndex = 0; fieldIndex < main.groups[groupIndex].fields.length; fieldIndex++) {
+            main.groups[groupIndex].fields[fieldIndex].avoidGlobalPopup = true;
+            if (main.groups[groupIndex].fields[fieldIndex].autocompletePath && main.groups[groupIndex].fields[fieldIndex].value !== undefined && main.groups[groupIndex].fields[fieldIndex].value.length) {
+              for (var valueIndex = 0; valueIndex < main.groups[groupIndex].fields[fieldIndex].value.length; valueIndex++) {
+                if (main.groups[groupIndex].fields[fieldIndex].value[valueIndex].showPopup) {
+                  main.groups[groupIndex].fields[fieldIndex].value[valueIndex].showPopup = false;
+                }
+              }
+            }
+          }
+        }
       }
 
       function selectOption(optionId, field) {
