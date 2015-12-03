@@ -246,7 +246,6 @@
 
       function hideBooleansPopup() {
         vm.booleansPopup.show = false;
-        angular.element(document.getElementsByClassName('ui-select-search')).unbind('keydown', hideBooleansPopup);
       }
 
       function removeChoice(field) {
