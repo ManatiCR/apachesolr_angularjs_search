@@ -967,7 +967,7 @@ function apachesolr_angularjs_search_get_field_query($field) {
     if (!$value_connector) {
       $value_connector = 'AND';
     }
-    $query .= $values[0]['id'];
+    $query .= '"' . $values[0]['id'] . '"';
     $pretty_query .= $values[0]['name'];
 
     // Discard first value because we already used it.
@@ -976,7 +976,7 @@ function apachesolr_angularjs_search_get_field_query($field) {
       foreach ($values as $index => $value) {
         $query .= ' ' . $value_connector . ' ';
         $pretty_query .= ' ' . $value_connector . ' ';
-        $query .= $field['id'] . ':' . $value['id'];
+        $query .= $field['id'] . ':"' . $value['id'] . '"';
         $pretty_query .= $field['id'] . ':' . $value['name'];
       }
     }
