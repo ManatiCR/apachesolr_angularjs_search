@@ -64,6 +64,9 @@
         if ($event.charCode === 44) {
           vm.booleansPopup.show = true;
           selectionStart = target.selectionStart;
+          var leftPosition = -75 + ((selectionStart + 1) * 8);
+          leftPosition = leftPosition <= 200 ? leftPosition : 200;
+          jQuery('.booleans-popup--container').css('left', leftPosition + 'px');
           target.focus();
         }
         else {
