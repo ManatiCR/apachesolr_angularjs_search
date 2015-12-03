@@ -64,8 +64,9 @@
         if ($event.charCode === 44) {
           vm.booleansPopup.show = true;
           selectionStart = target.selectionStart;
+          var hardLimit = jQuery('.booleans-popup--container').next('.highlightTextarea').find('.form-text').width() - 100;
           var leftPosition = -75 + ((selectionStart + 1) * 6.5);
-          leftPosition = leftPosition <= 200 ? leftPosition : 200;
+          leftPosition = leftPosition <= hardLimit ? leftPosition : hardLimit;
           jQuery('.booleans-popup--container').css('left', leftPosition + 'px');
           target.focus();
         }
