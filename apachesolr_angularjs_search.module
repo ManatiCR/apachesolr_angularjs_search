@@ -506,7 +506,9 @@ function apachesolr_angularjs_search_basic_form_submit($form, &$form_state) {
   if (isset($_GET['destination'])) {
     unset($_GET['destination']);
   }
-  $form_state['redirect'] = APACHESOLR_ANGULARJS_SEARCH_BASE_PATH . '/' . trim($form_state['values']['search_terms']);
+  $search_terms = $form_state['values']['search_terms'];
+  $search_terms = apachesolr_angularjs_search_strip_metachars($search_terms);
+  $form_state['redirect'] = APACHESOLR_ANGULARJS_SEARCH_BASE_PATH . '/' . trim($search_terms);
 }
 
 /**
