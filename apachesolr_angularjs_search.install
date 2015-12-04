@@ -29,7 +29,6 @@ function apachesolr_angularjs_search_schema() {
         'type' => 'blob',
         'length' => '255',
         'not null' => FALSE,
-        'default' => 'Automatically saved search',
         'description' => 'Name used for identifying this search',
       ),
       'created' => array(
