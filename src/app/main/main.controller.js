@@ -457,5 +457,5 @@
     });
   }
 
-  angular.module('apachesolrAngularjsSearch').controller('mainController', mainController);
+  angular.module('apachesolrAngularjsSearch').controller('mainController', ['$rootScope', '$location', '$http', 'drupalDataService', 'searchPostService', 'searchGroupService', mainController]);
 })();

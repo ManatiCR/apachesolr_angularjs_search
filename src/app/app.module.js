@@ -40,9 +40,9 @@
       }
       jQuery('#advancedSearch', context).once('advancedSearch', advancedSearchFunction);
       if (!jQuery('div.ie9inf').length) {
-        angular.module('apachesolrAngularjsSearch').config(function($locationProvider) {
+        angular.module('apachesolrAngularjsSearch').config(['$locationProvider', function($locationProvider) {
           $locationProvider.html5Mode(true);
-        });
+        }]);
       }
     }
   };

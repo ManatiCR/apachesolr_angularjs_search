@@ -12,12 +12,14 @@
 
     var basePath;
     var $element;
+    var $scope;
+    var $parentScope;
     $rootScope.$on('drupalDataReady', function() {
       var data = drupalDataService.getDrupalData();
       basePath = data.modulePath;
     });
 
-    function BooleansPopupController($scope) {
+    function BooleansPopupController() {
       var vm = this;
       var target;
       var selectionStart;
@@ -302,8 +304,8 @@
         }
       }
 
-      vm.parentScope = $scope.$parent;
-      vm.booleansPopup = vm.parentScope.main.booleansPopup = {show: false};
+      vm.parentScope = $parentScope;
+      vm.booleansPopup = {show: false};
       vm.textChange = textChange;
       vm.addBoolean = addBoolean;
       vm.highlightChange = highlightChange;
@@ -324,6 +326,10 @@
     }
 
     function BooleansPopupLink(scope, element) {
+      $scope = scope;
+      $parentScope = $scope.$parent;
+      $parentScope.main.booleansPopup = {show: false};
+
       $element = element;
 
       function setHighlight() {
@@ -383,10 +389,10 @@
         field: '=',
         group: '='
       },
+      link: BooleansPopupLink,
       controller: BooleansPopupController,
       controllerAs: 'vm',
-      bindToController: true,
-      link: BooleansPopupLink
+      bindToController: true
     };
     return directive;
 
