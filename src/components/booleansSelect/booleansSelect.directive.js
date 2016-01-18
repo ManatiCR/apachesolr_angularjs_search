@@ -5,7 +5,6 @@
 
 (function () {
   'use strict';
-  angular.module('apachesolrAngularjsSearch').directive('aasBooleansSelect', ['$rootScope', 'drupalDataService', booleansSelect]);
 
   function booleansSelect($rootScope, drupalDataService) {
 
@@ -14,6 +13,19 @@
       var data = drupalDataService.getDrupalData();
       basePath = data.modulePath;
     });
+
+    function BooleansSelectController() {
+      var vm = this;
+      vm.expanded = false;
+
+      function selectItem(item) {
+        vm.selected = item;
+        vm.expanded = false;
+      }
+
+      vm.selectItem = selectItem;
+
+    }
 
     var directive = {
       // @TODO: Change hardcoded path.
@@ -28,18 +40,7 @@
       bindToController: true
     };
     return directive;
-
-    function BooleansSelectController() {
-      var vm = this;
-      vm.expanded = false;
-
-      vm.selectItem = selectItem;
-
-      function selectItem(item) {
-        vm.selected = item;
-        vm.expanded = false;
-      }
-
-    }
   }
+
+  angular.module('apachesolrAngularjsSearch').directive('aasBooleansSelect', ['$rootScope', 'drupalDataService', booleansSelect]);
 })();

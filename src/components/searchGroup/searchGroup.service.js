@@ -7,8 +7,6 @@
 (function () {
   'use strict';
 
-  angular.module('apachesolrAngularjsSearch').factory('searchGroupService', ['$resource', searchGroupService]);
-
   function searchGroupService($resource) {
 
     var groups = $resource('/apachesolr-angularjs-search/search-group/:id', {
@@ -56,4 +54,6 @@
       getGroup: getGroup
     };
   }
+
+  angular.module('apachesolrAngularjsSearch').factory('searchGroupService', ['$resource', searchGroupService]);
 })();

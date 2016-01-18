@@ -10,15 +10,11 @@
 (function () {
   'use strict';
 
+  /* globals Drupal, jQuery*/
+
   angular.module('apachesolrAngularjsSearch', ['ngCookies', 'ngResource', 'ngSanitize', 'ngTouch', 'ui.select']);
   Drupal.behaviors.apachesolrAngularjs = {
     attach: function(context) {
-      jQuery('#advancedSearch', context).once('advancedSearch', advancedSearchFunction);
-      if (!jQuery('div.ie9inf').length) {
-        angular.module('apachesolrAngularjsSearch').config(function($locationProvider) {
-          $locationProvider.html5Mode(true);
-        });
-      }
       function advancedSearchFunction() {
         var fields = Drupal.settings.apachesolrAngularjs.fields;
         var pageId = Drupal.settings.apachesolrAngularjs.pageId;
@@ -33,14 +29,20 @@
           limitBy: limitBy
         };
 
-        // We need to ensure dom is ready before getting this element.
-        angular.element(document).ready(setDrupalData);
         function setDrupalData() {
           var mainControllerElement = angular.element(document.getElementById('advanced-search-controller'));
           var drupalDataService = mainControllerElement.injector().get('drupalDataService');
           drupalDataService.setDrupalData(data);
           mainControllerElement.scope().$apply();
         }
+        // We need to ensure dom is ready before getting this element.
+        angular.element(document).ready(setDrupalData);
+      }
+      jQuery('#advancedSearch', context).once('advancedSearch', advancedSearchFunction);
+      if (!jQuery('div.ie9inf').length) {
+        angular.module('apachesolrAngularjsSearch').config(function($locationProvider) {
+          $locationProvider.html5Mode(true);
+        });
       }
     }
   };

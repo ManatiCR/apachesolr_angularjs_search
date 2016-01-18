@@ -7,8 +7,6 @@
 (function () {
   'use strict';
 
-  angular.module('apachesolrAngularjsSearch').factory('searchPostService', ['$resource', searchPostService]);
-
   function searchPostService($resource) {
 
     var search = $resource('/apachesolr-angularjs-search', null,
@@ -26,4 +24,6 @@
       sendSearch: sendSearch
     };
   }
+
+  angular.module('apachesolrAngularjsSearch').factory('searchPostService', ['$resource', searchPostService]);
 })();
