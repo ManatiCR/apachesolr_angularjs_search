@@ -170,8 +170,6 @@ function apachesolr_angularjs_search_block_info() {
  * Implements hook_block_configure().
  */
 function apachesolr_angularjs_search_block_configure($delta) {
-  $environment_options = array();
-
   $pages = apachesolr_search_load_all_search_pages();
 
   foreach ($pages as $page_id => $page) {
@@ -181,7 +179,6 @@ function apachesolr_angularjs_search_block_configure($delta) {
   }
 
   $default_page = apachesolr_search_default_search_page();
-  $entity_type = 'node';
 
   if ($delta == 'aas_advanced') {
     // @TODO Remove and fix ajax.
@@ -210,7 +207,7 @@ function apachesolr_angularjs_search_block_configure($delta) {
         'limitby' => t('Limit By'),
       ),
       '#options' => apachesolr_angularjs_search_get_fields_options(),
-      '#default_value' => apachesolr_angular_js_search_fields_default_value(variable_get('apachesolr_angularjs_search_advanced_fields', array()), apachesolr_angularjs_search_get_fields_options()),
+      '#default_value' => apachesolr_angularjs_search_fields_default_value(variable_get('apachesolr_angularjs_search_advanced_fields', array()), apachesolr_angularjs_search_get_fields_options()),
       '#prefix' => '<div id="aas-advanced-fields">',
       '#suffix' => '</div>',
     );
@@ -404,7 +401,7 @@ function apachesolr_angularjs_search_get_expired_searches($delete_time) {
 /**
  * Returns default value for fields field.
  */
-function apachesolr_angular_js_search_fields_default_value($fields, $options) {
+function apachesolr_angularjs_search_fields_default_value($fields, $options) {
   if (!empty($fields)) {
     foreach ($fields['sortable_lists']['selected'] as $field_name => $field) {
       $fields['sortable_lists']['selected'][$field_name] = $field_name;
@@ -653,9 +650,7 @@ function apachesolr_angularjs_search_get_group_name($group) {
   }
   foreach ($group->fields as $field) {
     if (!empty($field['id']) && !empty($field['value'])) {
-      $autocomplete = FALSE;
       if (!empty($field['autocompletePath'])) {
-        $autocomplete = TRUE;
         $value = apachesolr_angularjs_search_get_autocomplete_field_names($field['value']);
       }
       else {
@@ -675,7 +670,6 @@ function apachesolr_angularjs_search_get_group_name($group) {
  * Process search query string.
  */
 function apachesolr_angularjs_search_process_query($uri = '') {
-  global $user;
   $query = '';
   $save_option = &drupal_static('apachesolr_angularjs_search_process_query_save_option', FALSE);
   if (empty($uri)) {
@@ -914,7 +908,7 @@ function apachesolr_angularjs_search_get_field_query($field) {
     // Discard first value because we already used it.
     array_shift($values);
     if (!empty($values)) {
-      foreach ($values as $index => $value) {
+      foreach ($values as $value) {
         $query .= ' ' . $value_connector . ' ';
         $pretty_query .= ' ' . $value_connector . ' ';
         $query .= $field['id'] . ':' . apachesolr_angularjs_search_strip_metachars($value);
@@ -1007,7 +1001,6 @@ function apachesolr_angularjs_search_get_field_values($value, &$value_connector 
  * Get a list of values for a given autocomplete field.
  */
 function apachesolr_angularjs_search_get_autocomplete_field_values($value, &$value_connector = '', $values = array()) {
-  $operators = array('AND', 'OR', 'NOT');
   foreach ($value as $element) {
     if (!$value_connector && (strpos($element['id'], 'AND') === 0 || strpos($element['id'], 'OR') === 0 || strpos($element['id'], 'NOT') === 0)) {
       $dash_position = strpos($element['id'], '-');
@@ -1024,7 +1017,6 @@ function apachesolr_angularjs_search_get_autocomplete_field_values($value, &$val
  * Get a list of values for a given autocomplete field.
  */
 function apachesolr_angularjs_search_get_autocomplete_field_names($value) {
-  $operators = array('AND', 'OR', 'NOT');
   foreach ($value as $element) {
     if (strpos($element['id'], 'AND') === 0 || strpos($element['id'], 'OR') === 0 || strpos($element['id'], 'NOT') === 0) {
       $dash_position = strpos($element['id'], '-');
@@ -1086,7 +1078,6 @@ function apachesolr_angularjs_search_save_search($form, $form_state) {
   $search->status = APACHESOLR_ANGULARJS_SEARCH_PERMANENT;
   $result = drupal_write_record('aas_search_saved', $search, 'sid');
   if ($result === SAVED_UPDATED) {
-    global $base_url;
     return t('Your search has been saved. You may access and share this saved search !link.',
       array(
         '!link' => l(t('here'), variable_get('apachesolr_angularjs_search_search_base_path', APACHESOLR_ANGULARJS_SEARCH_BASE_PATH) . '/' . $search->uri)));
@@ -1163,7 +1154,7 @@ function apachesolr_angularjs_search_get_search_uri($search, $count = 0) {
   $uri = str_replace('--', '', $uri);
 
   $uri = substr($uri, 0, 20);
-  if (apachesolr_angular_js_search_uri_exists($uri)) {
+  if (apachesolr_angularjs_search_uri_exists($uri)) {
     return apachesolr_angularjs_search_get_search_uri($search, $count + 1);
   }
   else {
@@ -1174,7 +1165,7 @@ function apachesolr_angularjs_search_get_search_uri($search, $count = 0) {
 /**
  * Returns whether a given uri already exists or not in saved searches table.
  */
-function apachesolr_angular_js_search_uri_exists($uri) {
+function apachesolr_angularjs_search_uri_exists($uri) {
   $query = db_query('SELECT count(sid) FROM {aas_search_saved} WHERE uri = :uri', array(':uri' => $uri));
   $count = $query->fetchField();
   if ($count) {
