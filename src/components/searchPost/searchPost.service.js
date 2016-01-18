@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  angular.module('apachesolrAngularjsSearch').factory('searchPostService', searchPostService);
+  angular.module('apachesolrAngularjsSearch').factory('searchPostService', ['$resource', searchPostService]);
 
   function searchPostService($resource) {
 

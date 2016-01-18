@@ -5,7 +5,7 @@
 
 (function () {
   'use strict';
-  angular.module('apachesolrAngularjsSearch').directive('aasBooleansPopup', booleansPopup);
+  angular.module('apachesolrAngularjsSearch').directive('aasBooleansPopup', ['$rootScope', 'drupalDataService', booleansPopup]);
 
   function booleansPopup($rootScope, drupalDataService) {
 
@@ -18,7 +18,7 @@
 
     var directive = {
       // @TODO: Change hardcoded path.
-      templateUrl: '/sites/all/modules/custom/apachesolr_angularjs_search' + '/src-js/components/booleansPopup/booleans-popup.html',
+      templateUrl: '/sites/all/modules/custom/apachesolr_angularjs_search' + '/src/components/booleansPopup/booleans-popup.html',
       restrict: 'A',
       scope: {
         field: '=',

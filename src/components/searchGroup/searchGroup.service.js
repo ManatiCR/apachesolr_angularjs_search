@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  angular.module('apachesolrAngularjsSearch').factory('searchGroupService', searchGroupService);
+  angular.module('apachesolrAngularjsSearch').factory('searchGroupService', ['$resource', searchGroupService]);
 
   function searchGroupService($resource) {
 

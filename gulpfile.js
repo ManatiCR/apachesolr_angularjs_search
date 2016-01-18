@@ -17,8 +17,8 @@ var paths = {
   scripts: [yeoman.app + '/**/*.js', '!' + yeoman.app + '/templates.min.js'],
   styles: [yeoman.app + '/**/*.scss'],
   views: {
-    main: yeoman.app + '/index.html', // @TODO: Remove.
-    files: [yeoman.app + '/**/*.html']
+    main: yeoman.app + '/index.html',
+    files: [yeoman.app + '/**/*.html', '!' + yeoman.app + '/index.html']
   }
 };
 
@@ -47,7 +47,7 @@ var concatenateTemplates = function() {
     .pipe($.ngTemplates({
       module: 'apachesolrAngularjsSearch',
       path: function(path, base) {
-        return path.replace(base, '');
+        return path.replace(base, '/sites/all/modules/custom/apachesolr_angularjs_search/src/');
       },
       standalone: false,
     }))

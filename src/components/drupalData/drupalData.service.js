@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  angular.module('apachesolrAngularjsSearch').factory('drupalDataService', drupalDataService);
+  angular.module('apachesolrAngularjsSearch').factory('drupalDataService', ['$rootScope', drupalDataService]);
 
   function drupalDataService($rootScope) {
     var data = {};
