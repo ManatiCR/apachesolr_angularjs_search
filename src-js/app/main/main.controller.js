@@ -93,7 +93,7 @@
       if (!groups) {
         main.groups[0] = getDefaultGroup('default', 0);
         for (i = 0; i < main.fields.always.length; i++) {
-          main.groups[0].fields[i] = main.fields.always[i];
+          main.groups[0].fields[i] = angular.copy(main.fields.always[i]);
           main.groups[0].activeCount++;
         }
         main.groups[0].selectedFields[0] = main.groups[0].fields[0];
@@ -225,7 +225,7 @@
         var position = main.groups.length;
         var group = getDefaultGroup('group_' + position, position);
         for (var i = 0; i < main.fields.always.length; i++) {
-          group.fields[i] = main.fields.always[i];
+          group.fields[i] = angular.copy(main.fields.always[i]);
           group.fields[i].value = undefined;
           if (group.fields[i].autocompletePath) {
             group.fields[i].value = [];
