@@ -440,7 +440,6 @@ function apachesolr_angularjs_search_get_fields_options($page_id = '') {
   foreach ($fields as $field_name => $field) {
     $options[$field_name] = apachesolr_field_name_map($field_name);
   }
-  // @TODO: Check hook_apachesolr_field_name_map_alter
 
   return $options;
 }
