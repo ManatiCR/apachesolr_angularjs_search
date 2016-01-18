@@ -15,9 +15,8 @@ and Apachesolr as backend.
 INTRODUCTION
 ------------
 
-If you need a form api element that provides any number of sortable lists and 
-you can move elements from one to another and order them; you could use the 
-element type that this module provides.
+This module works with apachesolr and AngularJS to provide a flexible UI to allow
+the user to create complex searches.
 
 INSTALLATION
 ------------
