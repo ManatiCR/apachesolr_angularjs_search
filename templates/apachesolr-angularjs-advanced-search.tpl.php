@@ -2,7 +2,7 @@
 
 /**
  * @file
- * AngularJS template to render
+ * AngularJS template to render.
  */
 ?>
 

@@ -2,7 +2,7 @@
 
 /**
  * @file
- * apachesolr_angularjs_search_group_handler_field_view_link class.
+ * Apachesolr_angularjs_search_group_handler_field_view_link class.
  */
 
 class apachesolr_angularjs_search_group_handler_field_view_link extends views_handler_field {
@@ -50,4 +50,5 @@ class apachesolr_angularjs_search_group_handler_field_view_link extends views_ha
       ),
     ));
   }
+
 }

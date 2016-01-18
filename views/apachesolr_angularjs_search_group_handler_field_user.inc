@@ -2,7 +2,7 @@
 
 /**
  * @file
- * apachesolr_angularjs_search_group_handler_field_user class.
+ * Apachesolr_angularjs_search_group_handler_field_user class.
  */
 
 class apachesolr_angularjs_search_group_handler_field_user extends views_handler_field_user {
@@ -24,4 +24,5 @@ class apachesolr_angularjs_search_group_handler_field_user extends views_handler
     }
     return $value;
   }
+
 }

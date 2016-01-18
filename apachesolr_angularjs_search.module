@@ -929,7 +929,7 @@ function apachesolr_angularjs_search_get_field_query($field) {
     // Discard first value because we already used it.
     array_shift($values);
     if (!empty($values)) {
-      foreach ($values as $index => $value) {
+      foreach ($values as $value) {
         $query .= ' ' . $value_connector . ' ';
         $pretty_query .= ' ' . $value_connector . ' ';
         $query .= $field['id'] . ':"' . $value['id'] . '"';
@@ -1080,7 +1080,8 @@ function apachesolr_angularjs_search_save_search($form, $form_state) {
   if ($result === SAVED_UPDATED) {
     return t('Your search has been saved. You may access and share this saved search !link.',
       array(
-        '!link' => l(t('here'), variable_get('apachesolr_angularjs_search_search_base_path', APACHESOLR_ANGULARJS_SEARCH_BASE_PATH) . '/' . $search->uri)));
+        '!link' => l(t('here'), variable_get('apachesolr_angularjs_search_search_base_path', APACHESOLR_ANGULARJS_SEARCH_BASE_PATH) . '/' . $search->uri)
+      ));
   }
   else {
     return t('There was an error saving your search.');

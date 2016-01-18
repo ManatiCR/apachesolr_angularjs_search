@@ -2,7 +2,7 @@
 
 /**
  * @file
- * apachesolr_angularjs_search_handler_field_view_link class.
+ * Apachesolr_angularjs_search_handler_field_view_link class.
  */
 
 class apachesolr_angularjs_search_handler_field_view_link extends views_handler_field {
@@ -42,4 +42,5 @@ class apachesolr_angularjs_search_handler_field_view_link extends views_handler_
     $uri = APACHESOLR_ANGULARJS_SEARCH_BASE_PATH . '/' . $values->apachesolr_angularjs_search_saved_uri;
     return l($link_text, $uri);
   }
+
 }

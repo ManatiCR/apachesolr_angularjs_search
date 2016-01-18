@@ -2,7 +2,7 @@
 
 /**
  * @file
- * apachesolr_angularjs_search_handler_field_delete_link class.
+ * Apachesolr_angularjs_search_handler_field_delete_link class.
  */
 
 class apachesolr_angularjs_search_handler_field_delete_link extends views_handler_field {
@@ -43,4 +43,5 @@ class apachesolr_angularjs_search_handler_field_delete_link extends views_handle
     $form = drupal_get_form('apachesolr_angularjs_search_delete_form', $sid, $link_text);
     return $form;
   }
+
 }
