@@ -573,58 +573,21 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
           'data' => array('apachesolrAngularjs' => $settings),
           'type' => 'setting',
         ),
-        // @TODO: change by minified files.
-        $path . '/bower_components/angular/angular.js' => array(
+        $path . '/dist/app/vendor.js' => array(
           'type' => 'file',
         ),
-        $path . '/bower_components/angular-cookies/angular-cookies.js' => array(
+        $path . '/dist/app/app.js' => array(
           'type' => 'file',
         ),
-        $path . '/bower_components/angular-resource/angular-resource.js' => array(
-          'type' => 'file',
-        ),
-        $path . '/bower_components/angular-sanitize/angular-sanitize.js' => array(
-          'type' => 'file',
-        ),
-        $path . '/bower_components/angular-touch/angular-touch.js' => array(
-          'type' => 'file',
-        ),
-        $path . '/bower_components/angular-ui-select/dist/select.min.js' => array(
-          'type' => 'file',
-        ),
-        $path . '/bower_components/jquery-highlighttextarea/jquery.highlighttextarea.min.js' => array(
-          'type' => 'file',
-        ),
-        $path . '/src-js/app/app.module.js' => array(
-          'type' => 'file',
-        ),
-        $path . '/src-js/app/main/main.controller.js' => array(
-          'type' => 'file',
-        ),
-        $path . '/src-js/components/drupalData/drupalData.service.js' => array(
-          'type' => 'file',
-        ),
-        $path . '/src-js/components/searchPost/searchPost.service.js' => array(
-          'type' => 'file',
-        ),
-        $path . '/src-js/components/searchGroup/searchGroup.service.js' => array(
-          'type' => 'file',
-        ),
-        $path . '/src-js/components/booleansPopup/booleansPopup.directive.js' => array(
-          'type' => 'file',
-        ),
-        $path . '/src-js/components/booleansSelect/booleansSelect.directive.js' => array(
+        $path . '/dist/app/templates.min.js' => array(
           'type' => 'file',
         ),
       ),
       'css' => array(
-        $path . '/bower_components/angular-ui-select/dist/select.min.css' => array(
+        $path . '/dist/styles/vendor.css' => array(
           'type' => 'file',
         ),
-        $path . '/bower_components/jquery-highlighttextarea/jquery.highlighttextarea.min.css' => array(
-          'type' => 'file',
-        ),
-        $path . '/src-js/app/app.css' => array(
+        $path . '/dist/css/styles.css' => array(
           'type' => 'file',
         ),
       ),

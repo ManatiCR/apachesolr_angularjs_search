@@ -5,13 +5,38 @@
 (function () {
   'use strict';
 
-  angular.module('apachesolrAngularjsSearch').controller('mainController', mainController);
+  /* globals Drupal, jQuery*/
 
   function mainController($rootScope, $location, $http, drupalDataService, searchPostService, searchGroupService) {
     /* jshint validthis: true */
     var main = this;
 
+    function reindexGroups() {
+      for (var i = 0; i < main.groups.length; i++) {
+        main.groups[i].groupIndex = i;
+      }
+    }
+
+    function fieldHasValue(field, choiceId) {
+      if (!field.value) {
+        field.value = [];
+        return false;
+      }
+      for (var index  = 0; index < field.value.length; index++) {
+        if (field.value[index].id === choiceId) {
+          return true;
+        }
+      }
+      return false;
+    }
+
     $rootScope.$on('drupalDataReady', function() {
+
+      var data = drupalDataService.getDrupalData();
+      var fields = data.fields;
+      var pageId = data.pageId;
+      var groups = data.groups;
+      var limitBy = data.limitBy;
 
       // Listen new group.
       $rootScope.$on('newGroupReady', function($event, group) {
@@ -40,71 +65,6 @@
         }
       });
 
-      main.clearForm = clearForm;
-      main.processForm = processForm;
-      main.fieldChanged = fieldChanged;
-      main.addFieldConfirm = addFieldConfirm;
-      main.deleteField = deleteField;
-      main.addSameField = addSameField;
-      main.addSearchGroup = addSearchGroup;
-      main.deleteGroup = deleteGroup;
-      main.saveGroup = saveGroup;
-      main.getChoices = getChoices;
-      main.startPopup = startPopup;
-      main.selectOption = selectOption;
-      main.isOptionSelected = isOptionSelected;
-      main.groupNameKeypress = groupNameKeypress;
-      main.clearChoices = clearChoices;
-      main.isGroupEmpty = isGroupEmpty;
-      main.closeAllPopups = closeAllPopups;
-      main.fields = {};
-      main.groups = [];
-      main.operators = [];
-
-      // Unbind the event.
-      var mainDiv = angular.element(document.getElementById('mainController'));
-      angular.element(mainDiv).unbind('drupalDataReady');
-
-      var data = drupalDataService.getDrupalData();
-      var fields = data.fields;
-      var pageId = data.pageId;
-      var groups = data.groups;
-      var limitBy = data.limitBy;
-
-      var status;
-      var i;
-      for (status in fields) {
-        for (i = 0; i < fields[status].length; i++) {
-          if (fields[status][i].type === 'boolean') {
-            fields[status][i].type = 'checkbox';
-          }
-          else if (fields[status][i].type === 'string') {
-            fields[status][i].type = 'text';
-          }
-          else if (fields[status][i].type === 'numeric') {
-            fields[status][i].type = 'number';
-          }
-        }
-      }
-      main.fields = fields;
-      if (limitBy) {
-        main.fields.limitby = limitBy;
-      }
-      if (!groups) {
-        main.groups[0] = getDefaultGroup('default', 0);
-        for (i = 0; i < main.fields.always.length; i++) {
-          main.groups[0].fields[i] = main.fields.always[i];
-          main.groups[0].activeCount++;
-        }
-        main.groups[0].selectedFields[0] = main.groups[0].fields[0];
-      }
-      else {
-        main.groups = groups;
-      }
-      main.selectedField = getField('__fulltext_search');
-
-      main.operators = ['and', 'or', 'not'];
-
       function getDefaultGroup(id, position) {
         return {
           id : id,
@@ -119,15 +79,6 @@
           activeAddField : false,
           differentFieldsCount: 1
         };
-      }
-
-      function fieldChanged(groupIndex, index) {
-        var selectedField = angular.copy(main.groups[groupIndex].selectedFields[index]);
-        if (selectedField) {
-          main.groups[groupIndex].fields[index] = selectedField;
-          hidePreviousAndNext(groupIndex, index);
-          main.groups[groupIndex].saved = false;
-        }
       }
 
       function hidePreviousAndNext(groupIndex, index) {
@@ -149,6 +100,15 @@
         }
       }
 
+      function fieldChanged(groupIndex, index) {
+        var selectedField = angular.copy(main.groups[groupIndex].selectedFields[index]);
+        if (selectedField) {
+          main.groups[groupIndex].fields[index] = selectedField;
+          hidePreviousAndNext(groupIndex, index);
+          main.groups[groupIndex].saved = false;
+        }
+      }
+
       function getField(fieldId) {
         var i;
         if (fieldId) {
@@ -162,15 +122,6 @@
           return angular.copy(main.fields.selected[1]);
         }
         return false;
-      }
-
-      function addFieldConfirm(groupIndex, option) {
-        var field = angular.copy(option);
-        var index = addField(groupIndex, field);
-        if (main.groups[groupIndex].fields[index - 1] && main.groups[groupIndex].fields[index - 1].id === main.groups[groupIndex].fields[index].id ) {
-          main.groups[groupIndex].fields[index].previousConnector = 'or';
-        }
-        updateDifferentFieldCount(groupIndex);
       }
 
       function addField(groupIndex, field, index) {
@@ -193,14 +144,6 @@
         return index;
       }
 
-      function deleteField(groupIndex, index) {
-        main.groups[groupIndex].fields.splice(index, 1);
-        main.groups[groupIndex].selectedFields.splice(index, 1);
-        main.groups[groupIndex].activeCount--;
-        hidePreviousAndNext(groupIndex, index - 1);
-        updateDifferentFieldCount(groupIndex);
-      }
-
       function updateDifferentFieldCount(groupIndex) {
         var fieldIds = [];
         for (var i = 0; i < main.groups[groupIndex].fields.length; i++) {
@@ -210,6 +153,23 @@
           }
         }
         main.groups[groupIndex].differentFieldsCount = fieldIds.length;
+      }
+
+      function addFieldConfirm(groupIndex, option) {
+        var field = angular.copy(option);
+        var index = addField(groupIndex, field);
+        if (main.groups[groupIndex].fields[index - 1] && main.groups[groupIndex].fields[index - 1].id === main.groups[groupIndex].fields[index].id ) {
+          main.groups[groupIndex].fields[index].previousConnector = 'or';
+        }
+        updateDifferentFieldCount(groupIndex);
+      }
+
+      function deleteField(groupIndex, index) {
+        main.groups[groupIndex].fields.splice(index, 1);
+        main.groups[groupIndex].selectedFields.splice(index, 1);
+        main.groups[groupIndex].activeCount--;
+        hidePreviousAndNext(groupIndex, index - 1);
+        updateDifferentFieldCount(groupIndex);
       }
 
       function addSameField(groupIndex, index) {
@@ -225,7 +185,7 @@
         var position = main.groups.length;
         var group = getDefaultGroup('group_' + position, position);
         for (var i = 0; i < main.fields.always.length; i++) {
-          group.fields[i] = main.fields.always[i];
+          group.fields[i] = angular.copy(main.fields.always[i]);
           group.fields[i].value = undefined;
           if (group.fields[i].autocompletePath) {
             group.fields[i].value = [];
@@ -258,19 +218,6 @@
         }
       }
 
-      function fieldHasValue(field, choiceId) {
-        if (!field.value) {
-          field.value = [];
-          return false;
-        }
-        for (var index  = 0; index < field.value.length; index++) {
-          if (field.value[index].id === choiceId) {
-            return true;
-          }
-        }
-        return false;
-      }
-
       function startPopup(choice, $event, groupIndex, fieldIndex) {
         $event.stopPropagation();
         var base = 'choice-' + choice.id;
@@ -294,28 +241,29 @@
       function clearForm() {
         main.groups = [];
         main.groups[0] = getDefaultGroup('default', 0);
-        for (i = 0; i < main.fields.always.length; i++) {
-          main.groups[0].fields[i] = main.fields.always[i];
-          main.groups[0].fields[i].value = undefined;
-          if (main.groups[0].fields[i].autocompletePath) {
-            main.groups[0].fields[i].value = [];
+        var clearFormIndex = 0;
+        for (clearFormIndex = 0; clearFormIndex < main.fields.always.length; clearFormIndex++) {
+          main.groups[0].fields[clearFormIndex] = main.fields.always[clearFormIndex];
+          main.groups[0].fields[clearFormIndex].value = undefined;
+          if (main.groups[0].fields[clearFormIndex].autocompletePath) {
+            main.groups[0].fields[clearFormIndex].value = [];
           }
           main.groups[0].activeCount++;
         }
         main.groups[0].selectedFields[0] = main.groups[0].fields[0];
         main.selectedField = getField('__fulltext_search');
-        for (i = 0; i < main.fields.limitby.length; i++) {
-          main.fields.limitby[i].value = undefined;
-          if (main.fields.limitby[i].autocompletePath) {
-            main.fields.limitby[i].value = [];
+        for (clearFormIndex = 0; clearFormIndex < main.fields.limitby.length; clearFormIndex++) {
+          main.fields.limitby[clearFormIndex].value = undefined;
+          if (main.fields.limitby[clearFormIndex].autocompletePath) {
+            main.fields.limitby[clearFormIndex].value = [];
           }
-          if (main.fields.limitby[i].value2) {
-            main.fields.limitby[i].value2 = undefined;
+          if (main.fields.limitby[clearFormIndex].value2) {
+            main.fields.limitby[clearFormIndex].value2 = undefined;
           }
-          if (main.fields.limitby[i].type === 'group') {
+          if (main.fields.limitby[clearFormIndex].type === 'group') {
             var groupIndex = 0;
-            for (groupIndex = 0; groupIndex < main.fields.limitby[i].fields.length; groupIndex++) {
-              main.fields.limitby[i].fields[groupIndex].value = undefined;
+            for (groupIndex = 0; groupIndex < main.fields.limitby[clearFormIndex].fields.length; groupIndex++) {
+              main.fields.limitby[clearFormIndex].fields[groupIndex].value = undefined;
             }
           }
         }
@@ -373,6 +321,18 @@
         }
       }
 
+      function isOptionSelected(optionId, field) {
+        var index = 0;
+        if (field.value) {
+          for (index = 0; index < field.value.length; index++) {
+            if (field.value[index] === optionId) {
+              return index;
+            }
+          }
+        }
+        return false;
+      }
+
       function selectOption(optionId, field) {
         var index = isOptionSelected(optionId, field);
         if (index === false) {
@@ -386,18 +346,6 @@
         }
       }
 
-      function isOptionSelected(optionId, field) {
-        var index = 0;
-        if (field.value) {
-          for (index = 0; index < field.value.length; index++) {
-            if (field.value[index] === optionId) {
-              return index;
-            }
-          }
-        }
-        return false;
-      }
-
       function groupNameKeypress($event, groupIndex) {
         if ($event.keyCode === 27) {
           main.groups[groupIndex].saving = false;
@@ -408,11 +356,64 @@
         field.choices = [];
       }
 
-      function reindexGroups() {
-        for (var i = 0; i < main.groups.length; i++) {
-          main.groups[i].groupIndex = i;
+      main.clearForm = clearForm;
+      main.processForm = processForm;
+      main.fieldChanged = fieldChanged;
+      main.addFieldConfirm = addFieldConfirm;
+      main.deleteField = deleteField;
+      main.addSameField = addSameField;
+      main.addSearchGroup = addSearchGroup;
+      main.deleteGroup = deleteGroup;
+      main.saveGroup = saveGroup;
+      main.getChoices = getChoices;
+      main.startPopup = startPopup;
+      main.selectOption = selectOption;
+      main.isOptionSelected = isOptionSelected;
+      main.groupNameKeypress = groupNameKeypress;
+      main.clearChoices = clearChoices;
+      main.isGroupEmpty = isGroupEmpty;
+      main.closeAllPopups = closeAllPopups;
+      main.fields = {};
+      main.groups = [];
+      main.operators = [];
+
+      // Unbind the event.
+      var mainDiv = angular.element(document.getElementById('mainController'));
+      angular.element(mainDiv).unbind('drupalDataReady');
+
+      var status;
+      var i;
+      for (status in fields) {
+        for (i = 0; i < fields[status].length; i++) {
+          if (fields[status][i].type === 'boolean') {
+            fields[status][i].type = 'checkbox';
+          }
+          else if (fields[status][i].type === 'string') {
+            fields[status][i].type = 'text';
+          }
+          else if (fields[status][i].type === 'numeric') {
+            fields[status][i].type = 'number';
+          }
         }
       }
+      main.fields = fields;
+      if (limitBy) {
+        main.fields.limitby = limitBy;
+      }
+      if (!groups) {
+        main.groups[0] = getDefaultGroup('default', 0);
+        for (i = 0; i < main.fields.always.length; i++) {
+          main.groups[0].fields[i] = angular.copy(main.fields.always[i]);
+          main.groups[0].activeCount++;
+        }
+        main.groups[0].selectedFields[0] = main.groups[0].fields[0];
+      }
+      else {
+        main.groups = groups;
+      }
+      main.selectedField = getField('__fulltext_search');
+
+      main.operators = ['and', 'or', 'not'];
 
       function setClickHandler() {
         jQuery('.ui-select-container').once(function() {
@@ -422,8 +423,9 @@
         });
         jQuery('.advanced-search--container').once('click', function() {
           jQuery(this).click(function(event) {
+            var originalField;
             if (event.originalEvent.data !== undefined) {
-              var originalField = event.originalEvent.data.field;
+              originalField = event.originalEvent.data.field;
             }
             for (var groupIndex = 0; groupIndex < main.groups.length; groupIndex++) {
               for (var fieldIndex = 0; fieldIndex < main.groups[groupIndex].fields.length; fieldIndex++) {
@@ -454,4 +456,6 @@
       setTimeout(setClickHandler, 0);
     });
   }
+
+  angular.module('apachesolrAngularjsSearch').controller('mainController', ['$rootScope', '$location', '$http', 'drupalDataService', 'searchPostService', 'searchGroupService', mainController]);
 })();

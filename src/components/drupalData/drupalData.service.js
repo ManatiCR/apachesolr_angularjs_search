@@ -7,8 +7,6 @@
 (function () {
   'use strict';
 
-  angular.module('apachesolrAngularjsSearch').factory('drupalDataService', drupalDataService);
-
   function drupalDataService($rootScope) {
     var data = {};
 
@@ -36,4 +34,6 @@
       getDrupalData: getDrupalData
     };
   }
+
+  angular.module('apachesolrAngularjsSearch').factory('drupalDataService', ['$rootScope', drupalDataService]);
 })();

@@ -3,58 +3,27 @@
  *
  */
 
+/* globals jQuery*/
+
 (function () {
   'use strict';
-  angular.module('apachesolrAngularjsSearch').directive('aasBooleansPopup', booleansPopup);
 
   function booleansPopup($rootScope, drupalDataService) {
 
     var basePath;
     var $element;
+    var $scope;
+    var $parentScope;
     $rootScope.$on('drupalDataReady', function() {
       var data = drupalDataService.getDrupalData();
       basePath = data.modulePath;
     });
 
-    var directive = {
-      // @TODO: Change hardcoded path.
-      templateUrl: '/sites/all/modules/custom/apachesolr_angularjs_search' + '/src-js/components/booleansPopup/booleans-popup.html',
-      restrict: 'A',
-      scope: {
-        field: '=',
-        group: '='
-      },
-      controller: BooleansPopupController,
-      controllerAs: 'vm',
-      bindToController: true,
-      link: BooleansPopupLink
-    };
-    return directive;
-
-    function BooleansPopupController($scope) {
+    function BooleansPopupController() {
       var vm = this;
-
-      vm.parentScope = $scope.$parent;
-      vm.booleansPopup = vm.parentScope.main.booleansPopup = {show: false};
-      vm.textChange = textChange;
-      vm.addBoolean = addBoolean;
-      vm.highlightChange = highlightChange;
-      vm.optionSelected = optionSelected;
-      vm.removeChoice = removeChoice;
-      vm.openPopup = openPopup;
-      vm.positionPopup = positionPopup;
-      vm.showBooleanIfNecessary = showBooleanIfNecessary;
-      vm.cleanShowPopup = cleanShowPopup;
-      vm.firstBoolean = '';
-      vm.field.avoidGlobalPopup = false;
-
       var target;
       var selectionStart;
 
-      if (!vm.field.value) {
-        // Prevent error with hightlight.
-        vm.field.value = '';
-      }
 
       function textChange($event) {
         if (!target) {
@@ -74,6 +43,27 @@
           vm.booleansPopup.show = false;
         }
         return true;
+      }
+
+      function verifyAutocompleteFieldValues() {
+        var index = 0;
+        var lastBoolean = false;
+        for (index = 0; index < vm.field.value.length; index++) {
+          if (vm.field.value[index].name === 'AND' || vm.field.value[index].name === 'OR' || vm.field.value[index].name === 'NOT') {
+            if (!lastBoolean) {
+              lastBoolean = vm.field.value[index].name;
+            }
+            else if (lastBoolean !== vm.field.value[index].name) {
+              var booleanToSeparate = vm.field.value[index].name;
+              var newFieldValue = vm.field.value.splice(index, vm.field.value.length - index);
+              // Separate in new field.
+              $scope.$parent.main.addSameField(vm.group.groupIndex, $scope.$parent.$index);
+              $scope.$parent.main.groups[vm.group.groupIndex].fields[$scope.$parent.$index + 1].previousConnector = booleanToSeparate;
+              $scope.$parent.main.groups[vm.group.groupIndex].fields[$scope.$parent.$index + 1].value = newFieldValue.splice(1, newFieldValue.length);
+              break;
+            }
+          }
+        }
       }
 
       function addBoolean(operator, $event) {
@@ -196,27 +186,6 @@
         }
       }
 
-      function verifyAutocompleteFieldValues() {
-        var index = 0;
-        var lastBoolean = false;
-        for (index = 0; index < vm.field.value.length; index++) {
-          if (vm.field.value[index].name === 'AND' || vm.field.value[index].name === 'OR' || vm.field.value[index].name === 'NOT') {
-            if (!lastBoolean) {
-              lastBoolean = vm.field.value[index].name;
-            }
-            else if (lastBoolean !== vm.field.value[index].name) {
-              var booleanToSeparate = vm.field.value[index].name;
-              var newFieldValue = vm.field.value.splice(index, vm.field.value.length - index);
-              // Separate in new field.
-              $scope.$parent.main.addSameField(vm.group.groupIndex, $scope.$parent.$index);
-              $scope.$parent.main.groups[vm.group.groupIndex].fields[$scope.$parent.$index + 1].previousConnector = booleanToSeparate;
-              $scope.$parent.main.groups[vm.group.groupIndex].fields[$scope.$parent.$index + 1].value = newFieldValue.splice(1, newFieldValue.length);
-              break;
-            }
-          }
-        }
-      }
-
       function highlightChange($event) {
         var $markers = $event.matches;
         if ($markers.length) {
@@ -231,21 +200,20 @@
         }
       }
 
+      function hideBooleansPopup() {
+        vm.booleansPopup.show = false;
+      }
+
       function optionSelected() {
         if (vm.field.value) {
           vm.parentScope.main.closeAllPopups();
           vm.booleansPopup.show = true;
           angular.element(document.getElementsByClassName('ui-select-search')).on('keydown', hideBooleansPopup);
-          var textfieldElement = jQuery($element).find('.ui-select-search');
         }
         else {
           vm.parentScope.main.closeAllPopups();
           vm.booleansPopup.show = true;
         }
-      }
-
-      function hideBooleansPopup() {
-        vm.booleansPopup.show = false;
       }
 
       function removeChoice(field) {
@@ -336,9 +304,32 @@
         }
       }
 
+      vm.parentScope = $parentScope;
+      vm.booleansPopup = {show: false};
+      vm.textChange = textChange;
+      vm.addBoolean = addBoolean;
+      vm.highlightChange = highlightChange;
+      vm.optionSelected = optionSelected;
+      vm.removeChoice = removeChoice;
+      vm.openPopup = openPopup;
+      vm.positionPopup = positionPopup;
+      vm.showBooleanIfNecessary = showBooleanIfNecessary;
+      vm.cleanShowPopup = cleanShowPopup;
+      vm.firstBoolean = '';
+      vm.field.avoidGlobalPopup = false;
+
+      if (!vm.field.value) {
+        // Prevent error with hightlight.
+        vm.field.value = '';
+      }
+
     }
 
     function BooleansPopupLink(scope, element) {
+      $scope = scope;
+      $parentScope = $scope.$parent;
+      $parentScope.main.booleansPopup = {show: false};
+
       $element = element;
 
       function setHighlight() {
@@ -390,5 +381,22 @@
       setTimeout(removeCloseBoolean, 0);
       setTimeout(relocateBooleansPopup, 0);
     }
+    var directive = {
+      // @TODO: Change hardcoded path.
+      templateUrl: '/sites/all/modules/custom/apachesolr_angularjs_search' + '/src/components/booleansPopup/booleans-popup.html',
+      restrict: 'A',
+      scope: {
+        field: '=',
+        group: '='
+      },
+      link: BooleansPopupLink,
+      controller: BooleansPopupController,
+      controllerAs: 'vm',
+      bindToController: true
+    };
+    return directive;
+
   }
+
+  angular.module('apachesolrAngularjsSearch').directive('aasBooleansPopup', ['$rootScope', 'drupalDataService', booleansPopup]);
 })();
