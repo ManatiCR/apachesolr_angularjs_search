@@ -1,4 +1,7 @@
+# Vendor code.
 /node_modules
+
+# Temporary code.
 /dist/index.html
 /.tmp
 /.sass-cache
