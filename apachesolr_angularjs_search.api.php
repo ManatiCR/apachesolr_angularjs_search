@@ -24,3 +24,10 @@ function hook_apachesolr_angularjs_search_build_result_alter(&$build) {
     unset($build['save_form']);
   }
 }
+
+/**
+ * Implements hook_apachesolr_angularjs_search_search_presave().
+ */
+function hook_apachesolr_angularjs_search_search_presave($search) {
+  $search->status = APACHESOLR_ANGULARJS_SEARCH_PERMANENT;
+}
