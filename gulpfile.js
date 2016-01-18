@@ -3,12 +3,10 @@
 
 var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
-var openURL = require('open');
 var lazypipe = require('lazypipe');
 var del = require('del');
 var wiredep = require('wiredep').stream;
 var runSequence = require('run-sequence');
-var debug = require('gulp-debug');
 
 var yeoman = {
   app: require('./bower.json').appPath || 'src',
@@ -114,7 +112,6 @@ gulp.task('clean:dist', function () {
 gulp.task('client:build', ['html', 'styles'], function () {
   var jsFilter = $.filter('**/*.js');
   var cssFilter = $.filter('**/*.css');
-  var jsCssFilter = $.filter(['**/*.js', '**/*.css']);
 
   return gulp.src(paths.views.main)
     .pipe($.useref({searchPath: [yeoman.app, '.tmp']}))
@@ -125,9 +122,6 @@ gulp.task('client:build', ['html', 'styles'], function () {
     .pipe(cssFilter)
     .pipe($.minifyCss({cache: true, processImport: false}))
     .pipe(cssFilter.restore())
-    .pipe(jsCssFilter)
-    .pipe($.rev())
-    .pipe(jsCssFilter.restore())
     .pipe($.revReplace())
     .pipe(gulp.dest(yeoman.dist));
 });
