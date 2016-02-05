@@ -24,6 +24,8 @@ INSTALLATION
  * Install as you would normally install a contributed drupal module. See:
    https://drupal.org/documentation/install/modules-themes/modules-7
    for further information.
+ * If you don't have bower installed; [install it] (http://bower.io/#install-bower)
+ * Run `bower install`
 
 
 USAGE
