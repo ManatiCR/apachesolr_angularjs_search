@@ -382,8 +382,7 @@
       setTimeout(relocateBooleansPopup, 0);
     }
     var directive = {
-      // @TODO: Change hardcoded path.
-      templateUrl: '/sites/all/modules/custom/apachesolr_angularjs_search' + '/src/components/booleansPopup/booleans-popup.html',
+      templateUrl: '/apachesolr_angularjs_search' + '/src/components/booleansPopup/booleans-popup.html',
       restrict: 'A',
       scope: {
         field: '=',
