@@ -382,6 +382,8 @@
       setTimeout(relocateBooleansPopup, 0);
     }
     var directive = {
+      // This path really doesn't matter because it's being replaced by
+      // templatecache.
       templateUrl: '/apachesolr_angularjs_search' + '/src/components/booleansPopup/booleans-popup.html',
       restrict: 'A',
       scope: {
