@@ -46,7 +46,7 @@ var concatenateTemplates = function() {
     .pipe($.ngTemplates({
       module: 'apachesolrAngularjsSearch',
       path: function(path, base) {
-        return path.replace(base, '/sites/all/modules/custom/apachesolr_angularjs_search/src/');
+        return path.replace(base, '/apachesolr_angularjs_search/src/');
       },
       standalone: false,
     }))

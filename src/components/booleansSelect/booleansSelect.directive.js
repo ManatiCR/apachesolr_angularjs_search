@@ -28,8 +28,9 @@
     }
 
     var directive = {
-      // @TODO: Change hardcoded path.
-      templateUrl: '/sites/all/modules/custom/apachesolr_angularjs_search' + '/src/components/booleansSelect/booleans-select.html',
+      // This path really doesn't matter because it's being replaced by
+      // templatecache.
+      templateUrl: '/apachesolr_angularjs_search' + '/src/components/booleansSelect/booleans-select.html',
       restrict: 'A',
       scope: {
         options: '=aasBooleansSelectOptions',
