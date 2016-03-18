@@ -40,7 +40,7 @@ class apachesolr_angularjs_search_handler_field_delete_link extends views_handle
   function render($values) {
     $link_text = $this->options['link_text'];
     $sid = $values->sid;
-    $form = drupal_get_form('apachesolr_angularjs_search_delete_form', $sid, $link_text);
+     $form = drupal_get_form('apachesolr_angularjs_search_delete_form_'.$sid, $sid, $link_text);
     return $form;
   }
 
