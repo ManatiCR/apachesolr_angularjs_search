@@ -1175,10 +1175,23 @@ function apachesolr_angularjs_search_uri_exists($uri) {
   return FALSE;
 }
 
+ /**
+ * Change form ids for multiple delete forms.
+ */
+function apachesolr_angularjs_search_forms($form_id, $args) {
+  $forms = array();
+  if(preg_match('/^apachesolr_angularjs_search_delete_form_\d+/', $form_id)) {
+    $forms[$form_id] = array(
+                   'callback' => 'apachesolr_angularjs_search_delete_form_callback'
+     );
+  }
+  return $forms;
+}
+
 /**
  * Return delete form for a given sid.
  */
-function apachesolr_angularjs_search_delete_form($form, $form_state, $sid, $delete_text) {
+function apachesolr_angularjs_search_delete_form_callback($form, $form_state, $sid, $delete_text) {
   $form['sid'] = array(
     '#type' => 'value',
     '#value' => $sid,
@@ -1187,6 +1200,10 @@ function apachesolr_angularjs_search_delete_form($form, $form_state, $sid, $dele
   $form['delete'] = array(
     '#type' => 'submit',
     '#value' => check_plain($delete_text),
+  );
+  
+  $form['#submit'] = array (
+    'apachesolr_angularjs_search_delete_form_submit'
   );
 
   return $form;
