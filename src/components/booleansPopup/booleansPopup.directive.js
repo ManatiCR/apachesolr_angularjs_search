@@ -116,7 +116,7 @@
               jQuery('.advanced-search--field-autocomplete-operator').parents('.ui-select-match-item').children('.ui-select-match-close').remove();
             }, 0);
           }
-           else if ($event.explicitOriginalTarget === $event.target) {
+          else if ($event.explicitOriginalTarget === $event.target) {
             part = vm.field.value.substr(selectionStart + 1);
             vm.field.value = vm.field.value.substr(0, selectionStart);
             vm.field.value += ' ' + operator + ' ';
@@ -124,11 +124,11 @@
           }
           var selectionSum = operator.length + 2;
           var cursorPosition = selectionStart + selectionSum;
-           if (target && $event.explicitOriginalTarget === $event.target) {
+          if (target && $event.explicitOriginalTarget === $event.target) {
             target.focus();
             setTimeout(function() {
-              // Let's wait focus has finished before applying selectionRange.
-              target.setSelectionRange(cursorPosition, cursorPosition);
+               // Let's wait focus has finished before applying selectionRange.
+               target.setSelectionRange(cursorPosition, cursorPosition);
             }, 0);
           }
           if (!vm.field.autocompletePath) {
