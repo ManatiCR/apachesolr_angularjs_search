@@ -1182,7 +1182,7 @@ function apachesolr_angularjs_search_forms($form_id, $args) {
   $forms = array();
   if(preg_match('/^apachesolr_angularjs_search_delete_form_\d+/', $form_id)) {
     $forms[$form_id] = array(
-                   'callback' => 'apachesolr_angularjs_search_delete_form_callback'
+       'callback' => 'apachesolr_angularjs_search_delete_form_callback',
      );
   }
   return $forms;
@@ -1203,7 +1203,7 @@ function apachesolr_angularjs_search_delete_form_callback($form, $form_state, $s
   );
   
   $form['#submit'] = array (
-    'apachesolr_angularjs_search_delete_form_submit'
+    'apachesolr_angularjs_search_delete_form_submit',
   );
 
   return $form;
