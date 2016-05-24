@@ -127,8 +127,8 @@
           if (target && $event.explicitOriginalTarget === $event.target) {
             target.focus();
             setTimeout(function() {
-               // Let's wait focus has finished before applying selectionRange.
-               target.setSelectionRange(cursorPosition, cursorPosition);
+              // Let's wait focus has finished before applying selectionRange.
+              target.setSelectionRange(cursorPosition, cursorPosition);
             }, 0);
           }
           if (!vm.field.autocompletePath) {
