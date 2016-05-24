@@ -125,7 +125,6 @@ function apachesolr_angularjs_search_schema() {
         'type' => 'blob',
         'length' => '255',
         'not null' => FALSE,
-        'default' => '',
         'description' => 'Name used for identifying this search group',
       ),
       'created' => array(

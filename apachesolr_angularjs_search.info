@@ -1,6 +1,7 @@
 name = Apachesolr AngularJS Search
 description = Provides blocks for angularjs searches using apachesolr as a backend.
 dependencies[] = apachesolr
+dependencies[] = apachesolr_search
 dependencies[] = sortable_lists
 
 files[] = views/apachesolr_angularjs_search_handler_field_view_link.inc

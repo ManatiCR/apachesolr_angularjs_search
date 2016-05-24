@@ -563,6 +563,7 @@ function apachesolr_angularjs_search_get_advanced_search_block() {
     '#attached' => array(
       'library' => array(
         0 => array('system', 'ui.resizable'),
+        1 => array('system', 'drupal.ajax'),
       ),
       'js' => array(
         0 => array(
@@ -1201,7 +1202,7 @@ function apachesolr_angularjs_search_delete_form_callback($form, $form_state, $s
     '#type' => 'submit',
     '#value' => check_plain($delete_text),
   );
-  
+
   $form['#submit'] = array (
     'apachesolr_angularjs_search_delete_form_submit',
   );
